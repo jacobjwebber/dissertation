@@ -1,0 +1,4 @@
+#GITIGNORE
+
+#Executables
+./2d_example/square
