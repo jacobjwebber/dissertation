@@ -7,7 +7,7 @@
 
 #define POINTS_PER_UNIT 25
 
-#define THETA M_PI/4
+#define THETA 0// M_PI/4
 
 
 typedef struct {
@@ -78,7 +78,8 @@ int main()
     printf("Unit square is %ix%i points\n", POINTS_PER_UNIT, POINTS_PER_UNIT);
     printf("bounding box is: %i by %i\n", x_dim, y_dim);
 
-    point *bounding_array = (point *)malloc(x_dim * y_dim * sizeof(point *));
+    size_t bound_array_siz = x_dim * y_dim * sizeof(point);
+    point *bounding_array = (point *)malloc(bound_array_siz);//x_dim * y_dim * sizeof(point *));
     
     printf("memory allocated\n");
     
@@ -110,6 +111,71 @@ int main()
     }
 
     printf("There are %i points inside square\n", total_inside);
+
+    //Allocate memory for new 'compressed' data structure.
+    size_t linked_array_siz = total_inside * sizeof(linked_point_t);
+    linked_point_t *linked_array = (linked_point_t *)malloc(linked_array_siz);
+
+    j =0;
+    for (i = 0; i < (x_dim * y_dim); i++)
+    {
+        if ( bounding_array[i].inside )
+        {
+            linked_array[j].value  = bounding_array[i].value;
+            linked_array[j].coords[0] = bounding_array[i].coords[0];
+            linked_array[j].coords[1] = bounding_array[i].coords[1];
+            j++;
+        }
+    }
+
+    printf("Copied %i elements to linked array\n", j);
+
+    if ( j != total_inside )
+    {
+        printf("ERROR, %i elements copied,  %i inside", j, total_inside);
+        return -1;
+    }
+
+    float siz_percent = 100*( (float)linked_array_siz )/( (float)bound_array_siz );
+    printf("linked array uses %f%% of space of bound array.\n", siz_percent);
+
+    //Find Neighbors.
+    for (i = 0; i < total_inside; i++)
+    {
+        linked_array[i].up = NULL;
+        linked_array[i].down = NULL;
+        linked_array[i].left = NULL;
+        linked_array[i].right = NULL;
+
+        for (j = 0; j < total_inside; j++)
+        {
+            if ( linked_array[j].coords[0] == (linked_array[i].coords[0] + 1)
+                    && linked_array[j].coords[1] == (linked_array[i].coords[1] ) )
+            {
+                linked_array[i].down = &linked_array[j];
+            }
+            
+            if ( linked_array[j].coords[0] == (linked_array[i].coords[0] - 1)
+                    && linked_array[j].coords[1] == (linked_array[i].coords[1] ) )
+            {
+                linked_array[i].up = &linked_array[j];
+            }
+            
+            if ( linked_array[j].coords[0] == (linked_array[i].coords[0] )
+                    && linked_array[j].coords[1] == (linked_array[i].coords[1] - 1) )
+            {
+                linked_array[i].right = &linked_array[j];
+            } 
+
+            if ( linked_array[j].coords[0] == (linked_array[i].coords[0] + 1)
+                    && linked_array[j].coords[1] == (linked_array[i].coords[1] + 1) )
+            {
+                linked_array[i].left = &linked_array[j];
+            }
+        }
+    }
+
+
 
     return 0;
 }
