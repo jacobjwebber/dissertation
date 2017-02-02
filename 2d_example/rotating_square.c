@@ -7,7 +7,7 @@
 
 #define POINTS_PER_UNIT 25
 
-#define THETA 0// M_PI/4
+#define THETA M_PI/4
 
 
 typedef struct {
@@ -101,12 +101,15 @@ int main()
 
 
     //Find how many points are inside square.
+    float counter = 0.0;
     int total_inside = 0;
     for (i = 0; i < (x_dim * y_dim); i++)
     {
         if ( bounding_array[i].inside )
         {
             total_inside++;
+            bounding_array[i].value = counter;
+            counter += 1.0;
         }
     }
 
@@ -175,7 +178,13 @@ int main()
         }
     }
 
+    //Replace linked_array in place with structure that does not include coords.
 
+    printf("printing all internal values\n");
+    for (i = 0; i < total_inside; i++)
+    {
+        printf("%f\n", linked_array[i].value);
+    }
 
     return 0;
 }
