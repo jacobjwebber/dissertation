@@ -63,7 +63,7 @@ int main()
 
     if (THETA > M_PI/2 || THETA < 0)
     {
-        printf("Theta out of bounds\n");
+        printf("Theta out of bounds. Select a value between 0 and PI/2\n");
         return 0;
     }
     
@@ -122,8 +122,8 @@ int main()
         if ( bounding_array[i].inside )
         {
             linked_array[j].value  = bounding_array[i].value;
-            linked_array[j].coords[0] = bounding_array[i].coords[0];
-            linked_array[j].coords[1] = bounding_array[i].coords[1];
+            linked_array[j].coords[0] = i % (x_dim * y_dim); //bounding_array[i].coords[0];
+            linked_array[j].coords[1] = i / (x_dim * y_dim); //bounding_array[i].coords[1];
             j++;
         }
     }
