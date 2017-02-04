@@ -7,13 +7,13 @@
 
 #define POINTS_PER_UNIT 25
 
-#define THETA M_PI/4
+#define THETA  M_PI/14
 
 
 typedef struct {
     float value; // floating point value (from physics model)
+    float old_value;
     char inside; //Boolean char for whether point is inside model square
-    int coords[2];
 } point;
 
 typedef struct linked_point {
@@ -22,11 +22,23 @@ typedef struct linked_point {
     struct linked_point *left;
     struct linked_point *right;
     float value;
+    float old_value;
     char inside;
     int coords[2];
 } linked_point_t;
 
+typedef struct linked_point_small {
+    struct linked_point *up;
+    struct linked_point *down;
+    struct linked_point *left;
+    struct linked_point *right;
+    float value;
+    float old_value;
+    char inside;
+} linked_point_small_t;
+    
 void print_array_of_structs(point *array, int x_dim, int y_dim);
+void print_array_values(linked_point_t *array, int N);
 
 void array_position_to_cart(int j, int i, float* x, float *y, float scale)
 {
@@ -178,14 +190,15 @@ int main()
         }
     }
 
+    //Use following as test - should print consecutive numbers - write unit test later
+    //print_array_values(linked_array, total_inside);
+
+
     //Replace linked_array in place with structure that does not include coords.
 
-    printf("printing all internal values\n");
-    for (i = 0; i < total_inside; i++)
-    {
-        printf("%f\n", linked_array[i].value);
-    }
-
+    size_t linked_array_small_siz = total_inside * sizeof(linked_point_small_t);
+    float siz_percent_small = 100*( (float)linked_array_small_siz )/( (float)bound_array_siz );
+    printf("linked array: 'small' uses %f%% of space of bound array.\n", siz_percent_small);
     return 0;
 }
 
@@ -199,5 +212,15 @@ void print_array_of_structs(point *array, int x_dim, int y_dim)
             printf("%i ", array[i*y_dim + j].inside);
         }
         printf("\n");
+    }
+}
+
+void print_array_values(linked_point_t *array, int N)
+{
+    int i;
+    printf("printing all internal values\n");
+    for (i = 0; i < N; i++)
+    {
+        printf("%f\n", array[i].value);
     }
 }
