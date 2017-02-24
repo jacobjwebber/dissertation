@@ -10,13 +10,13 @@
 #define THETA  M_PI/14
 
 
-typedef struct {
+struct point {
     float value; // floating point value (from physics model)
     float old_value;
     char inside; //Boolean char for whether point is inside model square
-} point;
+};
 
-typedef struct linked_point {
+struct linked_point {
     struct linked_point *up;
     struct linked_point *down;
     struct linked_point *left;
@@ -25,9 +25,9 @@ typedef struct linked_point {
     float old_value;
     char inside;
     int coords[2];
-} linked_point_t;
+};
 
-typedef struct linked_point_small {
+struct linked_point_small {
     struct linked_point *up;
     struct linked_point *down;
     struct linked_point *left;
@@ -35,10 +35,10 @@ typedef struct linked_point_small {
     float value;
     float old_value;
     char inside;
-} linked_point_small_t;
+};
     
-void print_array_of_structs(point *array, int x_dim, int y_dim);
-void print_array_values(linked_point_t *array, int N);
+void print_array_of_structs(struct point *array, int x_dim, int y_dim);
+void print_array_values(struct linked_point *array, int N);
 
 void array_position_to_cart(int j, int i, float* x, float *y, float scale)
 {
@@ -90,8 +90,8 @@ int main()
     printf("Unit square is %ix%i points\n", POINTS_PER_UNIT, POINTS_PER_UNIT);
     printf("bounding box is: %i by %i\n", x_dim, y_dim);
 
-    size_t bound_array_siz = x_dim * y_dim * sizeof(point);
-    point *bounding_array = (point *)malloc(bound_array_siz);//x_dim * y_dim * sizeof(point *));
+    size_t bound_array_siz = x_dim * y_dim * sizeof(struct point);
+    struct point *bounding_array = (struct point *)malloc(bound_array_siz);//x_dim * y_dim * sizeof(point *));
     
     printf("memory allocated\n");
     
@@ -108,7 +108,7 @@ int main()
 
     print_array_of_structs(bounding_array, x_dim, y_dim);
 
-    float ratio = ( (float) sizeof(point) )/( (float) sizeof(linked_point_t) );
+    float ratio = ( (float) sizeof(struct point) )/( (float) sizeof(struct linked_point) );
     printf("ratio of point size to linked point size is %f\n", ratio);
 
 
@@ -128,8 +128,8 @@ int main()
     printf("There are %i points inside square\n", total_inside);
 
     //Allocate memory for new 'compressed' data structure.
-    size_t linked_array_siz = total_inside * sizeof(linked_point_t);
-    linked_point_t *linked_array = (linked_point_t *)malloc(linked_array_siz);
+    size_t linked_array_siz = total_inside * sizeof(struct linked_point);
+    struct linked_point *linked_array = (struct linked_point *)malloc(linked_array_siz);
 
     j =0;
     for (i = 0; i < (x_dim * y_dim); i++)
@@ -196,13 +196,13 @@ int main()
 
     //Replace linked_array in place with structure that does not include coords.
 
-    size_t linked_array_small_siz = total_inside * sizeof(linked_point_small_t);
+    size_t linked_array_small_siz = total_inside * sizeof(struct linked_point_small);
     float siz_percent_small = 100*( (float)linked_array_small_siz )/( (float)bound_array_siz );
     printf("linked array: 'small' uses %f%% of space of bound array.\n", siz_percent_small);
     return 0;
 }
 
-void print_array_of_structs(point *array, int x_dim, int y_dim)
+void print_array_of_structs(struct point *array, int x_dim, int y_dim)
 {
     int i, j;
     for (i = 0; i <  y_dim; i++)
@@ -215,7 +215,7 @@ void print_array_of_structs(point *array, int x_dim, int y_dim)
     }
 }
 
-void print_array_values(linked_point_t *array, int N)
+void print_array_values(struct linked_point *array, int N)
 {
     int i;
     printf("printing all internal values\n");
