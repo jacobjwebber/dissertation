@@ -7,7 +7,7 @@
 
 #define POINTS_PER_UNIT 25
 
-#define THETA  M_PI/14
+#define THETA M_PI/4
 
 
 struct point {
