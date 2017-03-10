@@ -89,8 +89,8 @@ int main()
     printf("bounding box is: %i by %i\n", x_dim, y_dim);
 
     size_t bound_array_siz = x_dim * y_dim * sizeof(struct point);
-    struct point *bounding_array = (struct point *)malloc(bound_array_siz);//x_dim * y_dim * sizeof(point *));
-    
+    struct point *bounding_array = (struct point *)malloc(bound_array_siz);
+
     printf("memory allocated\n");
     
     float x, y;
@@ -197,6 +197,20 @@ int main()
     size_t linked_array_small_siz = total_inside * sizeof(struct linked_point_small);
     float siz_percent_small = 100*( (float)linked_array_small_siz )/( (float)bound_array_siz );
     printf("linked array: 'small' uses %f%% of space of bound array.\n", siz_percent_small);
+
+    struct linked_point_small *smol_array = (struct linked_point_small *)malloc(linked_array_small_siz);
+
+    //loop that provides small array that does not include coords.
+    for (i = 0; i++; i < total_inside) {
+        smol_array[i].up = linked_array[i].up;
+        smol_array[i].down = linked_array[i].down;
+        smol_array[i].left = linked_array[i].left;
+        smol_array[i].right = linked_array[i].right;
+
+        smol_array[i].value = linked_array[i].value;
+        smol_array[i].old_value = linked_array[i].old_value;
+    }
+
     return 0;
 }
 
