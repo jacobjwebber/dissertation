@@ -7,7 +7,7 @@
 
 #define POINTS_PER_UNIT 25
 
-#define THETA  M_PI/14
+#define THETA 0 // M_PI/4
 
 
 typedef struct {
@@ -57,11 +57,9 @@ char is_in_square(float theta, float x, float y)
     y_prime = x*sin(theta) - y*cos(theta);
 
     if (x_prime <= 0.5 && x_prime >= -0.5
-            && y_prime <= 0.5 && y_prime >= -0.5)
-    {
+            && y_prime <= 0.5 && y_prime >= -0.5) {
         return TRUE;
-    } else 
-    {
+    } else {
         return FALSE;
     }
 }
