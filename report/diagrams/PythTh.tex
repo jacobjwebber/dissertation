@@ -1,4 +1,4 @@
-\documentclass[12pt]{article}
+\documentclass[12pt]{standalone}
 \usepackage{graphicx}
 \usepackage{latexsym, amsmath,amsfonts,amssymb}
 \usepackage{xcolor}
@@ -24,33 +24,16 @@
 \newtheorem{Theorem}{Theorem}
 \pagestyle{empty}
 \begin{document}
-\begin{center}
 \begin{tikzpicture}[scale = 1.75]
 \draw (0,4)--(4,4)--(4,0)--(0,0)--cycle;
 \draw (3,0)--(4,3)--(1,4)--(0,1)--cycle;
-\coordinate [label=below left:$A$] (A) at (0,0);
-\coordinate [label=below:$B$] (B) at (4,0);
-\coordinate [label=above right:$C$] (C) at (4,4);
-\coordinate [label=above left:$D$] (D) at (0,4);
-\coordinate [label=below:$E$] (E) at (3,0);
-\coordinate [label=right:$F$] (F) at (4,3);
-\coordinate [label=above:$G$] (G) at (1,4);
-\coordinate [label=left:$H$] (H) at (0,1);
-\foreach \point in {A,B,C,D,E,F,G,H}
-\fill [black,opacity=1] (\point) circle (1pt);
-\coordinate [label=below:$b$] (S1) at (1.5,0);
-\coordinate [label=right:$b$] (S2) at (4,1.5);
-\coordinate [label=above:$b$] (S3) at (2.5,4);
-\coordinate [label=left:$b$] (S4) at (0,2.5);
-\coordinate [label=below:$a$] (T1) at (3.5,0);
-\coordinate [label=right:$a$] (T2) at (4,3.5);
-\coordinate [label=above:$a$] (T1) at (0.5,4);
-\coordinate [label=left:$a$] (T1) at (0,0.5);
-\coordinate [label=below:$c$] (U1) at (1.5,.8);
-\coordinate [label=right:$c$] (U2) at (3.2,1.5);
-\coordinate [label=below:$c$] (U3) at (2.5,3.5);
-\coordinate [label=left:$c$] (U4) at (.75,2.5);
+\draw (2,-1)--(2,5);
+\draw [dashed] (3,5)--(1,-1);
+\draw [thick] (2,2.5) arc [radius=0.5,start angle=90,end angle=90-19];
+
+\coordinate [label=left:$x$] (S4) at (0,2);
+\coordinate [label=above:$\theta$] (S3) at (2.1,2.5);
+
 \end{tikzpicture}
-\end{center}
 \end{document}
 
