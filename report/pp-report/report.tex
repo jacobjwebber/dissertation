@@ -17,12 +17,31 @@
 \maketitle
 
 \section{Introduction}
-This report details the preparation for a final project for an MSc in High Performance Computing. The project 
+
+This report details the preparation for a final project for an MSc in High Performance Computing. This project aims improve upon current techniques used to run 3 dimensional finite-difference time-domain (FTDT) simulations on the GPU. The problem with existing methods that do this is that a bounding box is used to store all points in the simulation. This is inefficient in its use of memory. This project hopes to devise and implement methods that make better use of limited GPU high bandwidth memory.
+
+This report opens with a critical review of two previous dissertations that cover different topics to this project. There will then be a brief background and literature review, which will describe some of the theory behind room acoustics, some alternatives to the FTDT technique and an overview of the state of the art in this field. The report will then provide a comprehensive plan of action for how the report will be undertaken, including a finalised project proposal, and a work plan and risk analysis. This report will then detail any initial findings made during the project preparation stage, before concluding.
+
 
 
 \section{Previous Dissertation Review}
-This section contains a review of two previous dissertations submitted by other students. The reports selected for review are not relevant to the topic of this project.
-\subsection{Dissertation 1} 
+
+This section contains a review of two previous dissertations submitted by other students. The reports selected for review are not particularly relevant to the topic of this project but are useful as examples of high quality work at the level required.
+
+\subsection{Dissertation 1 - ``Fulfilling Solvency II regulations using GPUs'' by Ludovic Capelli, 2016}
+This first dissertation discusses work done to speed up the computation of financial solvency for insurance companies, in line with new EU wide regulations. These regulations involve Monte-Carlo simulations that require a very large amount of computational resource to comply with. The project improved upon previously state of the art performance on the GPU by a factor of two and was awarded a distinction level mark.
+
+The topic seems to be a particularly suitable one for a project in High Performance Computing. Present technology in use by industry would take approximately a year to calculate whether an insurance provider is solvent. By this stage the data fed in will be out of date and the impact of any insolvency may have already been felt. It is therefore necessary and appropriate to use higher performance techniques to do these calculations, even if doing so requires the additional programming and hardware costs associated with such methods.
+
+The dissertation outlines in an appropriate amount of detail the background to the regulations and details of insurance insolvency, striking a balance between not being a dissertation on finance but providing adequate background for the reader to understand the nature of and motivation behind the calculations performed. This content is included briefly in the introduction and in more detail in the Literature review section.
+
+A comprehensive description of GPU programming techniques is provided for the reader. This includes a generous amount of well styled diagrams describing the GPGPU programming paradigm in both CUDA and OpenMP 4.0. Particular attention is given to achieving optimal memory usage. This information will be useful for undertaking a project on 3d room acoustics modelling - where memory accesses are the major bottleneck.
+
+There are few criticisms that can be offered of what is a very well written dissertation covering a project that was measurably successful in its outcomes. However, it could be said that some of the discussion of computing basics is a little unnecessary for a dissertation of this level, in particular the description of a CPU as the ``brain'' of the computer.
+ 
+This dissertation is generally well formatted and easy to read, using the standard EPCC \LaTeX template. However, there is perhaps a little too much information included in the preface, with a full table of contents, table of figures and index of tables. This means that for a document of 69 pages, the actual report does not start until the 14th page.
+
+To conclude the review of this report, it is clearly a very strong piece of work. Good results were achieved with a 100\% speed up on previous work. While Mr Capelli's dissertation was not selected for review on the basis of its relevance to the this project, the detailed discussion of GPGPU programming and memory management will be extremely useful background for undertaking future work, even when applied to a completely different problem.
 
 \subsection{Dissertation 2}
 
