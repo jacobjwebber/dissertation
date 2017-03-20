@@ -39,13 +39,26 @@ A comprehensive description of GPU programming techniques is provided for the re
 
 There are few criticisms that can be offered of what is a very well written dissertation covering a project that was measurably successful in its outcomes. However, it could be said that some of the discussion of computing basics is a little unnecessary for a dissertation of this level, in particular the description of a CPU as the ``brain'' of the computer.
  
-This dissertation is generally well formatted and easy to read, using the standard EPCC \LaTeX template. However, there is perhaps a little too much information included in the preface, with a full table of contents, table of figures and index of tables. This means that for a document of 69 pages, the actual report does not start until the 14th page.
+This dissertation is generally well formatted and easy to read, using the standard EPCC template  in \LaTeX . However, there is perhaps a little too much included in the preface, with a full table of contents, table of figures and index of tables, along with blank pages in between these. This means that in a document of 69 pages, the actual report does not start until the 14th page.
 
 To conclude the review of this report, it is clearly a very strong piece of work. Good results were achieved with a 100\% speed up on previous work. While Mr Capelli's dissertation was not selected for review on the basis of its relevance to the this project, the detailed discussion of GPGPU programming and memory management will be extremely useful background for undertaking future work, even when applied to a completely different problem.
 
 \subsection{Dissertation 2}
 
 \section{Background and Literature Review}
+Acoustics is the study of the physical aspects of sound. Sound is our perception of varying pressure with time in the air around us. The way that this sound, or pressure variation propagates through the air around us can be modelled using a well know differential equation known as the wave equation. In one dimension this is
+
+$$\frac{\partial ^2 \textbf{p}}{\partial x^2 } - \frac{1}{{c^2 }}\frac{{\partial ^2 \textbf{p}}}{{\partial t^2 }} = 0$$
+
+where $\textbf{p}$ is acoustic pressure, and $c$ is the speed of sound. This result is derived by, among others, Richard Feynman in \cite{feynman}. It is trivial to generalise this for 3 dimensional systems, which yields
+
+$$\nabla^{2} \textbf{p} - \frac{1}{{c^2 }}\frac{{\partial ^2 \textbf{p}}}{{\partial t^2 }} = 0$$
+
+It should be noted that in both of these equations $\textbf{p}$ is the deviation from the ambient air pressure.
+
+Much of the work in the field of acoustics entails finding solutions to this equation in various mediums and bounding conditions. In the case of room acoustics, the medium of vibration is air, so $c$ corresponds to the speed of sound in air. The vibrations at the edge of the room must be zero, so solutions are found which meet these conditions. for large complex rooms it is not possible to solve this equation analytically, so numerical solutions are found using the FDTD technique.
+
+%For example, to model a metal bar in one dimension, a value of $c$ is used that corresponds to the speed of sound in metal, and values may be given for the ends of the bar if it is clamped. 
 
 \section{Final Project Proposal}
 
@@ -69,12 +82,10 @@ To conclude the review of this report, it is clearly a very strong piece of work
 \bibliographystyle{plain}
 \begin{thebibliography}{}
 
-\bibitem{agiletdd}
-The Agile Alliance
-\textit{TDD}
-\url{https://www.agilealliance.org/glossary/tdd/}
-Accessed: 01-02-2017
-
+\bibitem{feynman}
+Richard Feynman,  1969, 
+\textit{Lectures in Physics, Volume 1,}
+Addison Publishing Company, Addison
 
 \bibitem{agilespike}
 Scaled Agile
