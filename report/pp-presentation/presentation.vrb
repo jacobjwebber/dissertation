@@ -1,0 +1,14 @@
+\frametitle{The Struct}
+
+\begin{lstlisting}[caption=First 2d example]
+
+struct linked_struct {
+    int up;
+    int down;
+    int left;
+    int right;
+    float value[X][Y];
+    float old_value[X][Y];
+    char inside[X][Y];
+};
+\end{lstlisting}
