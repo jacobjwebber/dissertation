@@ -7,8 +7,8 @@ struct linked_struct {
     int down;
     int left;
     int right;
-    float value[X][Y];
-    float old_value[X][Y];
-    char inside[X][Y];
+    float value[N][M];
+    float old_value[N][M];
+    char inside[N][M];
 };
 \end{lstlisting}

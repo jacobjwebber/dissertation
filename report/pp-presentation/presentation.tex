@@ -53,6 +53,7 @@
   \begin{itemize}
   \item The physical properties of rooms affects how we hear sound.
   \item Sound reverberates off walls/objects.
+  \item Waves diffract around corners.
   \item Some rooms echo, some sound dry.
   \item Backwards: If we know physical properties can we derive the sound?
   \end{itemize}
@@ -67,7 +68,7 @@ where $\textbf{p}$ is pressure deviation and $c$ is speed of sound in medium.
 \begin{itemize}
 \item Very familiar to those who have studied physics
 \item It, and its application to acoustics, are derivable from first principles.
-\item Solving for $\textbf{p}$ gives us acoustic properties of a system.
+\item Solving for $\textbf{p}$ gives us acoustic properties of a system (boundary conditions are very important!).
 \item Solving this analytically for complex systems is not possible.
 \end{itemize}    
 \end{frame}
@@ -85,12 +86,22 @@ Simple 1 dimensional example:
 $$ \frac{df(x)}{dx} \approx \frac{f(x+h) - f(x-h)}{2h} $$
 \end{frame}
 
+\begin{frame}
+\frametitle{Stencil}
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{../diagrams/stencil}
+\label{stencil}
+\end{figure}
+\end{frame}
+
 
 \begin{frame}
 \frametitle{Memory considerations}
 For stencilling operations, memory access is the bottleneck.
 \begin{itemize}
 \item Accurate models need a lot of points to model a room.
+\item Wavelength of sound at 20kHz is 17mm.
 \item High memory bandwidth means GPUs are used - limited memory.
 \item Standard 3d arrays are cuboid.
 \item Due to memory layout, neighbouring points in space will always be far apart in memory.
@@ -126,9 +137,9 @@ struct linked_struct {
     int down;
     int left;
     int right;
-    float value[X][Y];
-    float old_value[X][Y];
-    char inside[X][Y];
+    float value[N][M];
+    float old_value[N][M];
+    char inside[N][M];
 };
 \end{lstlisting}
 \end{frame}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2016.3.28)  2 APR 2017 18:50
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2016.3.28)  2 APR 2017 19:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -936,18 +936,27 @@ thkerncmss.
 
 ] [6
 
-] [7
+]
+<../diagrams/stencil.pdf, id=176, 196.48407pt x 230.36063pt>
+File: ../diagrams/stencil.pdf Graphic file (type pdf)
+
+<use ../diagrams/stencil.pdf>
+Package pdftex.def Info: ../diagrams/stencil.pdf used on input line 96.
+(pdftex.def)             Requested size: 153.64493pt x 180.14804pt.
+ [7
+
+ <../diagrams/stencil.pdf>] [8
 
 ]
-<../diagrams/church.png, id=202, 913.91437pt x 581.17125pt>
+<../diagrams/church.png, id=231, 913.91437pt x 581.17125pt>
 File: ../diagrams/church.png Graphic file (type png)
 
 <use ../diagrams/church.png>
-Package pdftex.def Info: ../diagrams/church.png used on input line 106.
+Package pdftex.def Info: ../diagrams/church.png used on input line 117.
 (pdftex.def)             Requested size: 307.28987pt x 195.40523pt.
- [8
+ [9
 
- <../diagrams/church.png>] [9
+ <../diagrams/church.png>] [10
 
 ]
 \openout4 = `presentation.vrb'.
@@ -962,19 +971,19 @@ LaTeX Font Warning: Font shape `OMS/cmss/m/n' undefined
 (Font)              using `OMS/cmsy/m/n' instead
 (Font)              for symbol `textbraceleft' on input line 5.
 
-) [10
+) [11
 
-] <../diagrams/diagram.pdf, id=280, 216.98866pt x 299.15364pt>
+] <../diagrams/diagram.pdf, id=309, 216.98866pt x 299.15364pt>
 File: ../diagrams/diagram.pdf Graphic file (type pdf)
 
 <use ../diagrams/diagram.pdf>
-Package pdftex.def Info: ../diagrams/diagram.pdf used on input line 143.
+Package pdftex.def Info: ../diagrams/diagram.pdf used on input line 154.
 (pdftex.def)             Requested size: 146.42128pt x 201.85995pt.
- [11
+ [12
 
- <../diagrams/diagram.pdf>] [12
+ <../diagrams/diagram.pdf>] [13
 
-] [13
+] [14
 
 ]
 \tf@nav=\write6
@@ -986,12 +995,12 @@ Package pdftex.def Info: ../diagrams/diagram.pdf used on input line 143.
 \tf@snm=\write8
 \openout8 = `presentation.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 176.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 176.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 187.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 187.
 
 (./presentation.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 176.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 176.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 187.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 187.
 Package rerunfilecheck Info: File `presentation.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
 
@@ -1002,13 +1011,13 @@ LaTeX Font Warning: Size substitutions with differences
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 176.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 187.
  ) 
 Here is how much of TeX's memory you used:
- 17802 strings out of 493089
- 335163 string characters out of 6103488
- 410339 words of memory out of 5000000
- 20849 multiletter control sequences out of 15000+600000
+ 17813 strings out of 493089
+ 335336 string characters out of 6103488
+ 410362 words of memory out of 5000000
+ 20856 multiletter control sequences out of 15000+600000
  15735 words of font info for 57 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  56i,14n,55p,413b,1147s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1022,10 +1031,10 @@ st/fonts/type1/public/amsfonts/cm/cmss9.pfb></opt/texlive/2015/texmf-dist/fonts
 ic/amsfonts/cm/cmsy10.pfb></opt/texlive/2015/texmf-dist/fonts/type1/public/kpfo
 nts/jkpmi.pfb></opt/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/symbols
 /msam10.pfb>
-Output written on presentation.pdf (13 pages, 175990 bytes).
+Output written on presentation.pdf (14 pages, 179075 bytes).
 PDF statistics:
- 404 PDF objects out of 1000 (max. 8388607)
- 367 compressed objects within 4 object streams
- 30 named destinations out of 1000 (max. 500000)
- 53 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 434 PDF objects out of 1000 (max. 8388607)
+ 395 compressed objects within 4 object streams
+ 33 named destinations out of 1000 (max. 500000)
+ 58 words of extra memory for PDF output out of 10000 (max. 10000000)
 
