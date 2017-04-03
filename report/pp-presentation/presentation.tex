@@ -145,6 +145,23 @@ struct linked_struct {
 \end{frame}
 
 \begin{frame}
+\frametitle{The plan}
+\framesubtitle{What will I do?}
+\begin{itemize}
+\item Implement struct in 2d, then 3d
+\item Implement algorithm to convert from bounded array to array of structs.
+\item See if this uses less memory (it does!)
+\item See if this method is intolerably slow in CUDA.
+\item See if results are \textbf{correct}.
+\item Experiment with different sub-array sizes to optimise for
+	\begin{itemize}
+	\item memory usage
+	\item caching efficiency
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
 \begin{figure}
 \centering
 \includegraphics[height=0.75\textheight]{../diagrams/diagram}
@@ -165,23 +182,6 @@ struct linked_struct {
      \item How will I try to improve these?
      \end{itemize}
   \end{frame}
-
-
-
-\begin{frame}
-\frametitle{References}
-\bibliographystyle{plain}
-\begin{thebibliography}{}
-
-\bibitem{feynman}
-Richard Feynman,  1969, 
-\textit{Lectures in Physics, Volume 1,}
-Addison Publishing Company, Addison
-
-
-
-\end{thebibliography}
-\end{frame}
 
 % etc
 \end{document}
