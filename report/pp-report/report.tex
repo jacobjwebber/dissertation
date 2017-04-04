@@ -8,6 +8,7 @@
 \usepackage{graphicx}
 \usepackage[margin=2cm]{geometry}
 \usepackage[binary-units=true]{siunitx}
+\usepackage{listings}
 
 \begin{document}
 
@@ -107,6 +108,18 @@ I will write the code
 GPUs are dangerous
 \section{Initial Findings}
 I'm basically sure it works.
+
+\begin{lstlisting}[caption=First 2d example]
+struct linked_struct {
+    int up;
+    int down;
+    int left;
+    int right;
+    float value[N][M];
+    float old_value[N][M];
+    char inside[N][M];
+};
+\end{lstlisting}
 
 \begin{figure}
 \centering
