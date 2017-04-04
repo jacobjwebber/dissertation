@@ -1,13 +1,13 @@
 \documentclass[a4paper,12pt]{article}
 \setlength{\parskip}{1em}
 \setlength{\parindent}{0em}
-\usepackage[justification=centering, margin=2cm, labelfont=bf, font={small}]{caption}
+\usepackage[justification=centering, margin=1cm, labelfont=bf, font={small}]{caption}
 \usepackage{float}
 \usepackage{url}
 \usepackage{subcaption}
 \usepackage{graphicx}
-
-
+\usepackage[margin=2cm]{geometry}
+\usepackage[binary-units=true]{siunitx}
 
 \begin{document}
 
@@ -17,16 +17,16 @@
 \maketitle
 
 \section{Introduction}
-
+BEEP BOOP IM A CITER
 This report details the preparation for a final project for an MSc in High Performance Computing. This project aims improve upon current techniques used to run 3 dimensional finite-difference time-domain (FTDT) simulations on the GPU. The problem with existing methods that do this is that a bounding box is used to store all points in the simulation. This is inefficient in its use of memory. This project hopes to devise and implement methods that make better use of limited GPU high bandwidth memory.
 
-This report opens with a critical review of two previous dissertations that cover different topics to this project. There will then be a brief background and literature review, which will describe some of the theory behind room acoustics, some alternatives to the FTDT technique and an overview of the state of the art in this field. The report will then provide a comprehensive plan of action for how the report will be undertaken, including a finalised project proposal, and a work plan and risk analysis. This report will then detail any initial findings made during the project preparation stage, before concluding.
+This report opens with a critical review of two previous dissertations that cover different topics to this project. There will then be a brief background and literature review, which will describe some of the theory behind room acoustics, some alternatives to the FTDT technique and an overview of the state of the art in this field. The report will then provide a comprehensive plan of action for how the work will be undertaken, including a finalised project proposal, and a work plan and risk analysis. This report will then detail any initial findings made during the project preparation stage, before concluding.
 
 
 
 \section{Previous Dissertation Review}
 
-This section contains a review of two previous dissertations submitted by other students. The reports selected for review are not particularly relevant to the topic of this project but are useful as examples of high quality work at the level required.
+This section contains a review of two previous dissertations submitted by other students. The reports selected for review are not chosen to be particularly relevant in their technical content to the topic of this project, but are useful as examples of high quality work at the level required.
 
 \subsection{Dissertation 1 - ``Fulfilling Solvency II regulations using GPUs'' by Ludovic Capelli, 2016}
 This first dissertation discusses work done to speed up the computation of financial solvency for insurance companies, in line with new EU wide regulations. These regulations involve Monte-Carlo simulations that require a very large amount of computational resource to comply with. The project improved upon previously state of the art performance on the GPU by a factor of two and was awarded a distinction level mark.
@@ -56,7 +56,44 @@ $$\nabla^{2} \textbf{p} - \frac{1}{{c^2 }}\frac{{\partial ^2 \textbf{p}}}{{\part
 
 It should be noted that in both of these equations $\textbf{p}$ is the deviation from the ambient air pressure.
 
-Much of the work in the field of acoustics entails finding solutions to this equation in various mediums and bounding conditions. In the case of room acoustics, the medium of vibration is air, so $c$ corresponds to the speed of sound in air. The vibrations at the edge of the room must be zero, so solutions are found which meet these conditions. for large complex rooms it is not possible to solve this equation analytically, so numerical solutions are found using the FDTD technique.
+Much of the work in the field of acoustics entails finding solutions to this equation in various mediums and bounding conditions. In the case of room acoustics, the medium of vibration is air, so $c$ corresponds to the speed of sound in air. The nature of air is common to all spaces, with very minor changes depending on altitude or humidity, the majority of room specific acoustic features are determined by the boundary conditions. For large rooms with complex boundaries it is not possible to solve this equation analytically, so numerical solutions are found using the FDTD technique. 
+
+\begin{figure}
+\centering
+\includegraphics[width=0.25\textwidth]{../diagrams/stencil}
+\caption{Diagram showing 3 dimensional Von Neumann stencil. Credit: Wikimedia Commons.}
+\label{stencil}
+\end{figure}
+
+Finite difference methods are a way of approximating and discretising differential equations so that they can be solved numerically. Their use effectively turns the problem of solving a differential equation into a large stencilling operation. A stencilling operation, as shown in figure \ref{stencil}, is the process of replacing each element in a virtual 3d space with the sum of its neighbours.
+
+A simple equivalence between a continuous derivative and a finite difference in one dimensional space is:
+$$ \frac{df(x)}{dx} \approx \frac{f(x+h) - f(x-h)}{2h} $$
+From this second order finite difference schemes can be derived.
+
+Stencilling operations are in their nature memory bound problems as they involved a lot of data accesses per, relatively simple, calculation. This means that GPUs, with their high bandwidth memory, have been shown to be ideally suited to perform these operations \cite{gpu_stencil}. However, while GPUs have the best performance, they also have limited amounts of memory. This provides problems when trying to do acoustic models as such models require a lot of data points to model even moderately sized rooms. The wavelength of sound at \SI{20}{\kilo\hertz}, the highest frequency audible by humans, is \SI{17}{\milli\meter}. To avoid aliasing or other artefacts, as well as to maintain numerical stability, it is necessary to use multiple points per wavelength. 
+
+There is a great deal of literature on the number of points required to be stored for a given simulation, the detail of which goes outside the scope of this report. \cite{electro} shows 10s of points per wavelength being used, whereas in previous work by the Acoustics and Audio Group at the University of Edinburgh (AAG) a ratio of $\sqrt[]{3}$ between time step and sample length has been shown to at least maintain numerical stability. This ratio is known as the Courant limit and a full derivation is shown in \cite{brian}. In either case the memory requirements are large. \cite{craig} shows a space of \SI{4775}{\meter\squared} as requiring \SI{24}{\giga\byte} of memory to simulate. In contrast, The Royal Albert hall is popularly claimed to have a volume of approximately \SI{80000}{\meter\squared}.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{../diagrams/church}
+\caption{A diagram showing a schematic of a church building. Credit: McCrery Architects.}
+\label{church}
+\end{figure}
+
+Another problem with the spacial expense of these computations is caused by the nature of three dimensional arrays. These are cuboid in shape. While this has the benefit of allowing a point's memory address to be easily derived from its spacial location, it does lead to memory being wasted when rooms of less regular shape are being simulated. As an example, figure \ref{church} shows a very common building type: the church. With this shape a large proportion of the space allocated in memory is assigned to space outside the simulation. Without careful programming this empty space could also waste compute, were the stencilling operation to be unnecessarily applied to this region.
+
+Three dimensional arrays are stored in computers as one dimensional arrays, with the elements
+
+\begin{itemize}
+\item Accurate models need a lot of points to model a room.
+\item Wavelength of sound at 20kHz is 17mm.
+\item High memory bandwidth means GPUs are used - limited memory.
+\item Standard 3d arrays are cuboid.
+\item Due to memory layout, neighbouring points in space will always be far apart in memory.
+\end{itemize}
+
 
 %For example, to model a metal bar in one dimension, a value of $c$ is used that corresponds to the speed of sound in metal, and values may be given for the ends of the bar if it is clamped. 
 
@@ -64,9 +101,12 @@ Much of the work in the field of acoustics entails finding solutions to this equ
 
 \section{Work Plan}
 
-\section{Risk Analysis}
+I will write the code
 
+\section{Risk Analysis}
+GPUs are dangerous
 \section{Initial Findings}
+I'm basically sure it works.
 
 \begin{figure}
 \centering
@@ -87,12 +127,19 @@ Richard Feynman,  1969,
 \textit{Lectures in Physics, Volume 1,}
 Addison Publishing Company, Addison
 
-\bibitem{agilespike}
-Scaled Agile
-\textit{Spikes}
-\url{http://www.scaledagileframework.com/spikes/}
-Accessed: 01-02-2017
+\bibitem{gpu_stencil}
 
+Andreas Schäfer, Dietmar Fey, \emph{High Performance Stencil Code Algorithms for GPGPUs}, Procedia Computer Science, Volume 4, 2011, Pages 2027-2036, ISSN 1877-0509, http://dx.doi.org/10.1016/j.procs.2011.04.221.
+\url{(http://www.sciencedirect.com/science/article/pii/S1877050911002791)}
 
+\bibitem{electro}
+D. W. Zingy , H. Lomax , and H. Jurgens , \emph{High-accuracy finite-difference schemes for linear wave propagation}, SIAM J. Sci. Comput. 17, 328–346, 1996.
+
+\bibitem{brian}
+Appleton, P.R. (2009) Examining perfectionism in elite junior athletes: measurement and development issues. PhD thesis. University of Bedfordshire. Available at: http://uobrep.openrepository.com/uobrep/handle/10547/133570 (Accessed: 1 August 2016).
+%http://www2.ph.ed.ac.uk/~s1164563/thesis/hamilton2016phdthesis.pdf
+\bibitem{craig}
+Appleton, P.R. (2009) Examining perfectionism in elite junior athletes: measurement and development issues. PhD thesis. University of Bedfordshire. Available at: http://uobrep.openrepository.com/uobrep/handle/10547/133570 (Accessed: 1 August 2016).
+%http://www2.ph.ed.ac.uk/~cwebb2/Site/Docs/CJWebb_thesis_FINAL.pdf
 \end{thebibliography}
 \end{document}
