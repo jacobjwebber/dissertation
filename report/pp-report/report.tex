@@ -9,6 +9,7 @@
 \usepackage[margin=2cm]{geometry}
 \usepackage[binary-units=true]{siunitx}
 \usepackage{listings}
+\usepackage{csquotes}
 
 \begin{document}
 
@@ -49,11 +50,15 @@ To conclude the review of this report, it is clearly a very strong piece of work
 \section{Background and Literature Review}
 Acoustics is the study of the physical aspects of sound. Sound is our perception of varying pressure with time in the air around us. The way that this sound, or pressure variation propagates through the air around us can be modelled using a well know differential equation known as the wave equation. In one dimension this is
 
-$$\frac{\partial ^2 \textbf{p}}{\partial x^2 } - \frac{1}{{c^2 }}\frac{{\partial ^2 \textbf{p}}}{{\partial t^2 }} = 0$$
+\begin{equation}
+\frac{\partial ^2 \textbf{p}}{\partial x^2 } - \frac{1}{{c^2 }}\frac{{\partial ^2 \textbf{p}}}{{\partial t^2 }} = 0
+\end{equation}
 
 where $\textbf{p}$ is acoustic pressure, and $c$ is the speed of sound. This result is derived by, among others, Richard Feynman in \cite{feynman}. It is trivial to generalise this for 3 dimensional systems, which yields
 
-$$\nabla^{2} \textbf{p} - \frac{1}{{c^2 }}\frac{{\partial ^2 \textbf{p}}}{{\partial t^2 }} = 0$$
+\begin{equation}
+\nabla^{2} \textbf{p} - \frac{1}{{c^2 }}\frac{{\partial ^2 \textbf{p}}}{{\partial t^2 }} = 0
+\end{equation}
 
 It should be noted that in both of these equations $\textbf{p}$ is the deviation from the ambient air pressure.
 
@@ -69,7 +74,11 @@ Much of the work in the field of acoustics entails finding solutions to this equ
 Finite difference methods are a way of approximating and discretising differential equations so that they can be solved numerically. Their use effectively turns the problem of solving a differential equation into a large stencilling operation. A stencilling operation, as shown in figure \ref{stencil}, is the process of replacing each element in a virtual 3d space with the sum of its neighbours.
 
 A simple equivalence between a continuous derivative and a finite difference in one dimensional space is:
-$$ \frac{df(x)}{dx} \approx \frac{f(x+h) - f(x-h)}{2h} $$
+
+\begin{equation}
+\frac{df(x)}{dx} \approx \frac{f(x+h) - f(x-h)}{2h}
+\end{equation}
+
 From this second order finite difference schemes can be derived.
 
 Stencilling operations are in their nature memory bound problems as they involved a lot of data accesses per, relatively simple, calculation. This means that GPUs, with their high bandwidth memory, have been shown to be ideally suited to perform these operations \cite{gpu_stencil}. However, while GPUs have the best performance, they also have limited amounts of memory. This provides problems when trying to do acoustic models as such models require a lot of data points to model even moderately sized rooms. The wavelength of sound at \SI{20}{\kilo\hertz}, the highest frequency audible by humans, is \SI{17}{\milli\meter}. To avoid aliasing or other artefacts, as well as to maintain numerical stability, it is necessary to use multiple points per wavelength. 
@@ -85,21 +94,28 @@ There is a great deal of literature on the number of points required to be store
 
 Another problem with the spacial expense of these computations is caused by the nature of three dimensional arrays. These are cuboid in shape. While this has the benefit of allowing a point's memory address to be easily derived from its spacial location, it does lead to memory being wasted when rooms of less regular shape are being simulated. As an example, figure \ref{church} shows a very common building type: the church. With this shape a large proportion of the space allocated in memory is assigned to space outside the simulation. Without careful programming this empty space could also waste compute, were the stencilling operation to be unnecessarily applied to this region.
 
-Three dimensional arrays are stored in computers as one dimensional arrays, with the elements
+Three dimensional arrays are stored in computers as one dimensional arrays. The elements in one dimension concatenated to form a planar representation. These representations are then concatenated again to form a longer array representing the 3d space. This means that when the stencilling operation is performed many of the neighbouring elements in space are far apart in memory. Non-contiguous device main memory access is much slower than contiguous access. In addition to this, this non-contiguous access increases the number of cache misses as cache lines are loaded in contiguous blocks.
 
-\begin{itemize}
-\item Accurate models need a lot of points to model a room.
-\item Wavelength of sound at 20kHz is 17mm.
-\item High memory bandwidth means GPUs are used - limited memory.
-\item Standard 3d arrays are cuboid.
-\item Due to memory layout, neighbouring points in space will always be far apart in memory.
-\end{itemize}
+%\begin{itemize}
+%\item Accurate models need a lot of points to model a room.
+%\item Wavelength of sound at 20kHz is 17mm.
+%\item High memory bandwidth means GPUs are used - limited memory.
+%\item Standard 3d arrays are cuboid.
+%\item Due to memory layout, neighbouring points in space will always be far apart in memory.
+%\end{itemize}
 
 
 %For example, to model a metal bar in one dimension, a value of $c$ is used that corresponds to the speed of sound in metal, and values may be given for the ends of the bar if it is clamped. 
 
-\section{Final Project Proposal}
+\section{Proposal}
+The purpose of this project is to try to improve memory usage for irregularly shaped rooms and memory locality in large 3d FDTD acoustics simulations. 
 
+Use an array of structs instead!
+\begin{itemize}
+\item Store enough points for CUDA kernel to operate on.
+\item Only store structs with at least one point inside the room.
+\item Experiment with different sized arrays within the struct to see if caching benefits can be yielded.
+\end{itemize}
 \section{Work Plan}
 
 I will write the code
@@ -142,17 +158,19 @@ Addison Publishing Company, Addison
 
 \bibitem{gpu_stencil}
 
-Andreas Schäfer, Dietmar Fey, \emph{High Performance Stencil Code Algorithms for GPGPUs}, Procedia Computer Science, Volume 4, 2011, Pages 2027-2036, ISSN 1877-0509, http://dx.doi.org/10.1016/j.procs.2011.04.221.
-\url{(http://www.sciencedirect.com/science/article/pii/S1877050911002791)}
+Andreas Schäfer, Dietmar Fey, \emph{High Performance Stencil Code Algorithms for GPGPUs}, Procedia Computer Science, Volume 4, 2011, Pages 2027-2036, ISSN 1877-0509, \url{http://dx.doi.org/10.1016/j.procs.2011.04.221.} (Accessed: 5 April 2017)
+
 
 \bibitem{electro}
 D. W. Zingy , H. Lomax , and H. Jurgens , \emph{High-accuracy finite-difference schemes for linear wave propagation}, SIAM J. Sci. Comput. 17, 328–346, 1996.
 
 \bibitem{brian}
-Appleton, P.R. (2009) Examining perfectionism in elite junior athletes: measurement and development issues. PhD thesis. University of Bedfordshire. Available at: http://uobrep.openrepository.com/uobrep/handle/10547/133570 (Accessed: 1 August 2016).
-%http://www2.ph.ed.ac.uk/~s1164563/thesis/hamilton2016phdthesis.pdf
+Hamilton, B. (2016) \emph{Finite Difference and Finite Volume Methods for
+Wave-based Modelling of Room Acoustics.} PhD thesis. University of Edinburgh. Available at: \url{http://www2.ph.ed.ac.uk/~s1164563/thesis/hamilton2016phdthesis.pdf} (Accessed: 5 April 2017)
+
 \bibitem{craig}
-Appleton, P.R. (2009) Examining perfectionism in elite junior athletes: measurement and development issues. PhD thesis. University of Bedfordshire. Available at: http://uobrep.openrepository.com/uobrep/handle/10547/133570 (Accessed: 1 August 2016).
-%http://www2.ph.ed.ac.uk/~cwebb2/Site/Docs/CJWebb_thesis_FINAL.pdf
+Webb, C.J. (2009) \emph{Parallel computation techniques for virtual
+acoustics and physical modelling synthesis.} PhD thesis. University of Edinburgh. Available at: \url{http://www2.ph.ed.ac.uk/~cwebb2/Site/Docs/CJWebb_thesis_FINAL.pdf} (Accessed: 5 April 2017)
+
 \end{thebibliography}
 \end{document}
