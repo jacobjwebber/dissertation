@@ -1,13 +1,13 @@
 \documentclass[a4paper,12pt]{article}
 \setlength{\parskip}{1em}
 \setlength{\parindent}{0em}
-\usepackage[justification=centering, margin=1cm, labelfont=bf, font={small}]{caption}
+\usepackage[justification=centering, margin=2cm, labelfont=bf, font={small}]{caption}
 \usepackage{float}
 \usepackage{url}
 \usepackage{subcaption}
 \usepackage{graphicx}
-\usepackage[margin=2cm]{geometry}
-\usepackage[binary-units=true]{siunitx}
+\usepackage[margin=3cm]{geometry}
+%\usepackage[binary-units=true]{siunitx}
 \usepackage{listings}
 \usepackage{csquotes}
 
@@ -19,7 +19,6 @@
 \maketitle
 
 \section{Introduction}
-BEEP BOOP IM A CITER
 This report details the preparation for a final project for an MSc in High Performance Computing. This project aims improve upon current techniques used to run 3 dimensional finite-difference time-domain (FTDT) simulations on the GPU. The problem with existing methods that do this is that a bounding box is used to store all points in the simulation. This is inefficient in its use of memory. This project hopes to devise and implement methods that make better use of limited GPU high bandwidth memory.
 
 This report opens with a critical review of two previous dissertations that cover different topics to this project. There will then be a brief background and literature review, which will describe some of the theory behind room acoustics, some alternatives to the FTDT technique and an overview of the state of the art in this field. The report will then provide a comprehensive plan of action for how the work will be undertaken, including a finalised project proposal, and a work plan and risk analysis. This report will then detail any initial findings made during the project preparation stage, before concluding.
@@ -48,6 +47,7 @@ To conclude the review of this report, it is clearly a very strong piece of work
 \subsection{Dissertation 2}
 
 \section{Background and Literature Review}
+\label{background}
 Acoustics is the study of the physical aspects of sound. Sound is our perception of varying pressure with time in the air around us. The way that this sound, or pressure variation propagates through the air around us can be modelled using a well know differential equation known as the wave equation. In one dimension this is
 
 \begin{equation}
@@ -81,9 +81,9 @@ A simple equivalence between a continuous derivative and a finite difference in 
 
 From this second order finite difference schemes can be derived.
 
-Stencilling operations are in their nature memory bound problems as they involved a lot of data accesses per, relatively simple, calculation. This means that GPUs, with their high bandwidth memory, have been shown to be ideally suited to perform these operations \cite{gpu_stencil}. However, while GPUs have the best performance, they also have limited amounts of memory. This provides problems when trying to do acoustic models as such models require a lot of data points to model even moderately sized rooms. The wavelength of sound at \SI{20}{\kilo\hertz}, the highest frequency audible by humans, is \SI{17}{\milli\meter}. To avoid aliasing or other artefacts, as well as to maintain numerical stability, it is necessary to use multiple points per wavelength. 
+Stencilling operations are in their nature memory bound problems as they involved a lot of data accesses per, relatively simple, calculation. This means that GPUs, with their high bandwidth memory, have been shown to be ideally suited to perform these operations \cite{gpu_stencil}. However, while GPUs have the best performance, they also have limited amounts of memory. This provides problems when trying to do acoustic models as such models require a lot of data points to model even moderately sized rooms. The wavelength of sound at 20kHz, the highest frequency audible by humans, is 17mm. To avoid aliasing or other artefacts, as well as to maintain numerical stability, it is necessary to use multiple points per wavelength. 
 
-There is a great deal of literature on the number of points required to be stored for a given simulation, the detail of which goes outside the scope of this report. \cite{electro} shows 10s of points per wavelength being used, whereas in previous work by the Acoustics and Audio Group at the University of Edinburgh (AAG) a ratio of $\sqrt[]{3}$ between time step and sample length has been shown to at least maintain numerical stability. This ratio is known as the Courant limit and a full derivation is shown in \cite{brian}. In either case the memory requirements are large. \cite{craig} shows a space of \SI{4775}{\meter\squared} as requiring \SI{24}{\giga\byte} of memory to simulate. In contrast, The Royal Albert hall is popularly claimed to have a volume of approximately \SI{80000}{\meter\squared}.
+There is a great deal of literature on the number of points required to be stored for a given simulation, the detail of which goes outside the scope of this report. \cite{electro} shows 10s of points per wavelength being used, whereas in previous work by the Acoustics and Audio Group at the University of Edinburgh (AAG) a ratio of $\sqrt[]{3}$ between time step and sample length has been shown to at least maintain numerical stability. This ratio is known as the Courant limit and a full derivation is shown in \cite{brian}. In either case the memory requirements are large. \cite{craig} shows a space of 4775m$^{2}$ as requiring 24GB of memory to simulate. In contrast, The Royal Albert hall is popularly claimed to have a volume of approximately 80000m$^{2}$.
 
 \begin{figure}
 \centering
@@ -108,22 +108,65 @@ Three dimensional arrays are stored in computers as one dimensional arrays. The 
 %For example, to model a metal bar in one dimension, a value of $c$ is used that corresponds to the speed of sound in metal, and values may be given for the ends of the bar if it is clamped. 
 
 \section{Proposal}
-The purpose of this project is to try to improve memory usage for irregularly shaped rooms and memory locality in large 3d FDTD acoustics simulations. 
 
-Use an array of structs instead!
-\begin{itemize}
-\item Store enough points for CUDA kernel to operate on.
-\item Only store structs with at least one point inside the room.
-\item Experiment with different sized arrays within the struct to see if caching benefits can be yielded.
-\end{itemize}
+The purpose of this project is to improve memory usage for irregularly shaped rooms and memory locality in large 3d FDTD acoustics simulations. The proposed method is to replace the large 3d arrays currently used with an array of structs. Each struct will store a smaller sub-array containing points in the simulation, as well as information on the location of neighbouring points to those points of the edge of each sub-array. This will allow blocks where no points are inside the room being simulated to not have to be stored in expensive GPU memory. This technique may also improve data locality. The smaller 3d sub-arrays will result in neighbouring points being scattered less far apart in memory. 
+
+Work will be undertaken to compare the performance of this new technique with the current 3d array method, as well as to find optimal values for the shape of the sub-arrays.
+
+
+%Use an array of structs instead!
+%\begin{itemize}
+%\item Store enough points for CUDA kernel to operate on.
+%\item Only store structs with at least one point inside the room.
+%\item Experiment with different sized arrays within the struct to see if caching benefits can be yielded.
+%\end{itemize}
+
 \section{Work Plan}
+As a first step the array of structs will be implemented in two dimensions. This will allow simpler testing of both correctness, as well as providing an initial idea of performance. Performance in three dimensions, however, may be very different. This process will also allow the implementation of an algorithm for converting the bound large array data structure into an array of structs, with only those that contain elements inside the simulation stored. This stage should be done first on the CPU to determine correctness, and then implemented in CUDA.
 
-I will write the code
+A process can then be begun of implementing in 3d. This should be a relatively straight forward extension of the first step. Performance data with a range of parameters, including sizes for the sub-array, different shaped room simulations and different GPU models, will then be gathered. If this yields results which are acceptable then work can be done to implement this method in a way that works over multiple GPUs. The AAG has a machine with four NVIDIA k20 devices that could be used for this experiment. Additional performance data should be gathered to see if the proposed methods extend well to multiple GPUs. Performance measurements should include device memory usage, compute time and cache hit/miss ratios.
+
+If time allows after the completion of this work there are many extensions that could be considered. The first of these would be experimenting with different boundary conditions. As discussed in \ref{background}, these conditions determined to a very large extent the acoustic characteristics of a room. Work could be done to implement filters of different complexities to model different boundary surfaces. If these filters are computationally expensive work could be done to try to `hide' this compute by doing it in parallel with memory latencies.
+
+A good amount of time should be allowed for the writing up of a final dissertation. This will contain the following chapters:
+
+\begin{itemize}
+\item Introduction
+\item Literature Review
+\item Methodology
+\item Implementation Details
+\item Results
+\item Review
+\item Conclusions
+\end{itemize}
+
+
+
+In total there are 12 weeks to complete work on this project. It is proposed that the first week will be spent fully implementing the 2d version in CUDA and the second extending this to 3d dimensions. Weeks 3 and 4 should be spent investigating the performance of this while varying the parameters and hardware. This leaves a number of weeks to investigate extensions to the technique, including some that will be discovered along the way, before the final three weeks are spent writing up. It is hoped that writing will be done along the way to ease the burden towards the end. This writing up period will have to include preparing a presentation as well as designing a poster.
 
 \section{Risk Analysis}
-GPUs are dangerous
+While there are many risks related to disruptions caused by ill-health and or accident, they are not discussed in detail here as it is assumed these can be dealt with through the relevant university procedures. Instead risks of a more technical nature are presented.
+
+The most important of these is that it is impossible to achieve good performance using the methods proposed. While it has already been shown that the array of structs reduces memory access (see \ref{findings}), this alone is not enough. GPUs are used because of their relative speed compared to CPUs, so if compute time performance were not important then CPUs with their relatively very large amounts of main memory could be used. Instead it must be shown that results from the proposed method are at least comparable to those achieved with current strategies.
+
+Reasons that might cause this lack of performance might be that GPUs are optimised in hardware to operate on standard 3d arrays. CUDA includes the \verb|threadIdx.x|, \verb|threadIx.y| and \verb|threadIdx.y| values to allow optimal striped memory access. It remains to be seen whether breaking with this large 3d array convention will deliver worse, or intolerably bad, performance.
+
+However, as shown in the work plan, there will be plenty of time for fresh investigation after the proposed method has been trialled. In addition, proving this method is unsuccessful is of some merit in itself. It is a subtle philosophical point as to whether a good scientist hopes their theory will be proved correct or not, and one that is not discussed in detail here. While it would be disappointing if this method does not work, it will still be possible to do further work that improves the state of the art in acoustics modelling, and to have disproved what at least initially seems as though it would be a valid theory.
+
 \section{Initial Findings}
-I'm basically sure it works.
+\label{findings}
+
+\begin{figure}
+\centering
+\includegraphics{../diagrams/diagram}
+\caption{Diagram showing unit square rotated by $\theta$ within bounding square, where $x$ is the side of the bounding square. It can be shown that $x = \cos(\theta) + \sin(\theta)$ where $0 < \theta < \frac{\pi}{2}$.}
+\label{square}
+\end{figure}
+
+
+As well as investigating and suggesting the new method for 3d acoustics models, some work on these methods' implementations has already been done. This was done in a simpler two dimensional form and only on the CPU.
+
+The example chosen to determine the efficiency of memory usage was that of a rotating unit square wholly contained by a bounding square. This arrangement is shown in figure \ref{square}. Varying $\theta$ also varies the percentage of the space not contained within the unit square. When $\theta$ is zero a simple 2d array is perfectly efficient, storing no out of bounds points. This perfect efficiency is not mirrored by the array of structs in this case, as there is additional overhead of storing the location of the neighboring points. When $\theta$ is not zero, inefficiencies are introduced by storing values in the bounding square that are not in the internal square.
 
 \begin{lstlisting}[caption=First 2d example]
 struct linked_struct {
@@ -137,16 +180,16 @@ struct linked_struct {
 };
 \end{lstlisting}
 
-\begin{figure}
-\centering
-\includegraphics{../diagrams/diagram}
-\caption{Diagram showing unit square rotated by $\theta$ within bounding square, where $x$ is the side of the bounding square.}
-\label{spr}
-\end{figure}
+The struct shown in listing 1 was implemented in C, along with a function that determines whether a point is within or without the internal unit square. Using the \verb|sizeof()| function it was then shown that such a struct can decrease memory usage when a suitable value of $\theta$ is selected.
 
+An algorithm was implemented that converts a series of values in bounded array form into the array of structs form. This was verified using a testing function and proved to be correct.
+
+Initially, instead of integer values storing the indices of neighbouring structs, pointers to neighbouring structs were used. This was determined to be less optimal for two reasons. Firstly, copying these pointers to the GPU will not work as address locations would need to be updated. Secondly, using integers can be more flexible in terms of space usage. For smaller simulations \verb|int32| types can be used, reducing the overhead of storing these within the struct. For larger simulations where the number of structs is too big to be stored within an \verb|int32| variable a \verb|int64| type can be used. This flexibility is not available when pointers are used, as the compiler and hardware determine the size of these variables.
 
 \section{Conclusion}
+To conclude, a new technique has been devised and suggested for the purpose of computing room acoustics simulations. Initial tests have been done that show that it is likely that this method will reduce the amount of memory required for these simulations in some cases. However, work has to undertaken to implement these techniques in three dimensions, as well as to investigate the performance of the stencilling operation in CUDA on this data structure.
 
+While it is a risk that it will not be possible to achieve good performance there is some merit in simply proving this technique is not appropriate. Furthermore, if this is the case there are many other improvements that could be made, and there should still be time to do this.
 
 \bibliographystyle{plain}
 \begin{thebibliography}{}
