@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2016.5.2)  6 APR 2017 13:47
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2016.5.2)  6 APR 2017 15:00
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -296,77 +296,77 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <8> on input line 43.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <6> on input line 43.
- [2]
-<../diagrams/stencil.pdf, id=13, 196.48407pt x 230.36063pt>
+ [2] [3]
+<../diagrams/stencil.pdf, id=18, 196.48407pt x 230.36063pt>
 File: ../diagrams/stencil.pdf Graphic file (type pdf)
 
 <use ../diagrams/stencil.pdf>
-Package pdftex.def Info: ../diagrams/stencil.pdf used on input line 69.
+Package pdftex.def Info: ../diagrams/stencil.pdf used on input line 77.
 (pdftex.def)             Requested size: 106.69783pt x 125.09587pt.
- [3]
-<../diagrams/church.png, id=19, 913.91437pt x 581.17125pt>
+ [4 <../diagrams/stencil.pdf>]
+<../diagrams/church.png, id=26, 913.91437pt x 581.17125pt>
 File: ../diagrams/church.png Graphic file (type png)
 
 <use ../diagrams/church.png>
-Package pdftex.def Info: ../diagrams/church.png used on input line 90.
+Package pdftex.def Info: ../diagrams/church.png used on input line 98.
 (pdftex.def)             Requested size: 426.79135pt x 271.40353pt.
- [4 <../diagrams/stencil.pdf>] [5 <../diagrams/church.png>]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 134.
+ [5 <../diagrams/church.png>] [6]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 142.
 
- (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 134.
- [6]
-<../diagrams/diagram.pdf, id=33, 216.98866pt x 299.15364pt>
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 142.
+ [7]
+<../diagrams/diagram.pdf, id=37, 216.98866pt x 299.15364pt>
 File: ../diagrams/diagram.pdf Graphic file (type pdf)
 
 <use ../diagrams/diagram.pdf>
-Package pdftex.def Info: ../diagrams/diagram.pdf used on input line 161.
+Package pdftex.def Info: ../diagrams/diagram.pdf used on input line 169.
 (pdftex.def)             Requested size: 216.98811pt x 299.15291pt.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 162.
- [7] [8 <../diagrams/diagram.pdf>]
+(Font)              <10.95> on input line 170.
+ [8] [9 <../diagrams/diagram.pdf>] [10]
 Missing character: There is no Ã in font cmr12!
 Missing character: There is no ¤ in font cmr12!
- [9]
 Missing character: There is no â in font cmr12!
 Missing character: There is no € in font cmr12!
 Missing character: There is no “ in font cmr12!
 
-Underfull \hbox (badness 2418) in paragraph at lines 211--213
+Underfull \hbox (badness 2418) in paragraph at lines 225--227
 []\OT1/cmr/m/n/12 Hamilton, B. (2016) \OT1/cmr/m/it/12 Fi-nite Dif-fer-ence and
  Fi-nite Vol-ume Meth-ods for
  []
 
 
-Underfull \hbox (badness 1655) in paragraph at lines 211--213
+Underfull \hbox (badness 1655) in paragraph at lines 225--227
 \OT1/cmr/m/it/12 Wave-based Mod-elling of Room Acous-tics. \OT1/cmr/m/n/12 PhD 
 the-sis. Uni-ver-sity of Ed-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 211--213
+Underfull \hbox (badness 10000) in paragraph at lines 225--227
 \OT1/cmr/m/n/12 in-burgh. Avail-able at: $\OT1/cmtt/m/n/12 http : / / www2 . ph
  . ed . ac . uk / []s1164563 / thesis /
  []
 
 
-Underfull \hbox (badness 3333) in paragraph at lines 215--217
+Underfull \hbox (badness 3333) in paragraph at lines 229--231
 \OT1/cmr/m/n/12 at: $\OT1/cmtt/m/n/12 http : / / www2 . ph . ed . ac . uk / []c
 webb2 / Site / Docs / CJWebb _ thesis _ FINAL .
  []
 
-[10] (./report.aux) ) 
+[11] (./report.aux) ) 
 Here is how much of TeX's memory you used:
- 5284 strings out of 495063
- 80063 string characters out of 3182202
- 149883 words of memory out of 3000000
- 8414 multiletter control sequences out of 15000+200000
+ 5286 strings out of 495063
+ 80075 string characters out of 3182202
+ 150889 words of memory out of 3000000
+ 8416 multiletter control sequences out of 15000+200000
  10548 words of font info for 37 fonts, out of 3000000 for 9000
  14 hyphenation exceptions out of 8191
- 38i,6n,38p,795b,1405s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 38i,6n,38p,795b,1407s stack positions out of 5000i,500n,10000p,200000b,50000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
 /cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
 bx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.p
@@ -379,10 +379,10 @@ fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/ty
 pe1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
 blic/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmtt12.pfb>
-Output written on report.pdf (10 pages, 236661 bytes).
+Output written on report.pdf (11 pages, 240611 bytes).
 PDF statistics:
- 95 PDF objects out of 1000 (max. 8388607)
- 66 compressed objects within 1 object stream
+ 98 PDF objects out of 1000 (max. 8388607)
+ 68 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  16 words of extra memory for PDF output out of 10000 (max. 10000000)
 

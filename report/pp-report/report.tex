@@ -30,7 +30,7 @@ This report opens with a critical review of two previous dissertations that cove
 This section contains a review of two previous dissertations submitted by other students. The reports selected for review are not chosen to be particularly relevant in their technical content to the topic of this project, but are useful as examples of high quality work at the level required.
 
 \subsection{Dissertation 1 - ``Fulfilling Solvency II regulations using GPUs'' by Ludovic Capelli, 2016}
-This first dissertation discusses work done to speed up the computation of financial solvency for insurance companies, in line with new EU wide regulations. These regulations involve Monte-Carlo simulations that require a very large amount of computational resource to comply with. The project improved upon previously state of the art performance on the GPU by a factor of two and was awarded a distinction level mark.
+This first dissertation (\cite{dis1}) discusses work done to speed up the computation of financial solvency for insurance companies, in line with new EU wide regulations. These regulations involve Monte-Carlo simulations that require a very large amount of computational resource to comply with. The project improved upon previously state of the art performance on the GPU by a factor of two and was awarded a distinction level mark.
 
 The topic seems to be a particularly suitable one for a project in High Performance Computing. Present technology in use by industry would take approximately a year to calculate whether an insurance provider is solvent. By this stage the data fed in will be out of date and the impact of any insolvency may have already been felt. It is therefore necessary and appropriate to use higher performance techniques to do these calculations, even if doing so requires the additional programming and hardware costs associated with such methods.
 
@@ -44,11 +44,19 @@ This dissertation is generally well formatted and easy to read, using the standa
 
 To conclude the review of this report, it is clearly a very strong piece of work. Good results were achieved with a 100\% speed up on previous work. While Mr Capelli's dissertation was not selected for review on the basis of its relevance to the this project, the detailed discussion of GPGPU programming and memory management will be extremely useful background for undertaking future work, even when applied to a completely different problem.
 
-\subsection{Dissertation 2}
+\subsection{Dissertation 2 - ``Assessing the Performance of Optimised
+Primality Tests'' by Cameron Curry, 2016}
+The second dissertation (\cite{dis2}) discussed here also achieved a distinction level mark. It analyses the computational work required to determine if large numbers are prime. The dissertation explains the mathematics behind this process in a way that is comprehensible even to those who have no background in number theory, and a clear motivation is given as to why such a calculation might be performed. 
+
+The dissertation compared performance of three already existing softwares written for the purpose of primality testing. The three applications tested were Genefer, LLR and OpenPFGW. These programs were run on ARCHER, which is a large Cray supercomputer. This allowed CrayPat - Cray's proprietary performance profiling tool to be used.
+
+This dissertation performs a very thorough examination of performance for existing codes, but, unlike \cite{dis1}, makes no attempt to improve performance. I does, however justify well what the reasons for the performances of the varying codes that are tested are. It also gives suggestions as to how these codes could be improved.
+
+In general this too is a very well written dissertation. It is easy to understand and shows thorough work has been done in evaluating the performance of the subject codes. It could be offered as a criticism that this project did not implement any improvements to the code, but it seems reasonable to argue that this is made up for by the thoroughness of the experiments that were conducted. The results of this experiment could go on to help the PrimeGrid project, which uses donated CPU cycles to find large primes, select a core technology for primality testing.
 
 \section{Background and Literature Review}
 \label{background}
-Acoustics is the study of the physical aspects of sound. Sound is our perception of varying pressure with time in the air around us. The way that this sound, or pressure variation propagates through the air around us can be modelled using a well know differential equation known as the wave equation. In one dimension this is
+Acoustics is the study of the physical aspects of sound. Sound is our perception of varying pressure with time in the air around us. The way that this sound, or pressure variation, propagates through the air around us can be modelled using a well know differential equation known as the wave equation. In one dimension this is
 
 \begin{equation}
 \frac{\partial ^2 \textbf{p}}{\partial x^2 } - \frac{1}{{c^2 }}\frac{{\partial ^2 \textbf{p}}}{{\partial t^2 }} = 0
@@ -137,7 +145,7 @@ A good amount of time should be allowed for the writing up of a final dissertati
 \item Implementation Details
 \item Results
 \item Review
-\item Conclusions
+\item Conclusions and future work.
 \end{itemize}
 
 
@@ -193,6 +201,12 @@ While it is a risk that it will not be possible to achieve good performance ther
 
 \bibliographystyle{plain}
 \begin{thebibliography}{}
+
+\bibitem{dis1}
+Capeli, L. (2016) \emph{Fulfilling Solvency II regulations using GPUs.} MSc Thesis. University of Edinburgh. Available at: \url{https://static.ph.ed.ac.uk/dissertations/hpc-msc/2015-2016/Ludovic_Capelli-Dissertation.pdf}
+
+\bibitem{dis2}
+Curry, C. (2016) \emph{Assessing the Performance of Optimised Primality Tests.} MSc Thesis. University of Edinburgh. Available at: \url{https://static.ph.ed.ac.uk/dissertations/hpc-msc/2015-2016/Cameron_Curry-HPC_Dissertation.pdf}
 
 \bibitem{feynman}
 Richard Feynman,  1969, 
