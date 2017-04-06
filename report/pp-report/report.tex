@@ -36,7 +36,7 @@ The topic seems to be a particularly suitable one for a project in High Performa
 
 The dissertation outlines in an appropriate amount of detail the background to the regulations and details of insurance insolvency, striking a balance between not being a dissertation on finance but providing adequate background for the reader to understand the nature of and motivation behind the calculations performed. This content is included briefly in the introduction and in more detail in the Literature review section.
 
-A comprehensive description of GPU programming techniques is provided for the reader. This includes a generous amount of well styled diagrams describing the GPGPU programming paradigm in both CUDA and OpenMP 4.0. Particular attention is given to achieving optimal memory usage. This information will be useful for undertaking a project on 3d room acoustics modelling - where memory accesses are the major bottleneck.
+A comprehensive description of GPU programming techniques is provided for the reader. This includes a generous amount of well styled diagrams describing the GPGPU programming paradigm in both CUDA and OpenMP 4.0. Particular attention is given to achieving optimal memory usage. This information will be useful for undertaking a project on 3D room acoustics modelling - where memory accesses are the major bottleneck.
 
 There are few criticisms that can be offered of what is a very well written dissertation covering a project that was measurably successful in its outcomes. However, it could be said that some of the discussion of computing basics is a little unnecessary for a dissertation of this level, in particular the description of a CPU as the ``brain'' of the computer.
  
@@ -70,7 +70,7 @@ where $\textbf{p}$ is acoustic pressure, and $c$ is the speed of sound. This res
 
 It should be noted that in both of these equations $\textbf{p}$ is the deviation from the ambient air pressure.
 
-Much of the work in the field of acoustics entails finding solutions to this equation in various mediums and bounding conditions. In the case of room acoustics, the medium of vibration is air, so $c$ corresponds to the speed of sound in air. The nature of air is common to all spaces, with very minor changes depending on altitude or humidity, the majority of room specific acoustic features are determined by the boundary conditions. For large rooms with complex boundaries it is not possible to solve this equation analytically, so numerical solutions are found using the FDTD technique. 
+Much of the work in the field of acoustics entails finding solutions to this equation in various mediums and bounding conditions. In the case of room acoustics, the medium of vibration is air, so $c$ corresponds to the speed of sound in air. The nature of air is common to all spaces, with very minor changes depending on altitude or humidity, the majority of room specific acoustic features are determined by the boundary conditions. For large rooms with complex boundaries it is not possible to solve this equation analytically, so numerical solutions are found using the finite-difference time-domain (FDTD) technique. 
 
 \begin{figure}
 \centering
@@ -79,7 +79,7 @@ Much of the work in the field of acoustics entails finding solutions to this equ
 \label{stencil}
 \end{figure}
 
-Finite difference methods are a way of approximating and discretising differential equations so that they can be solved numerically. Their use effectively turns the problem of solving a differential equation into a large stencilling operation. A stencilling operation, as shown in figure \ref{stencil}, is the process of replacing each element in a virtual 3d space with the sum of its neighbours.
+Finite difference methods are a way of approximating and discretising differential equations so that they can be solved numerically. Their use effectively turns the problem of solving a differential equation into a large stencilling operation. A stencilling operation, as shown in figure \ref{stencil}, is the process of replacing each element in a virtual 3D space with the sum of its neighbours.
 
 A simple equivalence between a continuous derivative and a finite difference in one dimensional space is:
 
@@ -102,13 +102,13 @@ There is a great deal of literature on the number of points required to be store
 
 Another problem with the spacial expense of these computations is caused by the nature of three dimensional arrays. These are cuboid in shape. While this has the benefit of allowing a point's memory address to be easily derived from its spacial location, it does lead to memory being wasted when rooms of less regular shape are being simulated. As an example, figure \ref{church} shows a very common building type: the church. With this shape a large proportion of the space allocated in memory is assigned to space outside the simulation. Without careful programming this empty space could also waste compute, were the stencilling operation to be unnecessarily applied to this region.
 
-Three dimensional arrays are stored in computers as one dimensional arrays. The elements in one dimension concatenated to form a planar representation. These representations are then concatenated again to form a longer array representing the 3d space. This means that when the stencilling operation is performed many of the neighbouring elements in space are far apart in memory. Non-contiguous device main memory access is much slower than contiguous access. In addition to this, this non-contiguous access increases the number of cache misses as cache lines are loaded in contiguous blocks.
+Three dimensional arrays are stored in computers as one dimensional arrays. The elements in one dimension concatenated to form a planar representation. These representations are then concatenated again to form a longer array representing the 3D space. This means that when the stencilling operation is performed many of the neighbouring elements in space are far apart in memory. Non-contiguous device main memory access is much slower than contiguous access. In addition to this, this non-contiguous access increases the number of cache misses as cache lines are loaded in contiguous blocks.
 
 %\begin{itemize}
 %\item Accurate models need a lot of points to model a room.
 %\item Wavelength of sound at 20kHz is 17mm.
 %\item High memory bandwidth means GPUs are used - limited memory.
-%\item Standard 3d arrays are cuboid.
+%\item Standard 3D arrays are cuboid.
 %\item Due to memory layout, neighbouring points in space will always be far apart in memory.
 %\end{itemize}
 
@@ -117,9 +117,9 @@ Three dimensional arrays are stored in computers as one dimensional arrays. The 
 
 \section{Proposal}
 
-The purpose of this project is to improve memory usage for irregularly shaped rooms and memory locality in large 3d FDTD acoustics simulations. The proposed method is to replace the large 3d arrays currently used with an array of structs. Each struct will store a smaller sub-array containing points in the simulation, as well as information on the location of neighbouring points to those points of the edge of each sub-array. This will allow blocks where no points are inside the room being simulated to not have to be stored in expensive GPU memory. This technique may also improve data locality. The smaller 3d sub-arrays will result in neighbouring points being scattered less far apart in memory. 
+The purpose of this project is to improve memory usage for irregularly shaped rooms and memory locality in large 3D FDTD acoustics simulations. The proposed method is to replace the large 3D arrays currently used with an array of structs. Each struct will store a smaller sub-array containing points in the simulation, as well as information on the location of neighbouring points to those points of the edge of each sub-array. This will allow blocks where no points are inside the room being simulated to not have to be stored in expensive GPU memory. This technique may also improve data locality. The smaller 3D sub-arrays will result in neighbouring points being scattered less far apart in memory. 
 
-Work will be undertaken to compare the performance of this new technique with the current 3d array method, as well as to find optimal values for the shape of the sub-arrays.
+Work will be undertaken to compare the performance of this new technique with the current 3D array method, as well as to find optimal values for the shape of the sub-arrays.
 
 
 %Use an array of structs instead!
@@ -130,9 +130,27 @@ Work will be undertaken to compare the performance of this new technique with th
 %\end{itemize}
 
 \section{Work Plan}
+
+\begin{table}[h]
+\center
+  \begin{tabular}{| l | c | r |}
+    \hline
+    Task & Start Date & Duration \\ \hline
+    Implement in 2D and CUDA & 25/05/2017 & 1 week \\ 
+    Extend this to 3D & 01/06/2017 & 1 week \\ 
+    Test performance & 08/06/2017 & 2 weeks \\
+    Investigate and carry out extensions & 15/07/2017 & 6 weeks \\
+    Write up - including presentation and poster & 27/07/2017 & 3 weeks \\ \hline 
+    
+  \end{tabular}
+  \caption{Table showing formal plan.}
+  \label{plan}
+
+\end{table}
+
 As a first step the array of structs will be implemented in two dimensions. This will allow simpler testing of both correctness, as well as providing an initial idea of performance. Performance in three dimensions, however, may be very different. This process will also allow the implementation of an algorithm for converting the bound large array data structure into an array of structs, with only those that contain elements inside the simulation stored. This stage should be done first on the CPU to determine correctness, and then implemented in CUDA.
 
-A process can then be begun of implementing in 3d. This should be a relatively straight forward extension of the first step. Performance data with a range of parameters, including sizes for the sub-array, different shaped room simulations and different GPU models, will then be gathered. If this yields results which are acceptable then work can be done to implement this method in a way that works over multiple GPUs. The AAG has a machine with four NVIDIA k20 devices that could be used for this experiment. Additional performance data should be gathered to see if the proposed methods extend well to multiple GPUs. Performance measurements should include device memory usage, compute time and cache hit/miss ratios.
+A process can then be begun of implementing in 3D. This should be a relatively straight forward extension of the first step. Performance data with a range of parameters, including sizes for the sub-array, different shaped room simulations and different GPU models, will then be gathered. If this yields results which are acceptable then work can be done to implement this method in a way that works over multiple GPUs. The AAG has a machine with four NVIDIA k20 devices that could be used for this experiment. Additional performance data should be gathered to see if the proposed methods extend well to multiple GPUs. Performance measurements should include device memory usage, compute time and cache hit/miss ratios.
 
 If time allows after the completion of this work there are many extensions that could be considered. The first of these would be experimenting with different boundary conditions. As discussed in \ref{background}, these conditions determined to a very large extent the acoustic characteristics of a room. Work could be done to implement filters of different complexities to model different boundary surfaces. If these filters are computationally expensive work could be done to try to `hide' this compute by doing it in parallel with memory latencies.
 
@@ -150,16 +168,47 @@ A good amount of time should be allowed for the writing up of a final dissertati
 
 
 
-In total there are 12 weeks to complete work on this project. It is proposed that the first week will be spent fully implementing the 2d version in CUDA and the second extending this to 3d dimensions. Weeks 3 and 4 should be spent investigating the performance of this while varying the parameters and hardware. This leaves a number of weeks to investigate extensions to the technique, including some that will be discovered along the way, before the final three weeks are spent writing up. It is hoped that writing will be done along the way to ease the burden towards the end. This writing up period will have to include preparing a presentation as well as designing a poster.
+In total there are 12 weeks to complete work on this project. It is proposed that the first week will be spent fully implementing the 2D version in CUDA and the second extending this to 3D dimensions. Weeks 3 and 4 should be spent investigating the performance of this while varying the parameters and hardware. This leaves a number of weeks to investigate extensions to the technique, including some that will be discovered along the way, before the final three weeks are spent writing up. It is hoped that writing will be done along the way to ease the burden towards the end. This writing up period will have to include preparing a presentation as well as designing a poster. Table \ref{plan} shows this more formally.
+
+
 
 \section{Risk Analysis}
 While there are many risks related to disruptions caused by ill-health and or accident, they are not discussed in detail here as it is assumed these can be dealt with through the relevant university procedures. Instead risks of a more technical nature are presented.
 
 The most important of these is that it is impossible to achieve good performance using the methods proposed. While it has already been shown that the array of structs reduces memory access (see \ref{findings}), this alone is not enough. GPUs are used because of their relative speed compared to CPUs, so if compute time performance were not important then CPUs with their relatively very large amounts of main memory could be used. Instead it must be shown that results from the proposed method are at least comparable to those achieved with current strategies.
 
-Reasons that might cause this lack of performance might be that GPUs are optimised in hardware to operate on standard 3d arrays. CUDA includes the \verb|threadIdx.x|, \verb|threadIx.y| and \verb|threadIdx.y| values to allow optimal striped memory access. It remains to be seen whether breaking with this large 3d array convention will deliver worse, or intolerably bad, performance.
+Reasons that might cause this lack of performance might be that GPUs are optimised in hardware to operate on standard 3D arrays. CUDA includes the \verb|threadIdx.x|, \verb|threadIx.y| and \verb|threadIdx.y| values to allow optimal striped memory access. It remains to be seen whether breaking with this large 3D array convention will deliver worse, or intolerably bad, performance.
 
 However, as shown in the work plan, there will be plenty of time for fresh investigation after the proposed method has been trialled. In addition, proving this method is unsuccessful is of some merit in itself. It is a subtle philosophical point as to whether a good scientist hopes their theory will be proved correct or not, and one that is not discussed in detail here. While it would be disappointing if this method does not work, it will still be possible to do further work that improves the state of the art in acoustics modelling, and to have disproved what at least initially seems as though it would be a valid theory.
+
+Below follows a more formal risk analysis, where more specific risks are given along with the likelihood and what will be done to mitigate them.
+
+\subsection{Risk 1: Work delayed by bug}
+\textbf{Likelihood: Medium} 
+
+\textbf{Impact: Medium} 
+
+It is possible that a bug, even a very simple one, could prevent the code from working and potentially take weeks to fix.
+
+\textbf{Mitigation:} To prevent this happening the code will be thoroughly unit tested from the start. In addition, if it does happen there will be less time available to investigate and carry out possible extensions. While this is not ideal, it will still be possible to produce a credible dissertation.
+
+\subsection{Risk 2: Unable to gain access to AAG machine}
+\textbf{Likelihood: Minimal}
+
+\textbf{Impact: Medium}
+
+It is assumed there will be access to the AAG's quadruple k20 machine. If this is not possible for whatever reason then it would severely impact the opportunities to do performance experiments
+
+\textbf{Mitigation:} It will still be possible to undertake some experiments on a home desktop equipped with a GTX 970 GPU. In addition to this it would be possible to use cloud servers equipped with GPUs from a provider such as Amazon Web Services.
+
+\subsection{Risk 3: Supervisor unavailable}
+\textbf{Likelihood: Minimal}
+
+\textbf{Impact: High}
+
+While it would probably be possible to find another, getting them up to speed would cause a delay. There are two supervisors for this project, one from EPCC and the other from AAG. In either case changing supervisor would cause delay.
+
+\textbf{Mitigation:} There is very little that can be done to mitigate for this. However, documenting all work done and keeping an updated wiki can give them the necessary information and help to show that effort has consistently been put in.
 
 \section{Initial Findings}
 \label{findings}
@@ -172,11 +221,11 @@ However, as shown in the work plan, there will be plenty of time for fresh inves
 \end{figure}
 
 
-As well as investigating and suggesting the new method for 3d acoustics models, some work on these methods' implementations has already been done. This was done in a simpler two dimensional form and only on the CPU.
+As well as investigating and suggesting the new method for 3D acoustics models, some work on these methods' implementations has already been done. This was done in a simpler two dimensional form and only on the CPU.
 
-The example chosen to determine the efficiency of memory usage was that of a rotating unit square wholly contained by a bounding square. This arrangement is shown in figure \ref{square}. Varying $\theta$ also varies the percentage of the space not contained within the unit square. When $\theta$ is zero a simple 2d array is perfectly efficient, storing no out of bounds points. This perfect efficiency is not mirrored by the array of structs in this case, as there is additional overhead of storing the location of the neighboring points. When $\theta$ is not zero, inefficiencies are introduced by storing values in the bounding square that are not in the internal square.
+The example chosen to determine the efficiency of memory usage was that of a rotating unit square wholly contained by a bounding square. This arrangement is shown in figure \ref{square}. Varying $\theta$ also varies the percentage of the space not contained within the unit square. When $\theta$ is zero a simple 2D array is perfectly efficient, storing no out of bounds points. This perfect efficiency is not mirrored by the array of structs in this case, as there is additional overhead of storing the location of the neighboring points. When $\theta$ is not zero, inefficiencies are introduced by storing values in the bounding square that are not in the internal square.
 
-\begin{lstlisting}[caption=First 2d example]
+\begin{lstlisting}[float,caption=First 2D example]
 struct linked_struct {
     int up;
     int down;
