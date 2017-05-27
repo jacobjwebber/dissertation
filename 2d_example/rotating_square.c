@@ -9,6 +9,8 @@
 
 #define THETA 0 // M_PI/4
 
+#define N 1
+#define M 1
 
 struct point {
     float value; // floating point value (from physics model)
@@ -27,6 +29,17 @@ struct linked_point {
     int coords[2];
 };
 
+struct linked_points {
+    int up;
+    int down;
+    int left;
+    int right;
+    float value[N][M];
+    float old_value[N][M];
+    char inside[N][M];
+    int coords[2];
+}
+
 struct linked_point_small {
     struct linked_point *up;
     struct linked_point *down;
@@ -36,7 +49,17 @@ struct linked_point_small {
     float old_value;
     char inside;
 };
-    
+ 
+struct linked_points_small {
+    int up;
+    int down;
+    int left;
+    int right;
+    float value[N][M];
+    float old_value[N][M];
+    char inside[N][M];
+}
+
 void print_array_of_structs(struct point *array, int x_dim, int y_dim);
 void print_array_values(struct linked_point *array, int N);
 
@@ -153,6 +176,7 @@ int main()
     printf("linked array uses %f%% of space of bound array.\n", siz_percent);
 
     //Find Neighbors.
+    // make this into a function.
     for (i = 0; i < total_inside; i++)
     {
         linked_array[i].up = NULL;
