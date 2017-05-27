@@ -3,3 +3,6 @@
 #Executables
 2d_example/square
 *.o
+
+#Swaps
+*.swp
