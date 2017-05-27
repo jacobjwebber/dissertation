@@ -9,8 +9,8 @@
 
 #define THETA 0 // M_PI/4
 
-#define N 1
-#define M 1
+#define K 1
+#define L 1
 
 struct point {
     float value; // floating point value (from physics model)
@@ -34,11 +34,11 @@ struct linked_points {
     int down;
     int left;
     int right;
-    float value[N][M];
-    float old_value[N][M];
-    char inside[N][M];
+    float value[K][L];
+    float old_value[K][L];
+    char inside[K][L];
     int coords[2];
-}
+};
 
 struct linked_point_small {
     struct linked_point *up;
@@ -55,10 +55,10 @@ struct linked_points_small {
     int down;
     int left;
     int right;
-    float value[N][M];
-    float old_value[N][M];
-    char inside[N][M];
-}
+    float value[K][L];
+    float old_value[K][L];
+    char inside[K][L];
+};
 
 void print_array_of_structs(struct point *array, int x_dim, int y_dim);
 void print_array_values(struct linked_point *array, int N);
