@@ -22,7 +22,7 @@
 // kernel methods
 __global__ void UpDateScheme(ReaL *u, const ReaL * __restrict__ u1, ReaL l2);
 __global__ void inout(ReaL *u,ReaL *out,ReaL ins,int n);
-//
+
 int main(){
 
     // Simulation parameters
@@ -32,7 +32,7 @@ int main(){
     ReaL k = 1/SR;
     ReaL h = sqrt(3.0)*c*k;
     ReaL l2 = 1.0/3.0;
-    //
+
     // Initialise input
     int n;
     size_t pr_size = sizeof(ReaL);
@@ -41,7 +41,7 @@ int main(){
     for(n=0;n<dur;n++){
         si_h[n] = 0.5*(1.0-cos(2.0*PI*n/(ReaL)dur));
     }
-    //
+
     // Set up grid and blocks
     int Gl = Nl/Bl;
     int Gm = Nm/Bm;
@@ -53,7 +53,7 @@ int main(){
     size_t mem_size = area*Np*pr_size;
     ReaL *out_d, *u_d, *u1_d, *dummy_ptr;
     ReaL ins;
-    //
+
     // Initialise memory on device
     cudaMalloc(&u_d, mem_size); 
     cudaMemset(u_d, 0, mem_size);
@@ -61,16 +61,15 @@ int main(){
     cudaMemset(u1_d, 0, mem_size);
     cudaMalloc(&u_d, NF*pr_size); 
     cudaMemset(u_d, 0, NF*pr_size);
-    //
+
     // initialise memory on host
     ReaL *out_h = (ReaL *)calloc(NF,pr_size);
     if((out_h == NULL)){
         printf("\nout h memory alloc failed...\n");
         exit(EXIT_FAILURE);
     }
-    //
+
     // Compute scheme
-    //
     cudaDeviceSynchronize();
     time_t start = time(NULL);
     for(n=0;n<NF;n++)
@@ -85,10 +84,9 @@ int main(){
         u_d = dummy_ptr;
     }
     // print process time
-    //checkLastCUDAError("Kernel");
     cudaDeviceSynchronize();
     time_t end = time(NULL);
-    printf("\nProcess time : %ld seconds\n", (end-start));
+    printf("\nProcess time : %d seconds\n", (end-start));
     // copy result back from device
     cudaMemcpy(out_h, u_d, NF*pr_size, cudaMemcpyDeviceToHost);
     // print last samples, and write output file
