@@ -27,11 +27,12 @@ struct block {
     int fore;
     int aft;
     float u[Bl][Bm][Bp];
+    float u1[Bl][Bm][Bp];
     char inside[Bl][Bm][Bp];
     int coords[3];
 };
 
-__global__ void perform_stencil(struct block *u, struct block *u1, real scale);
+__global__ void perform_stencil_internal(struct block *u, struct block *u1, real scale);
 
 
 char is_block_in(int x, int y, int z, char is_in_sphere[L][M][P]) {
@@ -96,6 +97,19 @@ int main() {
 }
 
 
-__global__ void perform_stencil(struct block *u, real *u1, struct block scale) {
+__global__ void perform_stencil_internal(struct block *u, struct block *u1, real scale) {
     //Do stencil.
+    //internal elements
+    struct block bl = u[blockIdx.x];
+    
+    int x = threadIdx.x + 1;
+    int y = threadIdx.y + 1;
+    int z = threadIdx.z + 1;
+    
+    bl.u[x][y][z] = scale*( bl.u1[x][y][z+1] + 
+                            bl.u1[x][y][z-1] + 
+                            bl.u1[x][y+1][z] + 
+                            bl.u1[x][y-1][z] + 
+                            bl.u1[x+1][y][z] ) - bl.u[x][y][z];
+    
 }
