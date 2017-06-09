@@ -1,0 +1,18 @@
+MEETING
+
+Discussed method for transforming repr.
+
+Discussed boundary conditions.
+
+store number of neighbours for inside.
+
+Aim for 5000-6000 voxels/s.
+
+PARAMS
+l2 Courant number^2 - determines scaling factor in stencil
+H Distance between grid points - Determines no of points.
+C - speed of sound.
+
+
+NEXT MEETING
+afternoon 2pm 20th June.

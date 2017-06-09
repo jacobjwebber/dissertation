@@ -110,6 +110,7 @@ __global__ void perform_stencil_internal(struct block *u, struct block *u1, real
                             bl.u1[x][y][z-1] + 
                             bl.u1[x][y+1][z] + 
                             bl.u1[x][y-1][z] + 
-                            bl.u1[x+1][y][z] ) - bl.u[x][y][z];
+                            bl.u1[x+1][y][z] +
+                            bl.u1[x-1][y][z]) - bl.u[x][y][z];
     
 }
