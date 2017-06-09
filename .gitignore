@@ -2,6 +2,7 @@
 
 #Executables
 2d_example/square
+*/sphere
 *.o
 
 #Swaps
