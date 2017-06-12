@@ -12,12 +12,12 @@
 #define Bp 4
 
 //Bounding box dimensions
-#define L 64
-#define M 64
-#define P 64
+#define L 8 //64
+#define M 8 //64
+#define P 8 //64
 
 //Sphere radius
-#define R 64/2
+#define R 4 //64/2
 
 struct block {
     int up; //z direction
@@ -34,7 +34,7 @@ struct block {
 
 __global__ void perform_stencil_internal(struct block *u, struct block *u1, real l2, real l, real g);
 
-
+//DUPLICATE
 char is_block_in(int x, int y, int z, char is_in_sphere[L][M][P]) {
 
     int i,j,k;
@@ -47,6 +47,32 @@ char is_block_in(int x, int y, int z, char is_in_sphere[L][M][P]) {
     }
     return FALSE;
 }
+
+int coords_to_index(int x, int y, int z) {
+    int area = M*P;
+    return x*area + y*P + x;
+}
+
+char is_block_internal(int x, int y, int z, char *array, int xmax, int ymax, int zmax) {
+    //This function takes coordinates and returns true if any points within a 
+    // blocksize starting on that point are inside the room.
+    int i, j, k;
+    for (i = x; i < x+Bl; i++) {
+        for (j = y; j < y+Bm; j++) {
+            for (k = z; k < z+Bp; k++) {
+                if ( array[i*ymax*zmax + j*zmax + k]) {
+                    //printf("boop , %i %i %i \n", x, y, z);
+                    return TRUE;
+                 }
+            }
+        }
+    }
+
+    return FALSE;
+}
+
+   
+
 
 int main() {
 
@@ -87,8 +113,7 @@ int main() {
         }
         printf("\n");
     }
-    */
-    
+    // */
 
     //Assign a block for all volumes containing points
     //by first assigning enough blocks for the whole lot.
@@ -96,26 +121,35 @@ int main() {
     int num_blocks_l = L/Bl;
     int num_blocks_m = M/Bm;
     int num_blocks_p = P/Bp;
+    int total_blocks = num_blocks_l*num_blocks_m*num_blocks_p;
 
     //Create an array storing the location of each block.
-    int *index_of_struct = (int*) calloc(num_blocks_l*num_blocks_m*num_blocks_p, sizeof(int));
+    int *index_of_struct = (int*) calloc(total_blocks, sizeof(int));
 
-    struct block *array = (struct block *) calloc(num_blocks_l*num_blocks_m*num_blocks_p, sizeof(struct block));
+    struct block *array = (struct block *) calloc(total_blocks, sizeof(struct block));
+
+    //total number of internal blocks.
     int blocks_in = 0;
 
     for (i = 0; i < num_blocks_l; i++) {
         for (j = 0; j < num_blocks_m; j++) {
             for (k = 0; k < num_blocks_p; k++) {
+                if ( is_block_internal(i * Bl, j * Bm, k * Bp, &(is_in_sphere[0][0][0]), L,M,P) ) {
+                    index_of_struct[i*num_blocks_m*num_blocks_p + j*num_blocks_p + k] = blocks_in;
+                    blocks_in++;
+                }
             }
         }
     }
 
-}
+    printf("%i blocks are internal out of %i blocks in total\n", blocks_in, total_blocks);
 
+}
 
 __global__ void perform_stencil_internal(struct block *u, real l2, real l, real g) {
     //Do stencil.
     //internal elements
+    //Block size should be dimensions of struct blocks -2 in each direction.
 
     //The following statement effectively caches the block.
     //FIX THIS using SHARED.???
@@ -140,6 +174,7 @@ __global__ void perform_stencil_internal(struct block *u, real l2, real l, real 
     }
     
 }
+
 __global__ void perform_stencil_surfaces_LR(struct block *u, real l2, real l, real g) {
     //Do stencil.
     //Edge elements left and right.
