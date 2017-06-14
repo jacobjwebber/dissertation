@@ -12,12 +12,12 @@
 #define Bp 4
 
 //Bounding box dimensions
-#define L 8 //64
-#define M 8 //64
-#define P 8 //64
+#define L 64
+#define M 64
+#define P 64
 
 //Sphere radius
-#define R 4 //64/2
+#define R 64/2
 
 struct block {
     int up; //z direction
@@ -71,7 +71,18 @@ char is_block_internal(int x, int y, int z, char *array, int xmax, int ymax, int
     return FALSE;
 }
 
-   
+char copy_to_struct(int x, int y, int z, struct block *bl, char *array, int xmax, int ymax, int zmax) {
+    int i, j, k;
+    for (i = x; i < x+Bl; i++) {
+        for (j = y; j < y+Bm; j++) {
+            for (k = z; k < z+Bp; k++) {
+                (*bl).k[i-x][j-y][k-z] = array[i*ymax*zmax + j*zmax + k];
+            }
+        }
+    }
+    return TRUE;
+}
+
 
 
 int main() {
@@ -105,6 +116,25 @@ int main() {
         }
     }
 
+    //Make is in sphere into record of number of neighbours for each point -- needed later.
+    for (i = 0; i < L; i++) {
+        for (j = 0; j < M; j++) {
+            for (k = 0; k < P; k++) {
+                if (is_in_sphere[i][j][k]) {
+                    is_in_sphere[i][j][k] = 0;
+                    if (i+1 <  L && is_in_sphere[i+1][j][k]) { is_in_sphere[i][j][k]++; } 
+                    if (i-1 >= 0 && is_in_sphere[i-1][j][k]) { is_in_sphere[i][j][k]++; } 
+                    if (j+1 <  M && is_in_sphere[i][j+1][k]) { is_in_sphere[i][j][k]++; } 
+                    if (j-1 >= 0 && is_in_sphere[i][j-1][k]) { is_in_sphere[i][j][k]++; } 
+                    if (k+1 <  P && is_in_sphere[i][j][k+1]) { is_in_sphere[i][j][k]++; } 
+                    if (k-1 >= 0 && is_in_sphere[i][j][k-1]) { is_in_sphere[i][j][k]++; } 
+                }
+            }
+        }
+    }
+
+
+
     /*
     //Print slice in middle
     for (i = 0; i < L; i++) {
@@ -115,8 +145,6 @@ int main() {
     }
     // */
 
-    //Assign a block for all volumes containing points
-    //by first assigning enough blocks for the whole lot.
 
     int num_blocks_l = L/Bl;
     int num_blocks_m = M/Bm;
@@ -126,7 +154,10 @@ int main() {
     //Create an array storing the location of each block.
     int *index_of_struct = (int*) calloc(total_blocks, sizeof(int));
 
-    struct block *array = (struct block *) calloc(total_blocks, sizeof(struct block));
+    for (i = 0; i < total_blocks; i++) {
+        index_of_struct[i] = -1;
+    }
+
 
     //total number of internal blocks.
     int blocks_in = 0;
@@ -143,6 +174,45 @@ int main() {
     }
 
     printf("%i blocks are internal out of %i blocks in total\n", blocks_in, total_blocks);
+
+    printf("Allocating host memory for %i blocks\n", blocks_in);
+
+    //Assign a block for all volumes containing points
+    struct block *array = (struct block *) calloc(blocks_in, sizeof(struct block));
+
+    if (array) {
+        printf("Memory successfully allocated \n");
+    }
+
+    //Copy is in sphere array to k arrrays within blocks.
+
+    int index;
+ 
+    for (i = 0; i < num_blocks_l; i++) {
+        for (j = 0; j < num_blocks_m; j++) {
+            for (k = 0; k < num_blocks_p; k++) {
+                index = index_of_struct[i*num_blocks_m*num_blocks_p + j*num_blocks_p + k];
+                
+                if (index != -1) {
+                    copy_to_struct(i * Bl, j * Bm, k * Bp, &(array[index]), &(is_in_sphere[0][0][0]), L, M, P);
+                }
+
+            }
+        }
+    }
+    /*
+    //Print slice in middle
+    printf("Printing block blocks_in/2\n");
+    for (k=0; k< Bp; k++) {
+        for (i = 0; i < Bl; i++) {
+            for (j = 0; j < Bm; j++) {
+                printf("%i ", array[blocks_in/2].k[i][j][k]);
+            }
+            printf("\n");
+        }
+    }
+    // */
+
 
 }
 
