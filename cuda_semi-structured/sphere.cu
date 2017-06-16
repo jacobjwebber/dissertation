@@ -29,7 +29,6 @@ struct block {
     float u[Bl][Bm][Bp];
     float u1[Bl][Bm][Bp];
     char k[Bl][Bm][Bp];
-    int coords[3];
 };
 
 __global__ void perform_stencil_internal(struct block *u, struct block *u1, real l2, real l, real g);
@@ -83,21 +82,28 @@ char copy_to_struct(int x, int y, int z, struct block *bl, char *array, int xmax
     return TRUE;
 }
 
+real *hann(int big_n) {
+    real *hanning = (real *) calloc(big_n, sizeof(real));
+    if (hanning == NULL) { return NULL; }
 
+    int i;
+    for (i=0; i<big_n; i++) {
+        hanning[i] = 0.5 * (1.0 - cos( 2 * M_PI * (i/big_n) ) );
+    }
+
+    return hanning;
+}
 
 int main() {
 
     //Coefficients
-    //courant number and courant number squared.
-    real l2 = 1.0/3.0;
+    real l2 = 1.0/3.0; //courant number and courant number squared.
     real l = sqrt(l2);
-    //Wall reflection coefficient.
-    real r = 0.9;
+    real r = 0.9; //Wall reflection coefficient.
     real g = (1-r)/(1+r);
-    //grid spacing (m)
-    real h = 0.1;
-    //Speed of sound
-    real c = 343;
+    real h = 0.1; //grid spacing (m)
+    real c = 343; //Speed of sound
+    real duration = 0.1; //seconds
 
     //Error checking - Bounding grid must be divisible by block.
     if(L%Bl != 0 || M%Bm != 0 || P%Bp != 0) {
@@ -133,8 +139,6 @@ int main() {
         }
     }
 
-
-
     /*
     //Print slice in middle
     for (i = 0; i < L; i++) {
@@ -145,6 +149,7 @@ int main() {
     }
     // */
 
+    // BEGIN DATA PREP SECTION
 
     int num_blocks_l = L/Bl;
     int num_blocks_m = M/Bm;
@@ -178,10 +183,14 @@ int main() {
     printf("Allocating host memory for %i blocks\n", blocks_in);
 
     //Assign a block for all volumes containing points
-    struct block *array = (struct block *) calloc(blocks_in, sizeof(struct block));
+    // aos is short for array of structs.
+    struct block *aos = (struct block *) calloc(blocks_in, sizeof(struct block));
 
-    if (array) {
+    if (aos) {
         printf("Memory successfully allocated \n");
+    } else {
+        printf("Memory allocation error.\n");
+        return -1;
     }
 
     //Copy is in sphere array to k arrrays within blocks.
@@ -194,13 +203,51 @@ int main() {
                 index = index_of_struct[i*num_blocks_m*num_blocks_p + j*num_blocks_p + k];
                 
                 if (index != -1) {
-                    copy_to_struct(i * Bl, j * Bm, k * Bp, &(array[index]), &(is_in_sphere[0][0][0]), L, M, P);
+                    copy_to_struct(i * Bl, j * Bm, k * Bp, &(aos[index]), &(is_in_sphere[0][0][0]), L, M, P);
                 }
 
             }
         }
     }
-    /*
+
+
+
+    // SET LEFT AND RIGHT WITHIN STRUCTS.
+ 
+    struct block *bl;
+
+    for (i = 0; i < num_blocks_l; i++) {
+        for (j = 0; j < num_blocks_m; j++) {
+            for (k = 0; k < num_blocks_p; k++) {
+                
+                index = index_of_struct[i*num_blocks_m*num_blocks_p + j*num_blocks_p + k];
+                if ( index != -1) {
+                    bl = &aos[index];
+
+                    if (i==0) {bl->left = -1;}
+                    else {bl->left  = index_of_struct[(i-1)*num_blocks_m*num_blocks_p + j*num_blocks_p + k];}
+
+                    if (i==num_blocks_l-1) {bl->right = -1;} 
+                    else {bl->right = index_of_struct[(i+1)*num_blocks_m*num_blocks_p + j*num_blocks_p + k];}
+                    
+                    if (j==0) {bl->aft = -1;} 
+                    else {bl->aft   = index_of_struct[i*num_blocks_m*num_blocks_p + (j-1)*num_blocks_p + k];}
+
+                    if (j == num_blocks_m-1) {bl->fore = -1;} 
+                    else {bl->fore  = index_of_struct[i*num_blocks_m*num_blocks_p + (j+1)*num_blocks_p + k];}
+
+                    if (k==0) {bl->down = -1;} 
+                    else {bl->down  = index_of_struct[i*num_blocks_m*num_blocks_p + j*num_blocks_p + (k-1)];}
+                    
+                    if (j==num_blocks_p-1) {bl->up = -1;} 
+                    else {bl->up    = index_of_struct[i*num_blocks_m*num_blocks_p + j*num_blocks_p + (k+1)];}
+                }
+
+            }
+        }
+    }
+
+   /*
     //Print slice in middle
     printf("Printing block blocks_in/2\n");
     for (k=0; k< Bp; k++) {
@@ -213,72 +260,108 @@ int main() {
     }
     // */
 
+    //=======================================================
+    //=======================================================
+    // END OF DATA PREP SECTION - put this into separate file eventually.
 
+    //Use Hanning curve as input.
+    real Ts = h*l / c;
+    printf("sample rate=%.1f Hz\n", 1/Ts);
+    int Tn = floor(10/l);
+    real *usource = hann(Tn);
+
+    int big_n = ceil(duration/Ts);
+    printf("there will be %i time steps\n", big_n);
+    
+    int t;
+    for (t = 0; t < big_n; t++) {
+        //do stencil
+    }
+
+    return 0;
 }
 
-__global__ void perform_stencil_internal(struct block *u, real l2, real l, real g) {
+__global__ void perform_stencil_internal(struct block *aos, real l2, real l, real g) {
     //Do stencil.
     //internal elements
     //Block size should be dimensions of struct blocks -2 in each direction.
 
     //The following statement effectively caches the block.
     //FIX THIS using SHARED.???
-    struct block bl = u[blockIdx.x];
+    int bl = blockIdx.x;
     
     int x = threadIdx.x + 1;
     int y = threadIdx.y + 1;
     int z = threadIdx.z + 1;
-    int k = bl.k[x][y][z];
+    int k = aos[bl].k[x][y][z];
 
-    bl.u[x][y][z] = ((2 - l2 * k) * bl.u1[x][y][z] +
-                    l2 * ( bl.u1[x][y][z+1] + 
-                           bl.u1[x][y][z-1] + 
-                           bl.u1[x][y+1][z] + 
-                           bl.u1[x][y-1][z] + 
-                           bl.u1[x+1][y][z] +
-                           bl.u1[x-1][y][z] ) +
-                           (0.5 * l * g * (6 - k) - 1) * bl.u[x][y][z])/(1 + 0.5 * l * g * (6 - k));
+    aos[bl].u[x][y][z] = ((2 - l2 * k) * aos[bl].u1[x][y][z] +
+                    l2 * ( aos[bl].u1[x][y][z+1] + 
+                           aos[bl].u1[x][y][z-1] + 
+                           aos[bl].u1[x][y+1][z] + 
+                           aos[bl].u1[x][y-1][z] + 
+                           aos[bl].u1[x+1][y][z] +
+                           aos[bl].u1[x-1][y][z] ) +
+                           (0.5 * l * g * (6 - k) - 1) * aos[bl].u[x][y][z])/(1 + 0.5 * l * g * (6 - k));
 
     if (k == 0) {
-        bl.u[x][y][z] = 0;
+        aos[bl].u[x][y][z] = 0;
     }
+
     
 }
 
 __global__ void perform_stencil_surfaces_LR(struct block *u, real l2, real l, real g) {
     //Do stencil.
     //Edge elements left and right.
-    struct block bl = u[blockIdx.x];
-    struct block bl_r = u[bl.right];
-    struct block bl_l = u[bl.left];
+    int bl = blockIdx.x;
+    int bl_r = u[bl].right;
+    int bl_l = u[bl].left;
     
     real left, right;
 
     int y = threadIdx.y + 1;
     int z = threadIdx.z + 1;
-    
-    if ( bl.left != -1 ) {
-        left = u[bl.left].u1[Bl-1][y][z];
+
+    int is_right = threadIdx.x;
+   
+    if (is_right) {
+        
+        left = u[bl].u1[Bl-2][y][z];
+        if( bl_r != -1 ) {
+            right = u[bl_r].u1[0][y][z];
+        } else {
+            right = 0;
+        }
+
     } else {
-        left = 0;
+        
+        right = u[bl].u1[1][y][z];
+        if ( bl_l != -1 ) {
+            left = u[bl_l].u1[Bl-1][y][z];
+        } else {
+            left = 0;
+        }
+
     }
     
-    int k = bl.k[0][y][z];
+    
+    int k = u[bl].k[0][y][z];
     
     
-    bl.u[0][y][z] = ((2 - l2 * k) * bl.u1[0][y][z] +
-                    l2 * ( bl.u1[0][y][z+1] + 
-                           bl.u1[0][y][z-1] + 
-                           bl.u1[0][y+1][z] + 
-                           bl.u1[0][y-1][z] + 
-                           bl.u1[0+1][y][z] +
+    u[bl].u[0][y][z] = ((2 - l2 * k) * u[bl].u1[0 + is_right*(Bl-1)][y][z] +
+                    l2 * ( u[bl].u1[0 + is_right*(Bl-1)][y][z+1] + 
+                           u[bl].u1[0 + is_right*(Bl-1)][y][z-1] + 
+                           u[bl].u1[0 + is_right*(Bl-1)][y+1][z] + 
+                           u[bl].u1[0 + is_right*(Bl-1)][y-1][z] + 
+                           right +
                            left ) +
-                           (0.5 * l * g * (6 - k) - 1) * bl.u[0][y][z])/(1 + 0.5 * l * g * (6 - k));
+                           (0.5 * l * g * (6 - k) - 1) * u[bl].u[0 + is_right*(Bl-1)][y][z])/(1 + 0.5 * l * g * (6 - k));
     
    
 
     if (k == 0) {
-        bl.u[0][y][z] = 0;
+        u[bl].u[0][y][z] = 0;
     }
     
 }
