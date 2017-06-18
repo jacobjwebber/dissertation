@@ -33,20 +33,6 @@ struct block {
 
 __global__ void perform_stencil_internal(struct block *u, struct block *u1, real l2, real l, real g);
 
-//DUPLICATE
-char is_block_in(int x, int y, int z, char is_in_sphere[L][M][P]) {
-
-    int i,j,k;
-    for (i = 0; i < Bl; i++) {
-        for (j = 0; j < Bm; j++) {
-            for (k = 0; k < Bp; k++) {
-                if (is_in_sphere[i][j][k]) {return TRUE;}
-            }
-        }
-    }
-    return FALSE;
-}
-
 int coords_to_index(int x, int y, int z) {
     int area = M*P;
     return x*area + y*P + x;
@@ -294,26 +280,26 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g) {
     int bl_u = aos[bl].up;
     int bl_d = aos[bl].down;
     
-    int x = threadIdx.x;
+    int x = threadIdx.z; //This is backwards on purpose becauseI named dimensions wrong. :(
     int y = threadIdx.y;
-    int z = threadIdx.z;
+    int z = threadIdx.x;
 
     __shared__ real arr[Bl+2][Bm+2][Bp+2];
 
-    arr[x][y][z] = 0;
+    arr[x][y][z] = 0; //initialise to zero.
 
     if ( x == 0 && bl_l != -1) { // this means doing it twice eg x==y==0
         arr[x][y][z] = aos[bl_l].u1[Bl-1][y][z];
     } else if( x == Bl+1 && bl_r != -1) {
         arr[x][y][z] = aos[bl_r].u1[0][y][z];
     }
-    else if ( y == 0 && bl_a != -1) { // this means doing it twice eg x==y==0
+    else if ( y == 0 && bl_a != -1) { 
         arr[x][y][z] = aos[bl_a].u1[x][Bm-1][z];
     } else if( y == Bm+1 && bl_f != -1) {
         arr[x][y][z] = aos[bl_f].u1[x][0][z];
     }
 
-    else if ( z == 0 && bl_d != -1) { // this means doing it twice eg x==y==0
+    else if ( z == 0 && bl_d != -1) {
         arr[x][y][z] = aos[bl_d].u1[Bp-1][y][z];
     } else if( z == Bp+1 && bl_u != -1) {
         arr[x][y][z] = aos[bl_u].u1[x][y][0];
@@ -329,17 +315,19 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g) {
 
         int k = aos[bl].k[x][y][z];
 
-        aos[bl].u[x][y][z] = ((2 - l2 * k) * aos[bl].u1[x][y][z] +
+        x++;y++;z++;
+
+        aos[bl].u[x-1][y-1][z-1] = ((2 - l2 * k) * arr[x][y][z] +
                         l2 * ( arr[x][y][z+1] + 
                                arr[x][y][z-1] + 
                                arr[x][y+1][z] + 
                                arr[x][y-1][z] + 
                                arr[x+1][y][z] +
                                arr[x-1][y][z] ) +
-                               (0.5 * l * g * (6 - k) - 1) * arr[x][y][z])/(1 + 0.5 * l * g * (6 - k));
+                               (0.5 * l * g * (6 - k) - 1) * aos[bl].u[x-1][y-1][z-1])/(1 + 0.5 * l * g * (6 - k));
 
         if (k == 0) {
-            aos[bl].u[x][y][z] = 0;
+            aos[bl].u[x-1][y-1][z-1] = 0;
         }
     }    
 }
