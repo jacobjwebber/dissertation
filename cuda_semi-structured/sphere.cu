@@ -281,6 +281,70 @@ int main() {
     return 0;
 }
 
+__global__ void perform_stencil(struct block *aos, real l2, real l, real g) {
+    //Launch with blocksize+2 in each dimension.
+    int bl = blockIdx.x;
+
+    int bl_r = aos[bl].right;
+    int bl_l = aos[bl].left;
+    
+    int bl_f = aos[bl].fore;
+    int bl_a = aos[bl].aft;
+
+    int bl_u = aos[bl].up;
+    int bl_d = aos[bl].down;
+    
+    int x = threadIdx.x;
+    int y = threadIdx.y;
+    int z = threadIdx.z;
+
+    __shared__ real arr[Bl+2][Bm+2][Bp+2];
+
+    arr[x][y][z] = 0;
+
+    if ( x == 0 && bl_l != -1) { // this means doing it twice eg x==y==0
+        arr[x][y][z] = aos[bl_l].u1[Bl-1][y][z];
+    } else if( x == Bl+1 && bl_r != -1) {
+        arr[x][y][z] = aos[bl_r].u1[0][y][z];
+    }
+    else if ( y == 0 && bl_a != -1) { // this means doing it twice eg x==y==0
+        arr[x][y][z] = aos[bl_a].u1[x][Bm-1][z];
+    } else if( y == Bm+1 && bl_f != -1) {
+        arr[x][y][z] = aos[bl_f].u1[x][0][z];
+    }
+
+    else if ( z == 0 && bl_d != -1) { // this means doing it twice eg x==y==0
+        arr[x][y][z] = aos[bl_d].u1[Bp-1][y][z];
+    } else if( z == Bp+1 && bl_u != -1) {
+        arr[x][y][z] = aos[bl_u].u1[x][y][0];
+    }
+    
+    else {
+        arr[x+1][y+1][z+1] = aos[bl].u1[x][y][z];
+    }
+
+    __syncthreads();
+
+    if (x<Bl && y<Bm && z<Bp) {
+
+        int k = aos[bl].k[x][y][z];
+
+        aos[bl].u[x][y][z] = ((2 - l2 * k) * aos[bl].u1[x][y][z] +
+                        l2 * ( arr[x][y][z+1] + 
+                               arr[x][y][z-1] + 
+                               arr[x][y+1][z] + 
+                               arr[x][y-1][z] + 
+                               arr[x+1][y][z] +
+                               arr[x-1][y][z] ) +
+                               (0.5 * l * g * (6 - k) - 1) * arr[x][y][z])/(1 + 0.5 * l * g * (6 - k));
+
+        if (k == 0) {
+            aos[bl].u[x][y][z] = 0;
+        }
+    }    
+}
+
+
 __global__ void perform_stencil_internal(struct block *aos, real l2, real l, real g) {
     //Do stencil.
     //internal elements
