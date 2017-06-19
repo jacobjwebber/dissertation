@@ -35,6 +35,8 @@ struct block {
 
 __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int offset);
 
+__global__ void perform_IO(real *input_d, real *output_d, real *out_d, real ins, int t);
+
 __global__ void perform_stencil_internal(struct block *u, struct block *u1, real l2, real l, real g);
 
 int coords_to_index(int x, int y, int z) {
@@ -93,7 +95,7 @@ int main() {
     real g = (1-r)/(1+r);
     real h = 0.1; //grid spacing (m)
     real c = 343; //Speed of sound
-    real duration = 0.1; //seconds
+    real duration = 1.1; //seconds
 
     //Error checking - Bounding grid must be divisible by block.
     if(L%Bl != 0 || M%Bm != 0 || P%Bp != 0) {
@@ -278,26 +280,6 @@ int main() {
     //=======================================================
     // END OF DATA PREP SECTION - put this into separate file eventually.
 
-
-    //Set Cuda coefficients,
-    dim3 dimsBlocks(blocks_in,1,1);
-    dim3 dimsThreads(Bl,Bm,Bp);
-
-    //Allocate device mem.
-    struct block *aos_d;
-    size_t total_mem =  sizeof(struct block)*blocks_in;
-    cudaMalloc((void**) &aos_d, total_mem);
-
-    float mem_in_KiB = ((float) total_mem) / 1024.0;
-
-    printf("Allocated and copied %f KiB of data to device successfully.\n", mem_in_KiB);
-
-    int offset;
-    //use this for the pointer swap.
-    offset = (int) ( ((char*) &(aos[0].u1[0][0][0])) - ((char*) &(aos[0].u[0][0][0])) );
-
-    printf("offset between arrays in struct is %i chars.\n", offset);
-
     //Use Hanning curve as input.
     real Ts = h*l / c;
     printf("sample rate=%.1f Hz\n", 1/Ts);
@@ -306,13 +288,80 @@ int main() {
 
     int big_n = ceil(duration/Ts);
     printf("there will be %i time steps\n", big_n);
+ 
+    //Set Cuda coefficients,
+    dim3 dimsBlocks(blocks_in,1,1);
+    dim3 dimsThreads(Bl,Bm,Bp);
+
+    dim3 dimsIO(1,1,1);
+
+    //Allocate device mem.
+    struct block *aos_d;
+    size_t total_mem =  sizeof(struct block)*blocks_in;
+    cudaMalloc((void**) &aos_d, total_mem);
+    cudaMemcpy(aos_d, aos, total_mem, cudaMemcpyHostToDevice);
+
+    real *out_d;
+    cudaMalloc((void**)&out_d, big_n *sizeof(real));
+
+    float mem_in_KiB = ((float) total_mem) / 1024.0;
+
+    //add error checking for malloc and memcopy.
+    printf("Allocated and copied %f KiB of data to device successfully.\n", mem_in_KiB);
+
+    int offset;
+    //use this for the pointer swap.
+    offset = (int) ( ((char*) &(aos[0].u1[0][0][0])) - ((char*) &(aos[0].u[0][0][0])) );
+
+    printf("offset between arrays in struct is %i chars.\n", offset);
+ 
     
+    //Set input and output locations
+    // HARDCODED: calculate from COORDS eventually.
+    real *input_d = &aos_d[blocks_in/2].u[Bl/2][Bm/2][Bp/2];
+
+    real *output_d = &aos_d[blocks_in/2].u[Bl/2][Bm/2][Bp/2];
+   
+    float time;
+    cudaEvent_t start, stop;
+
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+    cudaEventRecord(start, 0);
+
+    perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 1.0, 0); 
+    cudaDeviceSynchronize();
+
     int t;
-    for (t = 0; t < big_n; t++) {
+    for (t = 1; t < big_n; t++) {
         //do stencil
+        perform_stencil<<<dimsThreads,dimsBlocks>>>(aos_d, l2, l, g, offset*(t%2));
+        cudaDeviceSynchronize();
+
+        perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 0, t); 
+        cudaDeviceSynchronize();
     }
 
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
+    cudaEventElapsedTime(&time, start, stop);
+
+    real *out = (real *) malloc(big_n*sizeof(real));
+    cudaMemcpy(out, out_d, big_n*sizeof(real), cudaMemcpyDeviceToHost);
+
+    printf("first two elements of out_d: %f %f\n", out[0], out[1]);
+
+    printf("Cuda sim time:  %f ms \n", time);
     return 0;
+}
+
+__global__ void perform_IO(real *input_d, real *output_d, real* out_d, real ins, int t) {
+    //Takes two pointers to reals in device memory for input/output locations.
+    // These should be calculated from coords elsewhere.
+    // sum in source
+    *input_d += ins;
+    // set output
+    out_d[t] = *output_d;
 }
 
 __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int offset) {
@@ -338,8 +387,8 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
 
     bl_array *u1_u_g  = (bl_array*) ( (char*) &(aos[aos[bl].up  ].u1[0][0][0]) - offset);
     bl_array *u1_d_g  = (bl_array*) ( (char*) &(aos[aos[bl].down].u1[0][0][0]) - offset);
-    __shared__ real u1_s[Bl+2][Bm+2][Bp+2]; //u1 in shared (L1 cache) memory.
 
+    __shared__ real u1_s[Bl+2][Bm+2][Bp+2]; //u1 in shared (L1 cache) memory.
 
     u1_s[x+1][y+1][z+1] = *u1_g[x][y][z];
 
