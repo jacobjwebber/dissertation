@@ -19,6 +19,8 @@
 //Sphere radius
 #define R 64/2
 
+typedef real bl_array[Bl][Bm][Bp];
+
 struct block {
     int up; //z direction
     int down;
@@ -26,8 +28,8 @@ struct block {
     int right;
     int fore; //y direction.
     int aft;
-    float u[Bl][Bm][Bp];
-    float u1[Bl][Bm][Bp];
+    bl_array u;
+    bl_array u1;
     char k[Bl][Bm][Bp];
 };
 
@@ -250,6 +252,12 @@ int main() {
     //=======================================================
     // END OF DATA PREP SECTION - put this into separate file eventually.
 
+    int offset;
+    //use this for the pointer swap.
+    offset = (int) ( ((char*) &(aos[0].u1[0][0][0])) - ((char*) &(aos[0].u[0][0][0])) );
+
+    printf("offset between arrays in struct is %i chars.\n", offset);
+
     //Use Hanning curve as input.
     real Ts = h*l / c;
     printf("sample rate=%.1f Hz\n", 1/Ts);
@@ -267,46 +275,58 @@ int main() {
     return 0;
 }
 
-__global__ void perform_stencil(struct block *aos, real l2, real l, real g) {
+__global__ void perform_stencil(struct block *aos, real l2, real l, real g, int offset) {
     //Launch with blocksize+2 in each dimension.
     int bl = blockIdx.x;
+
+    bl_array *u1_g = (bl_array*) ( (char*) &aos[bl].u1[0][0][0] - offset);
+    bl_array *u_g  = (bl_array*) ( (char*) &aos[bl].u[0][0][0] + offset);
 
     int bl_r = aos[bl].right;
     int bl_l = aos[bl].left;
     
+    bl_array *u1_r_g  = (bl_array*) ( (char*) &(aos[aos[bl].right].u1) - offset);
+    bl_array *u1_l_g  = (bl_array*) ( (char*) &(aos[aos[bl].left ].u1) - offset);
+
     int bl_f = aos[bl].fore;
     int bl_a = aos[bl].aft;
+
+    bl_array *u1_f_g  = (bl_array*) ( (char*) &(aos[aos[bl].fore].u1) - offset);
+    bl_array *u1_a_g  = (bl_array*) ( (char*) &(aos[aos[bl].aft ].u1) - offset);
 
     int bl_u = aos[bl].up;
     int bl_d = aos[bl].down;
     
+    bl_array *u1_u_g  = (bl_array*) ( (char*) &(aos[aos[bl].up  ].u1) - offset);
+    bl_array *u1_d_g  = (bl_array*) ( (char*) &(aos[aos[bl].down].u1) - offset);
+
     int x = threadIdx.z; //This is backwards on purpose becauseI named dimensions wrong. :(
     int y = threadIdx.y;
     int z = threadIdx.x;
 
-    __shared__ real arr[Bl+2][Bm+2][Bp+2];
+    __shared__ real u1_s[Bl+2][Bm+2][Bp+2]; //u1 in shared (L1 cache) memory.
 
-    arr[x][y][z] = 0; //initialise to zero.
+    u1_s[x][y][z] = 0; //initialise to zero.
 
     if ( x == 0 && bl_l != -1) { // this means doing it twice eg x==y==0
-        arr[x][y][z] = aos[bl_l].u1[Bl-1][y][z];
+        u1_s[x][y][z] = aos[bl_l].u1[Bl-1][y][z];
     } else if( x == Bl+1 && bl_r != -1) {
-        arr[x][y][z] = aos[bl_r].u1[0][y][z];
+        u1_s[x][y][z] = aos[bl_r].u1[0][y][z];
     }
     else if ( y == 0 && bl_a != -1) { 
-        arr[x][y][z] = aos[bl_a].u1[x][Bm-1][z];
+        u1_s[x][y][z] = aos[bl_a].u1[x][Bm-1][z];
     } else if( y == Bm+1 && bl_f != -1) {
-        arr[x][y][z] = aos[bl_f].u1[x][0][z];
+        u1_s[x][y][z] = aos[bl_f].u1[x][0][z];
     }
 
     else if ( z == 0 && bl_d != -1) {
-        arr[x][y][z] = aos[bl_d].u1[Bp-1][y][z];
+        u1_s[x][y][z] = aos[bl_d].u1[Bp-1][y][z];
     } else if( z == Bp+1 && bl_u != -1) {
-        arr[x][y][z] = aos[bl_u].u1[x][y][0];
+        u1_s[x][y][z] = aos[bl_u].u1[x][y][0];
     }
     
     else {
-        arr[x+1][y+1][z+1] = aos[bl].u1[x][y][z];
+        u1_s[x+1][y+1][z+1] = aos[bl].u1[x][y][z];
     }
 
     __syncthreads();
@@ -317,13 +337,13 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g) {
 
         x++;y++;z++;
 
-        aos[bl].u[x-1][y-1][z-1] = ((2 - l2 * k) * arr[x][y][z] +
-                        l2 * ( arr[x][y][z+1] + 
-                               arr[x][y][z-1] + 
-                               arr[x][y+1][z] + 
-                               arr[x][y-1][z] + 
-                               arr[x+1][y][z] +
-                               arr[x-1][y][z] ) +
+        aos[bl].u[x-1][y-1][z-1] = ((2 - l2 * k) * u1_s[x][y][z] +
+                        l2 * ( u1_s[x][y][z+1] + 
+                               u1_s[x][y][z-1] + 
+                               u1_s[x][y+1][z] + 
+                               u1_s[x][y-1][z] + 
+                               u1_s[x+1][y][z] +
+                               u1_s[x-1][y][z] ) +
                                (0.5 * l * g * (6 - k) - 1) * aos[bl].u[x-1][y-1][z-1])/(1 + 0.5 * l * g * (6 - k));
 
         if (k == 0) {
