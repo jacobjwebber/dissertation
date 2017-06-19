@@ -33,6 +33,8 @@ struct block {
     char k[Bl][Bm][Bp];
 };
 
+__global__ void perform_stencil(struct block *aos, real l2, real l, real g, int offset);
+
 __global__ void perform_stencil_internal(struct block *u, struct block *u1, real l2, real l, real g);
 
 int coords_to_index(int x, int y, int z) {
@@ -147,13 +149,14 @@ int main() {
     //Create an array storing the location of each block.
     int *index_of_struct = (int*) calloc(total_blocks, sizeof(int));
 
+    /*
     for (i = 0; i < total_blocks; i++) {
         index_of_struct[i] = -1;
     }
-
+    */
 
     //total number of internal blocks.
-    int blocks_in = 0;
+    int blocks_in = 1;
 
     for (i = 0; i < num_blocks_l; i++) {
         for (j = 0; j < num_blocks_m; j++) {
@@ -190,7 +193,7 @@ int main() {
             for (k = 0; k < num_blocks_p; k++) {
                 index = index_of_struct[i*num_blocks_m*num_blocks_p + j*num_blocks_p + k];
                 
-                if (index != -1) {
+                if (index != 0) {
                     copy_to_struct(i * Bl, j * Bm, k * Bp, &(aos[index]), &(is_in_sphere[0][0][0]), L, M, P);
                 }
 
@@ -203,7 +206,29 @@ int main() {
     // SET LEFT AND RIGHT WITHIN STRUCTS.
  
     struct block *bl;
+    //idea - let null neighbour = 0 . Leave 0th block empty.
+    for (i = 0; i < num_blocks_l; i++) {
+        for (j = 0; j < num_blocks_m; j++) {
+            for (k = 0; k < num_blocks_p; k++) {
+                
+                index = index_of_struct[i*num_blocks_m*num_blocks_p + j*num_blocks_p + k];
+                if ( index != 0) {
+                    bl = &aos[index];
 
+                    bl->left  = index_of_struct[(i-1)*num_blocks_m*num_blocks_p + j*num_blocks_p + k];
+                    bl->right = index_of_struct[(i+1)*num_blocks_m*num_blocks_p + j*num_blocks_p + k];
+                    
+                    bl->aft   = index_of_struct[i*num_blocks_m*num_blocks_p + (j-1)*num_blocks_p + k];
+                    bl->fore  = index_of_struct[i*num_blocks_m*num_blocks_p + (j+1)*num_blocks_p + k];
+
+                    bl->down  = index_of_struct[i*num_blocks_m*num_blocks_p + j*num_blocks_p + (k-1)];
+                    bl->up    = index_of_struct[i*num_blocks_m*num_blocks_p + j*num_blocks_p + (k+1)];
+                }
+
+            }
+        }
+    }
+    /*
     for (i = 0; i < num_blocks_l; i++) {
         for (j = 0; j < num_blocks_m; j++) {
             for (k = 0; k < num_blocks_p; k++) {
@@ -234,6 +259,7 @@ int main() {
             }
         }
     }
+    */
 
    /*
     //Print slice in middle
@@ -251,6 +277,20 @@ int main() {
     //=======================================================
     //=======================================================
     // END OF DATA PREP SECTION - put this into separate file eventually.
+
+
+    //Set Cuda coefficients,
+    dim3 dimsBlocks(blocks_in,1,1);
+    dim3 dimsThreads(Bl,Bm,Bp);
+
+    //Allocate device mem.
+    struct block *aos_d;
+    size_t total_mem =  sizeof(struct block)*blocks_in;
+    cudaMalloc((void**) &aos_d, total_mem);
+
+    float mem_in_KiB = ((float) total_mem) / 1024.0;
+
+    printf("Allocated and copied %f KiB of data to device successfully.\n", mem_in_KiB);
 
     int offset;
     //use this for the pointer swap.
@@ -276,80 +316,66 @@ int main() {
 }
 
 __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int offset) {
-    //Launch with blocksize+2 in each dimension.
-    int bl = blockIdx.x;
-
-    bl_array *u1_g = (bl_array*) ( (char*) &aos[bl].u1[0][0][0] - offset);
-    bl_array *u_g  = (bl_array*) ( (char*) &aos[bl].u[0][0][0] + offset);
-
-    int bl_r = aos[bl].right;
-    int bl_l = aos[bl].left;
-    
-    bl_array *u1_r_g  = (bl_array*) ( (char*) &(aos[aos[bl].right].u1) - offset);
-    bl_array *u1_l_g  = (bl_array*) ( (char*) &(aos[aos[bl].left ].u1) - offset);
-
-    int bl_f = aos[bl].fore;
-    int bl_a = aos[bl].aft;
-
-    bl_array *u1_f_g  = (bl_array*) ( (char*) &(aos[aos[bl].fore].u1) - offset);
-    bl_array *u1_a_g  = (bl_array*) ( (char*) &(aos[aos[bl].aft ].u1) - offset);
-
-    int bl_u = aos[bl].up;
-    int bl_d = aos[bl].down;
-    
-    bl_array *u1_u_g  = (bl_array*) ( (char*) &(aos[aos[bl].up  ].u1) - offset);
-    bl_array *u1_d_g  = (bl_array*) ( (char*) &(aos[aos[bl].down].u1) - offset);
-
+    //Launch with blocksize threads in each dimension.
+ 
     int x = threadIdx.z; //This is backwards on purpose becauseI named dimensions wrong. :(
     int y = threadIdx.y;
     int z = threadIdx.x;
 
+    int bl = blockIdx.x;
+
+    int k = aos[bl].k[x][y][z];
+    //point to arrays in global memory. These should use Cuda broadcast when compiled.
+
+    bl_array *u1_g = (bl_array*) ( (char*) &aos[bl].u1[0][0][0] - offset);
+    bl_array *u_g  = (bl_array*) ( (char*) &aos[bl].u[0][0][0] + offset);
+
+    bl_array *u1_r_g  = (bl_array*) ( (char*) &(aos[aos[bl].right].u1[0][0][0]) - offset);
+    bl_array *u1_l_g  = (bl_array*) ( (char*) &(aos[aos[bl].left ].u1[0][0][0]) - offset);
+
+    bl_array *u1_f_g  = (bl_array*) ( (char*) &(aos[aos[bl].fore].u1[0][0][0]) - offset);
+    bl_array *u1_a_g  = (bl_array*) ( (char*) &(aos[aos[bl].aft ].u1[0][0][0]) - offset);
+
+    bl_array *u1_u_g  = (bl_array*) ( (char*) &(aos[aos[bl].up  ].u1[0][0][0]) - offset);
+    bl_array *u1_d_g  = (bl_array*) ( (char*) &(aos[aos[bl].down].u1[0][0][0]) - offset);
     __shared__ real u1_s[Bl+2][Bm+2][Bp+2]; //u1 in shared (L1 cache) memory.
 
-    u1_s[x][y][z] = 0; //initialise to zero.
 
-    if ( x == 0 && bl_l != -1) { // this means doing it twice eg x==y==0
-        u1_s[x][y][z] = aos[bl_l].u1[Bl-1][y][z];
-    } else if( x == Bl+1 && bl_r != -1) {
-        u1_s[x][y][z] = aos[bl_r].u1[0][y][z];
+    u1_s[x+1][y+1][z+1] = *u1_g[x][y][z];
+
+    if ( x == 0 ) { 
+        u1_s[x][y][z] = *u1_l_g[Bl-1][y][z];
+    } else if( x == Bl+1 ) {
+        u1_s[x][y][z] = *u1_r_g[0][y][z];
     }
-    else if ( y == 0 && bl_a != -1) { 
-        u1_s[x][y][z] = aos[bl_a].u1[x][Bm-1][z];
-    } else if( y == Bm+1 && bl_f != -1) {
-        u1_s[x][y][z] = aos[bl_f].u1[x][0][z];
+    else if ( y == 0 ) { 
+        u1_s[x][y][z] = *u1_a_g[x][Bm-1][z];
+    } else if( y == Bm+1 ) {
+        u1_s[x][y][z] = *u1_f_g[x][0][z];
     }
 
-    else if ( z == 0 && bl_d != -1) {
-        u1_s[x][y][z] = aos[bl_d].u1[Bp-1][y][z];
-    } else if( z == Bp+1 && bl_u != -1) {
-        u1_s[x][y][z] = aos[bl_u].u1[x][y][0];
+    else if ( z == 0 ) {
+        u1_s[x][y][z] = *u1_d_g[Bp-1][y][z];
+    } else if( z == Bp+1 ) {
+        u1_s[x][y][z] = *u1_u_g[x][y][0];
     }
     
-    else {
-        u1_s[x+1][y+1][z+1] = aos[bl].u1[x][y][z];
-    }
-
     __syncthreads();
 
-    if (x<Bl && y<Bm && z<Bp) {
+    x++;y++;z++;
 
-        int k = aos[bl].k[x][y][z];
+    *u_g[x-1][y-1][z-1] = ((2 - l2 * k) * u1_s[x][y][z] +
+                                   l2 * ( u1_s[x][y][z+1] + 
+                                          u1_s[x][y][z-1] + 
+                                          u1_s[x][y+1][z] + 
+                                          u1_s[x][y-1][z] + 
+                                          u1_s[x+1][y][z] +
+                                          u1_s[x-1][y][z] ) +
+                                          (0.5 * l * g * (6 - k) - 1) * *u_g[x-1][y-1][z-1])/(1 + 0.5 * l * g * (6 - k));
 
-        x++;y++;z++;
-
-        aos[bl].u[x-1][y-1][z-1] = ((2 - l2 * k) * u1_s[x][y][z] +
-                        l2 * ( u1_s[x][y][z+1] + 
-                               u1_s[x][y][z-1] + 
-                               u1_s[x][y+1][z] + 
-                               u1_s[x][y-1][z] + 
-                               u1_s[x+1][y][z] +
-                               u1_s[x-1][y][z] ) +
-                               (0.5 * l * g * (6 - k) - 1) * aos[bl].u[x-1][y-1][z-1])/(1 + 0.5 * l * g * (6 - k));
-
-        if (k == 0) {
-            aos[bl].u[x-1][y-1][z-1] = 0;
-        }
-    }    
+    if (k == 0) {
+        *u_g[x-1][y-1][z-1] = 0;
+    }
 }
 
 
