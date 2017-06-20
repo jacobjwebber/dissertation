@@ -367,10 +367,6 @@ int main() {
         cudaDeviceSynchronize();
     }
 
-    cudaEventRecord(stop, 0);
-    cudaEventSynchronize(stop);
-    cudaEventElapsedTime(&time, start, stop);
-
     cudaMemcpy(out, out_d, big_n*sizeof(real), cudaMemcpyDeviceToHost);
 
     printf("first two elements of out_d: %f %f\n", out[0], out[1]);
