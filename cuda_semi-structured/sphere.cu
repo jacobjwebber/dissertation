@@ -35,7 +35,9 @@ struct block {
 
 __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int offset);
 
-__global__ void perform_IO(real *input_d, real *output_d, real *out_d, real ins, int t);
+__global__ void perform_IO(real *input_d, real *output_d, real *out_d, real ins, int offset, int t);
+
+__global__ void perform_stencil_structured(real* u, real* u1, char* k_d, real l2, real l, real g);
 
 __global__ void perform_stencil_internal(struct block *u, struct block *u1, real l2, real l, real g);
 
@@ -151,12 +153,6 @@ int main() {
     //Create an array storing the location of each block.
     int *index_of_struct = (int*) calloc(total_blocks, sizeof(int));
 
-    /*
-    for (i = 0; i < total_blocks; i++) {
-        index_of_struct[i] = -1;
-    }
-    */
-
     //total number of internal blocks.
     int blocks_in = 1;
 
@@ -230,40 +226,8 @@ int main() {
             }
         }
     }
+    
     /*
-    for (i = 0; i < num_blocks_l; i++) {
-        for (j = 0; j < num_blocks_m; j++) {
-            for (k = 0; k < num_blocks_p; k++) {
-                
-                index = index_of_struct[i*num_blocks_m*num_blocks_p + j*num_blocks_p + k];
-                if ( index != -1) {
-                    bl = &aos[index];
-
-                    if (i==0) {bl->left = -1;}
-                    else {bl->left  = index_of_struct[(i-1)*num_blocks_m*num_blocks_p + j*num_blocks_p + k];}
-
-                    if (i==num_blocks_l-1) {bl->right = -1;} 
-                    else {bl->right = index_of_struct[(i+1)*num_blocks_m*num_blocks_p + j*num_blocks_p + k];}
-                    
-                    if (j==0) {bl->aft = -1;} 
-                    else {bl->aft   = index_of_struct[i*num_blocks_m*num_blocks_p + (j-1)*num_blocks_p + k];}
-
-                    if (j == num_blocks_m-1) {bl->fore = -1;} 
-                    else {bl->fore  = index_of_struct[i*num_blocks_m*num_blocks_p + (j+1)*num_blocks_p + k];}
-
-                    if (k==0) {bl->down = -1;} 
-                    else {bl->down  = index_of_struct[i*num_blocks_m*num_blocks_p + j*num_blocks_p + (k-1)];}
-                    
-                    if (j==num_blocks_p-1) {bl->up = -1;} 
-                    else {bl->up    = index_of_struct[i*num_blocks_m*num_blocks_p + j*num_blocks_p + (k+1)];}
-                }
-
-            }
-        }
-    }
-    */
-
-   /*
     //Print slice in middle
     printf("Printing block blocks_in/2\n");
     for (k=0; k< Bp; k++) {
@@ -303,6 +267,7 @@ int main() {
 
     real *out_d;
     cudaMalloc((void**)&out_d, big_n *sizeof(real));
+    cudaMemset(out_d, 0, big_n *sizeof(real));
 
     float mem_in_KiB = ((float) total_mem) / 1024.0;
 
@@ -318,9 +283,9 @@ int main() {
     
     //Set input and output locations
     // HARDCODED: calculate from COORDS eventually.
-    real *input_d = &aos_d[blocks_in/2].u[Bl/2][Bm/2][Bp/2];
+    real *input_d = &(aos_d[blocks_in/2].u[Bl/2][Bm/2][Bp/2]);
 
-    real *output_d = &aos_d[blocks_in/2].u[Bl/2][Bm/2][Bp/2];
+    real *output_d = &(aos_d[blocks_in/2].u[Bl/2][Bm/2][Bp/2]);
    
     float time;
     cudaEvent_t start, stop;
@@ -329,7 +294,7 @@ int main() {
     cudaEventCreate(&stop);
     cudaEventRecord(start, 0);
 
-    perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 1.0, 0); 
+    perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 1.0, 0, 0); 
     cudaDeviceSynchronize();
 
     int t;
@@ -338,7 +303,7 @@ int main() {
         perform_stencil<<<dimsThreads,dimsBlocks>>>(aos_d, l2, l, g, offset*(t%2));
         cudaDeviceSynchronize();
 
-        perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 0, t); 
+        perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 0, offset*(t%2), t); 
         cudaDeviceSynchronize();
     }
 
@@ -351,14 +316,81 @@ int main() {
 
     printf("first two elements of out_d: %f %f\n", out[0], out[1]);
 
-    printf("Cuda sim time:  %f ms \n", time);
+    printf("Cuda semi-structured time:  %f ms \n", time);
+
+    cudaFree(aos_d);
+
+    //===================================================
+    //Basic version.
+    // Set up grid and blocks
+    int Gl = L/Bl;
+    int Gm = M/Bm;
+    int Gp = P/Bp;
+
+    dim3 dimBlockInt(Bl, Bm, Bp);
+    dim3 dimGridInt(Gl, Gm, Gp);
+    size_t mem_size = L*M*P*sizeof(real);
+    real *u_d, *u1_d, *dummy_ptr;
+    char *k_d;
+
+    // Initialise memory on device
+    cudaMalloc(&u_d, mem_size); 
+    cudaMemset(u_d, 0, mem_size);
+    cudaMalloc(&u1_d, mem_size); 
+    cudaMemset(u1_d, 0, mem_size);
+    cudaMalloc(&k_d, L*M*P*sizeof(char));
+    cudaMemcpy(k_d, &is_in_sphere, L*M*P*sizeof(char), cudaMemcpyHostToDevice);
+
+    input_d = &(u_d[(L*M*P/2)]);
+    output_d = &(u_d[(L*M*P/2)]);
+    
+    printf("input/output point has %i neighbours.\n", is_in_sphere[L/2][M/2][P/2]);
+
+    perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 1.0, 0, 0); 
+    cudaDeviceSynchronize();
+
+    for (t = 1; t < big_n; t++) {
+        
+        // update pointers
+        dummy_ptr = u1_d;
+        u1_d = u_d;
+        u_d = dummy_ptr;
+        
+        input_d = &(u_d[(L*M*P/2)]);
+        output_d = &(u_d[(L*M*P/2)]);
+
+        //do stencil
+        perform_stencil_structured<<<dimGridInt,dimBlockInt>>>(u_d, u1_d, k_d, l2, l, g);
+        cudaDeviceSynchronize();
+
+        perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 0, 0, t); 
+        cudaDeviceSynchronize();
+    }
+
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
+    cudaEventElapsedTime(&time, start, stop);
+
+    cudaMemcpy(out, out_d, big_n*sizeof(real), cudaMemcpyDeviceToHost);
+
+    printf("first two elements of out_d: %f %f\n", out[0], out[1]);
+
+    cudaFree(u_d);
+    cudaFree(u_d);
+    cudaFree(u1_d);
+
     return 0;
 }
 
-__global__ void perform_IO(real *input_d, real *output_d, real* out_d, real ins, int t) {
+
+__global__ void perform_IO(real *input_d, real *output_d, real* out_d, real ins, int offset, int t) {
     //Takes two pointers to reals in device memory for input/output locations.
     // These should be calculated from coords elsewhere.
     // sum in source
+    
+    input_d  = (real*) ( (char*) input_d + offset);
+    output_d  = (real*) ( (char*) output_d + offset);
+    
     *input_d += ins;
     // set output
     out_d[t] = *output_d;
@@ -427,7 +459,25 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
     }
 }
 
+__global__ void perform_stencil_structured(real* u, real* u1, char* k_d, real l2, real l, real g) {
+    // get x,y,z from thread and block Id’s
+    int x = blockIdx.x * Bl + threadIdx.x;
+    int y = blockIdx.y * Bm + threadIdx.y;
+    int z = blockIdx.z * Bp + threadIdx.z;
 
+    // Test that not at boundary
+    if( (x>0) && (x<(L-1))
+            && (y>0) && (y<(M-1))
+            && (z>0) && (z<(P-1)))
+    {
+        // get linear position
+        int cp = z*M*P+(y*M+x);
+        char k = k_d[cp];
+        u[cp] = ((2 - l2 * k) * u1[cp] +
+                l2*(u1[cp-1]+u1[cp+1]+u1[cp-M]+u1[cp+M]+u1[cp-M*P]+u1[cp+M*P]) +
+                (0.5 * l * g * (6 - k) - 1) * u[cp])/(1 + 0.5 * l * g * (6 - k));
+    }
+}
 __global__ void perform_stencil_internal(struct block *aos, real l2, real l, real g) {
     //Do stencil.
     //internal elements
