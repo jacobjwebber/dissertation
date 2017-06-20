@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <math.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -7,9 +9,9 @@
 #define real double
 
 //Block size
-#define Bl 8
+#define Bl 4
 #define Bm 8
-#define Bp 4
+#define Bp 8
 
 //Bounding box dimensions
 #define L 64
@@ -286,37 +288,36 @@ int main() {
     real *input_d = &(aos_d[blocks_in/2].u[Bl/2][Bm/2][Bp/2]);
 
     real *output_d = &(aos_d[blocks_in/2].u[Bl/2][Bm/2][Bp/2]);
-   
-    float time;
-    cudaEvent_t start, stop;
+  
+    struct timeval start, end;
+    long secs_used,micros_used;
 
-    cudaEventCreate(&start);
-    cudaEventCreate(&stop);
-    cudaEventRecord(start, 0);
-
+    gettimeofday(&start, NULL);
+    //Do the stuff you want to time here
+    
     perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 1.0, 0, 0); 
     cudaDeviceSynchronize();
 
     int t;
     for (t = 1; t < big_n; t++) {
         //do stencil
-        perform_stencil<<<dimsThreads,dimsBlocks>>>(aos_d, l2, l, g, offset*(t%2));
+        perform_stencil<<<dimsBlocks,dimsThreads>>>(aos_d, l2, l, g, offset*(t%2));
         cudaDeviceSynchronize();
 
         perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 0, offset*(t%2), t); 
         cudaDeviceSynchronize();
     }
+    
+    gettimeofday(&end, NULL);
 
-    cudaEventRecord(stop, 0);
-    cudaEventSynchronize(stop);
-    cudaEventElapsedTime(&time, start, stop);
+    secs_used=(end.tv_sec - start.tv_sec); //avoid overflow by subtracting first
+    micros_used= ((secs_used*1000000) + end.tv_usec) - (start.tv_usec);
+    printf("For semistructured micros_used: %d\n\n",micros_used);
 
     real *out = (real *) malloc(big_n*sizeof(real));
     cudaMemcpy(out, out_d, big_n*sizeof(real), cudaMemcpyDeviceToHost);
 
     printf("first two elements of out_d: %f %f\n", out[0], out[1]);
-
-    printf("Cuda semi-structured time:  %f ms \n", time);
 
     cudaFree(aos_d);
 
@@ -346,6 +347,8 @@ int main() {
     
     printf("input/output point has %i neighbours.\n", is_in_sphere[L/2][M/2][P/2]);
 
+    gettimeofday(&start, NULL);
+
     perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 1.0, 0, 0); 
     cudaDeviceSynchronize();
 
@@ -368,6 +371,13 @@ int main() {
     }
 
     cudaMemcpy(out, out_d, big_n*sizeof(real), cudaMemcpyDeviceToHost);
+
+    gettimeofday(&end, NULL);
+
+    secs_used=(end.tv_sec - start.tv_sec); //avoid overflow by subtracting first
+    micros_used= ((secs_used*1000000) + end.tv_usec) - (start.tv_usec);
+    printf("For structured: micros_used: %d\n",micros_used);
+
 
     printf("first two elements of out_d: %f %f\n", out[0], out[1]);
 
@@ -422,18 +432,18 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
 
     if ( x == 0 ) { 
         u1_s[x][y][z] = *u1_l_g[Bl-1][y][z];
-    } else if( x == Bl+1 ) {
+    } else if( x == Bl-1 ) {
         u1_s[x][y][z] = *u1_r_g[0][y][z];
     }
     else if ( y == 0 ) { 
         u1_s[x][y][z] = *u1_a_g[x][Bm-1][z];
-    } else if( y == Bm+1 ) {
+    } else if( y == Bm-1 ) {
         u1_s[x][y][z] = *u1_f_g[x][0][z];
     }
 
     else if ( z == 0 ) {
         u1_s[x][y][z] = *u1_d_g[Bp-1][y][z];
-    } else if( z == Bp+1 ) {
+    } else if( z == Bp-1 ) {
         u1_s[x][y][z] = *u1_u_g[x][y][0];
     }
     
