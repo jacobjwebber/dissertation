@@ -41,8 +41,6 @@ __global__ void perform_IO(real *input_d, real *output_d, real *out_d, real ins,
 
 __global__ void perform_stencil_structured(real* u, real* u1, char* k_d, real l2, real l, real g);
 
-__global__ void perform_stencil_internal(struct block *u, struct block *u1, real l2, real l, real g);
-
 int coords_to_index(int x, int y, int z) {
     int area = M*P;
     return x*area + y*P + x;
@@ -135,16 +133,6 @@ int main() {
         }
     }
 
-    /*
-    //Print slice in middle
-    for (i = 0; i < L; i++) {
-        for (j = 0; j < M; j++) {
-            printf("%i ", is_in_sphere[i][j][R]);
-        }
-        printf("\n");
-    }
-    // */
-
     // BEGIN DATA PREP SECTION
 
     int num_blocks_l = L/Bl;
@@ -228,19 +216,6 @@ int main() {
             }
         }
     }
-    
-    /*
-    //Print slice in middle
-    printf("Printing block blocks_in/2\n");
-    for (k=0; k< Bp; k++) {
-        for (i = 0; i < Bl; i++) {
-            for (j = 0; j < Bm; j++) {
-                printf("%i ", array[blocks_in/2].k[i][j][k]);
-            }
-            printf("\n");
-        }
-    }
-    // */
 
     //=======================================================
     //=======================================================
@@ -388,7 +363,6 @@ int main() {
     return 0;
 }
 
-
 __global__ void perform_IO(real *input_d, real *output_d, real* out_d, real ins, int offset, int t) {
     //Takes two pointers to reals in device memory for input/output locations.
     // These should be calculated from coords elsewhere.
@@ -442,7 +416,7 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
     }
 
     else if ( z == 0 ) {
-        u1_s[x][y][z] = *u1_d_g[Bp-1][y][z];
+        u1_s[x][y][z] = *u1_d_g[x][y][Bp-1];
     } else if( z == Bp-1 ) {
         u1_s[x][y][z] = *u1_u_g[x][y][0];
     }
@@ -483,88 +457,4 @@ __global__ void perform_stencil_structured(real* u, real* u1, char* k_d, real l2
                 l2*(u1[cp-1]+u1[cp+1]+u1[cp-M]+u1[cp+M]+u1[cp-M*P]+u1[cp+M*P]) +
                 (0.5 * l * g * (6 - k) - 1) * u[cp])/(1 + 0.5 * l * g * (6 - k));
     }
-}
-__global__ void perform_stencil_internal(struct block *aos, real l2, real l, real g) {
-    //Do stencil.
-    //internal elements
-    //Block size should be dimensions of struct blocks -2 in each direction.
-
-    //The following statement effectively caches the block.
-    //FIX THIS using SHARED.???
-    int bl = blockIdx.x;
-    
-    int x = threadIdx.x + 1;
-    int y = threadIdx.y + 1;
-    int z = threadIdx.z + 1;
-    int k = aos[bl].k[x][y][z];
-
-    aos[bl].u[x][y][z] = ((2 - l2 * k) * aos[bl].u1[x][y][z] +
-                    l2 * ( aos[bl].u1[x][y][z+1] + 
-                           aos[bl].u1[x][y][z-1] + 
-                           aos[bl].u1[x][y+1][z] + 
-                           aos[bl].u1[x][y-1][z] + 
-                           aos[bl].u1[x+1][y][z] +
-                           aos[bl].u1[x-1][y][z] ) +
-                           (0.5 * l * g * (6 - k) - 1) * aos[bl].u[x][y][z])/(1 + 0.5 * l * g * (6 - k));
-
-    if (k == 0) {
-        aos[bl].u[x][y][z] = 0;
-    }
-
-    
-}
-
-__global__ void perform_stencil_surfaces_LR(struct block *u, real l2, real l, real g) {
-    //Do stencil.
-    //Edge elements left and right.
-    int bl = blockIdx.x;
-    int bl_r = u[bl].right;
-    int bl_l = u[bl].left;
-    
-    real left, right;
-
-    int y = threadIdx.y + 1;
-    int z = threadIdx.z + 1;
-
-    int is_right = threadIdx.x;
-   
-    if (is_right) {
-        
-        left = u[bl].u1[Bl-2][y][z];
-        if( bl_r != -1 ) {
-            right = u[bl_r].u1[0][y][z];
-        } else {
-            right = 0;
-        }
-
-    } else {
-        
-        right = u[bl].u1[1][y][z];
-        if ( bl_l != -1 ) {
-            left = u[bl_l].u1[Bl-1][y][z];
-        } else {
-            left = 0;
-        }
-
-    }
-    
-    
-    int k = u[bl].k[0][y][z];
-    
-    
-    u[bl].u[0][y][z] = ((2 - l2 * k) * u[bl].u1[0 + is_right*(Bl-1)][y][z] +
-                    l2 * ( u[bl].u1[0 + is_right*(Bl-1)][y][z+1] + 
-                           u[bl].u1[0 + is_right*(Bl-1)][y][z-1] + 
-                           u[bl].u1[0 + is_right*(Bl-1)][y+1][z] + 
-                           u[bl].u1[0 + is_right*(Bl-1)][y-1][z] + 
-                           right +
-                           left ) +
-                           (0.5 * l * g * (6 - k) - 1) * u[bl].u[0 + is_right*(Bl-1)][y][z])/(1 + 0.5 * l * g * (6 - k));
-    
-   
-
-    if (k == 0) {
-        u[bl].u[0][y][z] = 0;
-    }
-    
 }
