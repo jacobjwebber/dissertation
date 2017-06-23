@@ -5,24 +5,27 @@
 
 #define TRUE 1
 #define FALSE 0
-
 #define real double
+
+#define CUCALL( call )               \
+{                                       \
+cudaError_t result = call;              \
+if ( cudaSuccess != result )            \
+    fprintf(stderr, "CUDA error %i in %s : %s ( %s ) \n", result, __FILE__, __LINE__, cudaGetErrorString( result ), #call); \
+}
 
 //Block size
 #define Bl 4
 #define Bm 8
 #define Bp 8
 
-//Bounding box dimensions
-#define L 64
-#define M 64
-#define P 64
-
 //Sphere radius
 #define R 64/2
 
-typedef real bl_array[Bl][Bm][Bp];
 
+//        std::cerr << "CUDA error " << result << " in " << __FILE__ << ":" << __LINE__ << ": " << cudaGetErrorString( result ) << " (" << #call << ")" << std::endl; 
+
+typedef real bl_array[Bl][Bm][Bp];
 struct block {
     int up; //z direction
     int down;
@@ -39,12 +42,7 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
 
 __global__ void perform_IO(real *input_d, real *output_d, real *out_d, real ins, int offset, int t);
 
-__global__ void perform_stencil_structured(real* u, real* u1, char* k_d, real l2, real l, real g);
-
-int coords_to_index(int x, int y, int z) {
-    int area = M*P;
-    return x*area + y*P + x;
-}
+__global__ void perform_stencil_structured(real* u, real* u1, char* k_d, real l2, real l, real g, int X, int Y, int Z);
 
 char is_block_internal(int x, int y, int z, char *array, int xmax, int ymax, int zmax) {
     //This function takes coordinates and returns true if any points within a 
@@ -53,8 +51,7 @@ char is_block_internal(int x, int y, int z, char *array, int xmax, int ymax, int
     for (i = x; i < x+Bl; i++) {
         for (j = y; j < y+Bm; j++) {
             for (k = z; k < z+Bp; k++) {
-                if ( array[i*ymax*zmax + j*zmax + k]) {
-                    //printf("boop , %i %i %i \n", x, y, z);
+                if (  i<zmax && j<ymax && k<xmax && array[i*ymax*xmax + j*xmax + k]) {
                     return TRUE;
                  }
             }
@@ -69,7 +66,11 @@ char copy_to_struct(int x, int y, int z, struct block *bl, char *array, int xmax
     for (i = x; i < x+Bl; i++) {
         for (j = y; j < y+Bm; j++) {
             for (k = z; k < z+Bp; k++) {
-                (*bl).k[i-x][j-y][k-z] = array[i*ymax*zmax + j*zmax + k];
+                if ( i<zmax && j<ymax && k<xmax ) {
+                    bl->k[i-x][j-y][k-z] = array[i*ymax*xmax + j*xmax + k];
+                } else {
+                    bl->k[i-x][j-y][k-z] = 0;
+                }
             }
         }
     }
@@ -95,50 +96,60 @@ int main() {
     real l = sqrt(l2);
     real r = 0.9; //Wall reflection coefficient.
     real g = (1-r)/(1+r);
-    real h = 0.1; //grid spacing (m)
+    real h = 0.02; //grid spacing (m)
     real c = 343; //Speed of sound
-    real duration = 1.1; //seconds
+    real duration = 100.1; //seconds
 
-    //Error checking - Bounding grid must be divisible by block.
-    if(L%Bl != 0 || M%Bm != 0 || P%Bp != 0) {
-        printf("Not divisible by block\n");
+    //Execute circle example.
+    real radius = 10.0; // meters
+    int diam = ceil(radius/h)+2;
+    int X, Y, Z;
+    int ori = diam/2 + 1; //Add one so there is buffer round edge- why not?
+    int rad = diam/2;
+
+    X = Y = Z = diam;
+    
+    char *is_in_sphere = (char*) calloc(X*Y*Z, sizeof(char));
+
+    if(!is_in_sphere) {
+        printf("error allocating is_in sphere\n");
         return 0;
     }
 
-    //Define array of grid points within sphere.
-    char is_in_sphere[L][M][P];
+    //array[i*ymax*xmax + j*xmax + k];
     int i,j,k;
-    for (i = 0; i < L; i++) {
-        for (j = 0; j < M; j++) {
-            for (k = 0; k < P; k++) {
-                is_in_sphere[i][j][k] = sqrt( (i-R)*(i-R) + (j-R)*(j-R) + (k-R)*(k-R)) < (float) R;
+    for (i = 0; i < Z; i++) {
+        for (j = 0; j < Y; j++) {
+            for (k = 0; k < X; k++) {
+                is_in_sphere[i*Y*X + j*Y + k] = sqrt( (i-ori)*(i-ori) + (j-ori)*(j-ori) + (k-ori)*(k-ori)) < (float) rad;
             }
         }
     }
 
     //Make is in sphere into record of number of neighbours for each point -- needed later.
-    for (i = 0; i < L; i++) {
-        for (j = 0; j < M; j++) {
-            for (k = 0; k < P; k++) {
-                if (is_in_sphere[i][j][k]) {
-                    is_in_sphere[i][j][k] = 0;
-                    if (i+1 <  L && is_in_sphere[i+1][j][k]) { is_in_sphere[i][j][k]++; } 
-                    if (i-1 >= 0 && is_in_sphere[i-1][j][k]) { is_in_sphere[i][j][k]++; } 
-                    if (j+1 <  M && is_in_sphere[i][j+1][k]) { is_in_sphere[i][j][k]++; } 
-                    if (j-1 >= 0 && is_in_sphere[i][j-1][k]) { is_in_sphere[i][j][k]++; } 
-                    if (k+1 <  P && is_in_sphere[i][j][k+1]) { is_in_sphere[i][j][k]++; } 
-                    if (k-1 >= 0 && is_in_sphere[i][j][k-1]) { is_in_sphere[i][j][k]++; } 
+    for (i = 0; i < Z; i++) {
+        for (j = 0; j < Y; j++) {
+            for (k = 0; k < X; k++) {
+                if (is_in_sphere[i*Y*X + j*Y + k]) {
+                    is_in_sphere[i*Y*X + j*Y + k] = 0;
+                    if (i+1 <  Z && is_in_sphere[(i+1)*Y*X + j*X + k]) { is_in_sphere[i*Y*X + j*X + k]++; } 
+                    if (i-1 >= 0 && is_in_sphere[(i-1)*Y*X + j*X + k]) { is_in_sphere[i*Y*X + j*X + k]++; } 
+                    if (j+1 <  Y && is_in_sphere[i*Y*X + (j+1)*X + k]) { is_in_sphere[i*Y*X + j*X + k]++; } 
+                    if (j-1 >= 0 && is_in_sphere[i*Y*X + (j-1)*X + k]) { is_in_sphere[i*Y*X + j*X + k]++; } 
+                    if (k+1 <  X && is_in_sphere[i*Y*X + j*X + (k+1)]) { is_in_sphere[i*Y*X + j*X + k]++; } 
+                    if (k-1 >= 0 && is_in_sphere[i*Y*X + j*X + (k-1)]) { is_in_sphere[i*Y*X + j*X + k]++; } 
                 }
             }
         }
     }
 
+
     // BEGIN DATA PREP SECTION
 
-    int num_blocks_l = L/Bl;
-    int num_blocks_m = M/Bm;
-    int num_blocks_p = P/Bp;
-    int total_blocks = num_blocks_l*num_blocks_m*num_blocks_p;
+    int num_blocks_z = Z/Bl;
+    int num_blocks_y = Y/Bm;
+    int num_blocks_x = X/Bp;
+    int total_blocks = num_blocks_z*num_blocks_y*num_blocks_x;
 
     //Create an array storing the location of each block.
     int *index_of_struct = (int*) calloc(total_blocks, sizeof(int));
@@ -146,11 +157,11 @@ int main() {
     //total number of internal blocks.
     int blocks_in = 1;
 
-    for (i = 0; i < num_blocks_l; i++) {
-        for (j = 0; j < num_blocks_m; j++) {
-            for (k = 0; k < num_blocks_p; k++) {
-                if ( is_block_internal(i * Bl, j * Bm, k * Bp, &(is_in_sphere[0][0][0]), L,M,P) ) {
-                    index_of_struct[i*num_blocks_m*num_blocks_p + j*num_blocks_p + k] = blocks_in;
+    for (i = 0; i < num_blocks_z; i++) {
+        for (j = 0; j < num_blocks_y; j++) {
+            for (k = 0; k < num_blocks_x; k++) {
+                if ( is_block_internal(i * Bl, j * Bm, k * Bp, &(is_in_sphere[0]), X,Y,Z) ) {
+                    index_of_struct[i*num_blocks_y*num_blocks_x + j*num_blocks_x + k] = blocks_in;
                     blocks_in++;
                 }
             }
@@ -173,16 +184,15 @@ int main() {
     }
 
     //Copy is in sphere array to k arrrays within blocks.
-
+    printf("Copying data to blocks\n");
     int index;
- 
-    for (i = 0; i < num_blocks_l; i++) {
-        for (j = 0; j < num_blocks_m; j++) {
-            for (k = 0; k < num_blocks_p; k++) {
-                index = index_of_struct[i*num_blocks_m*num_blocks_p + j*num_blocks_p + k];
+    for (i = 0; i < num_blocks_z; i++) {
+        for (j = 0; j < num_blocks_y; j++) {
+            for (k = 0; k < num_blocks_x; k++) {
+                index = index_of_struct[i*num_blocks_y*num_blocks_x + j*num_blocks_x + k];
                 
                 if (index != 0) {
-                    copy_to_struct(i * Bl, j * Bm, k * Bp, &(aos[index]), &(is_in_sphere[0][0][0]), L, M, P);
+                    copy_to_struct(i * Bl, j * Bm, k * Bp, &(aos[index]), &(is_in_sphere[0]), X, Y, Z);
                 }
 
             }
@@ -193,24 +203,25 @@ int main() {
 
     // SET LEFT AND RIGHT WITHIN STRUCTS.
  
+    printf("Assigning block neighbours\n");
     struct block *bl;
     //idea - let null neighbour = 0 . Leave 0th block empty.
-    for (i = 0; i < num_blocks_l; i++) {
-        for (j = 0; j < num_blocks_m; j++) {
-            for (k = 0; k < num_blocks_p; k++) {
+    for (i = 0; i < num_blocks_z; i++) {
+        for (j = 0; j < num_blocks_y; j++) {
+            for (k = 0; k < num_blocks_x; k++) {
                 
-                index = index_of_struct[i*num_blocks_m*num_blocks_p + j*num_blocks_p + k];
+                index = index_of_struct[i*num_blocks_y*num_blocks_x + j*num_blocks_x + k];
                 if ( index != 0) {
-                    bl = &aos[index];
+                    bl = &(aos[index]);
 
-                    bl->left  = index_of_struct[(i-1)*num_blocks_m*num_blocks_p + j*num_blocks_p + k];
-                    bl->right = index_of_struct[(i+1)*num_blocks_m*num_blocks_p + j*num_blocks_p + k];
+                    if (i>0) {bl->left  = index_of_struct[(i-1)*num_blocks_y*num_blocks_x + j*num_blocks_x + k];}
+                    if (i<(num_blocks_z-1)) {bl->right = index_of_struct[(i+1)*num_blocks_y*num_blocks_x + j*num_blocks_x + k];}
                     
-                    bl->aft   = index_of_struct[i*num_blocks_m*num_blocks_p + (j-1)*num_blocks_p + k];
-                    bl->fore  = index_of_struct[i*num_blocks_m*num_blocks_p + (j+1)*num_blocks_p + k];
+                    if (j>0) {bl->aft   = index_of_struct[i*num_blocks_y*num_blocks_x + (j-1)*num_blocks_x + k];}
+                    if (j>num_blocks_y-1) { bl->fore  = index_of_struct[i*num_blocks_y*num_blocks_x + (j+1)*num_blocks_x + k];}
 
-                    bl->down  = index_of_struct[i*num_blocks_m*num_blocks_p + j*num_blocks_p + (k-1)];
-                    bl->up    = index_of_struct[i*num_blocks_m*num_blocks_p + j*num_blocks_p + (k+1)];
+                    if (k>0) { bl->down  = index_of_struct[i*num_blocks_y*num_blocks_x + j*num_blocks_x + (k-1)];}
+                    if (k<num_blocks_x) {bl->up    = index_of_struct[i*num_blocks_y*num_blocks_x + j*num_blocks_x + (k+1)];}
                 }
 
             }
@@ -239,14 +250,16 @@ int main() {
     //Allocate device mem.
     struct block *aos_d;
     size_t total_mem =  sizeof(struct block)*blocks_in;
-    cudaMalloc((void**) &aos_d, total_mem);
-    cudaMemcpy(aos_d, aos, total_mem, cudaMemcpyHostToDevice);
+    float mem_in_KiB = ((float) total_mem) / 1024.0;
+    printf("Allocating %f MiB CUDA memory.\n", mem_in_KiB/1024.0);
+    CUCALL( cudaMalloc((void**) &aos_d, total_mem) );
+    printf("Copying data from host to device\n");
+    CUCALL( cudaMemcpy(aos_d, aos, total_mem, cudaMemcpyHostToDevice) );
 
     real *out_d;
-    cudaMalloc((void**)&out_d, big_n *sizeof(real));
-    cudaMemset(out_d, 0, big_n *sizeof(real));
+    CUCALL( cudaMalloc((void**)&out_d, big_n *sizeof(real)) );
+    CUCALL( cudaMemset(out_d, 0, big_n *sizeof(real)) );
 
-    float mem_in_KiB = ((float) total_mem) / 1024.0;
 
     //add error checking for malloc and memcopy.
     printf("Allocated and copied %f KiB of data to device successfully.\n", mem_in_KiB);
@@ -295,32 +308,37 @@ int main() {
     printf("first two elements of out_d: %f %f\n", out[0], out[1]);
 
     cudaFree(aos_d);
+    free(aos);
+    printf("freed cuda and host mem\n");
 
     //===================================================
     //Basic version.
     // Set up grid and blocks
-    int Gl = L/Bl;
-    int Gm = M/Bm;
-    int Gp = P/Bp;
+    printf("running basic version of experiment\n");
+    int Gl = X/Bl;
+    int Gm = Y/Bm;
+    int Gp = Z/Bp;
 
     dim3 dimBlockInt(Bl, Bm, Bp);
     dim3 dimGridInt(Gl, Gm, Gp);
-    size_t mem_size = L*M*P*sizeof(real);
+    size_t mem_size = X*Y*Z*sizeof(real);
     real *u_d, *u1_d, *dummy_ptr;
     char *k_d;
 
     // Initialise memory on device
+    printf("Allocating device memory.\n");
     cudaMalloc(&u_d, mem_size); 
     cudaMemset(u_d, 0, mem_size);
     cudaMalloc(&u1_d, mem_size); 
     cudaMemset(u1_d, 0, mem_size);
-    cudaMalloc(&k_d, L*M*P*sizeof(char));
-    cudaMemcpy(k_d, &is_in_sphere, L*M*P*sizeof(char), cudaMemcpyHostToDevice);
+    cudaMalloc(&k_d, X*Y*Z*sizeof(char));
+    printf("Copying data to device.\n");
+    cudaMemcpy(k_d, &(is_in_sphere[0]), X*Y*Z*sizeof(char), cudaMemcpyHostToDevice);
 
-    input_d = &(u_d[(L*M*P/2)]);
-    output_d = &(u_d[(L*M*P/2)]);
+    input_d = &(u_d[(X*Y*Z/2)]);
+    output_d = &(u_d[(X*Y*Z/2)]);
     
-    printf("input/output point has %i neighbours.\n", is_in_sphere[L/2][M/2][P/2]);
+    printf("input/output point has %i neighbours.\n", is_in_sphere[X/2*Y/2*Z/2]);
 
     gettimeofday(&start, NULL);
 
@@ -334,11 +352,11 @@ int main() {
         u1_d = u_d;
         u_d = dummy_ptr;
         
-        input_d = &(u_d[(L*M*P/2)]);
-        output_d = &(u_d[(L*M*P/2)]);
+        input_d = &(u_d[(X*Y*Z/2)]);
+        output_d = &(u_d[(X*Y*Z/2)]);
 
         //do stencil
-        perform_stencil_structured<<<dimGridInt,dimBlockInt>>>(u_d, u1_d, k_d, l2, l, g);
+        perform_stencil_structured<<<dimGridInt,dimBlockInt>>>(u_d, u1_d, k_d, l2, l, g, X, Y, Z);
         cudaDeviceSynchronize();
 
         perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 0, 0, t); 
@@ -439,22 +457,22 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
     }
 }
 
-__global__ void perform_stencil_structured(real* u, real* u1, char* k_d, real l2, real l, real g) {
+__global__ void perform_stencil_structured(real* u, real* u1, char* k_d, real l2, real l, real g, int X, int Y, int Z) {
     // get x,y,z from thread and block Id’s
     int x = blockIdx.x * Bl + threadIdx.x;
     int y = blockIdx.y * Bm + threadIdx.y;
     int z = blockIdx.z * Bp + threadIdx.z;
 
     // Test that not at boundary
-    if( (x>0) && (x<(L-1))
-            && (y>0) && (y<(M-1))
-            && (z>0) && (z<(P-1)))
+    if( (x>0) && (x<(X-1))
+            && (y>0) && (y<(Y-1))
+            && (z>0) && (z<(Z-1)))
     {
         // get linear position
-        int cp = z*M*P+(y*M+x);
+        int cp = z*X*Y+y*X+x;
         char k = k_d[cp];
         u[cp] = ((2 - l2 * k) * u1[cp] +
-                l2*(u1[cp-1]+u1[cp+1]+u1[cp-M]+u1[cp+M]+u1[cp-M*P]+u1[cp+M*P]) +
+                l2*(u1[cp-1]+u1[cp+1]+u1[cp-X]+u1[cp+X]+u1[cp-Y*X]+u1[cp+Y*X]) +
                 (0.5 * l * g * (6 - k) - 1) * u[cp])/(1 + 0.5 * l * g * (6 - k));
     }
 }
