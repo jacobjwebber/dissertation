@@ -11,7 +11,7 @@
 {                                       \
 cudaError_t result = call;              \
 if ( cudaSuccess != result )            \
-    fprintf(stderr, "CUDA error %i in %s : %s ( %s ) \n", result, __FILE__, __LINE__, cudaGetErrorString( result ), #call); \
+    fprintf(stderr, "CUDA error  %s \n", cudaGetErrorString( result ) ); \
 }
 
 //Bzock size
@@ -299,6 +299,7 @@ int main() {
     struct timeval start, end;
     long secs_used,micros_used;
 
+    CUCALL( cudaGetLastError());
     cudaDeviceSynchronize();
     gettimeofday(&start, NULL);
     
@@ -310,26 +311,32 @@ int main() {
     for (t = 1; t < big_n; t++) {
         //do stencil
         perform_stencil<<<dimsBlocks,dimsThreads>>>(aos_d, l2, l, g, offset*(t%2));
+        //CUCALL( cudaGetLastError());
         cudaDeviceSynchronize();
 
         perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 0, offset*(t%2), t); 
         cudaDeviceSynchronize();
     }
     
+    CUCALL( cudaGetLastError());
     gettimeofday(&end, NULL);
 
     secs_used=(end.tv_sec - start.tv_sec); //avoid overflow by subtracting first
     micros_used= ((secs_used*1000000) + end.tv_usec) - (start.tv_usec);
+    cudaDeviceSynchronize();
     printf("For semistructured micros_used: %d\n\n",micros_used);
-/*
+
     real *out = (real *) malloc(big_n*sizeof(real));
-    CUCALL( cudaMemcpy(out, out_d, big_n*sizeof(real), cudaMemcpyDeviceToHost) );
+    cudaMemcpy(out, out_d, big_n*sizeof(real), cudaMemcpyDeviceToHost);
 
     cudaDeviceSynchronize();
     printf("first two elements of out_d: %f %f %f %f\n", out[0], out[1], out[2], out[3]);
-*/
-    CUCALL( cudaMemcpy(aos, aos_d, total_mem, cudaMemcpyDeviceToHost) );
+
+    cudaError_t er = cudaMemcpy(aos, aos_d, total_mem, cudaMemcpyDeviceToHost);
     
+    if ( er != cudaSuccess ) {
+        printf("balls\n");
+    }
     cudaDeviceSynchronize();
     printf("Element in aos is %f\n", aos[io_block_ind].u[arrindz][arrindy][arrindx]);
 
@@ -357,13 +364,13 @@ __global__ void perform_IO(real *input_d, real *output_d, real* out_d, real ins,
 __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int offset) {
     //Launch with blocksize threads in each dimension.
  
-    int x = threadIdx.z; //This is backwards on purpose becauseI named dimensions wrong. :(
+    int x = threadIdx.x; //This is backwards on purpose becauseI named dimensions wrong. :(
     int y = threadIdx.y;
-    int z = threadIdx.x;
+    int z = threadIdx.z;
 
     int bl = blockIdx.x;
 
-    int k = aos[bl].k[x][y][z];
+    int k = aos[bl].k[z][y][x];
     //point to arrays in global memory. These should use Cuda broadcast when compiled.
 
     bl_array *u1_g = (bl_array*) ( (char*) &(aos[bl].u1[0][0][0]) - offset);
@@ -380,45 +387,45 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
 
     __shared__ real u1_s[Bz+2][By+2][Bx+2]; //u1 in shared (L1 cache) memory.
 
-    u1_s[x+1][y+1][z+1] = *u1_g[x][y][z];
+    u1_s[x+1][y+1][z+1] = *(u1_g)[z][y][x];
 
     if ( x == 0 ) { 
-        u1_s[x][y][z] = *u1_l_g[Bz-1][y][z];
+        u1_s[z][y][x] = *(u1_l_g)[Bx-1][y][x];
     } else if( x == Bz-1 ) {
-        u1_s[x][y][z] = *u1_r_g[0][y][z];
+        u1_s[z][y][x] = *(u1_r_g)[0][y][x];
     }
     else if ( y == 0 ) { 
-        u1_s[x][y][z] = *u1_a_g[x][By-1][z];
+        u1_s[z][y][x] = *(u1_a_g)[x][By-1][x];
     } else if( y == By-1 ) {
-        u1_s[x][y][z] = *u1_f_g[x][0][z];
+        u1_s[z][y][x] = *(u1_f_g)[x][0][x];
     }
 
     else if ( z == 0 ) {
-        u1_s[x][y][z] = *u1_d_g[x][y][Bx-1];
+        u1_s[z][y][x] = *(u1_d_g)[z][y][Bx-1];
     } else if( z == Bx-1 ) {
-        u1_s[x][y][z] = *u1_u_g[x][y][0];
+        u1_s[z][y][x] = *(u1_u_g)[z][y][0];
     }
     
     __syncthreads();
 
     x++;y++;z++;
 
-    *u_g[x-1][y-1][z-1] = ((2 - l2 * k) * u1_s[x][y][z] +
-                                   l2 * ( u1_s[x][y][z+1] + 
-                                          u1_s[x][y][z-1] + 
-                                          u1_s[x][y+1][z] + 
-                                          u1_s[x][y-1][z] + 
-                                          u1_s[x+1][y][z] +
-                                          u1_s[x-1][y][z] ) +
-                                          (0.5 * l * g * (6 - k) - 1) * *u_g[x-1][y-1][z-1])/(1 + 0.5 * l * g * (6 - k));
+    *(u_g)[z-1][y-1][x-1] = ((2 - l2 * k) * u1_s[z][y][x] +
+                                   l2 * ( u1_s[z][y][x+1] + 
+                                          u1_s[z][y][x-1] + 
+                                          u1_s[z][y+1][x] + 
+                                          u1_s[z][y-1][x] + 
+                                          u1_s[z+1][y][x] +
+                                          u1_s[z-1][y][x] ) +
+                                          (0.5 * l * g * (6 - k) - 1) * *(u_g)[z-1][y-1][x-1])/(1 + 0.5 * l * g * (6 - k));
 
     if (k == 0) {
-        *u_g[x-1][y-1][z-1] = 0.0;
+        *(u_g)[z-1][y-1][x-1] = 0.0;
     }
 
     __syncthreads();
-    aos[bl].u[x-1][y-1][z-1] = 0.0;
-    aos[bl].u1[x-1][y-1][z-1] = 0.0;
+    aos[bl].u[z-1][y-1][x-1] = 0.0;
+    aos[bl].u1[z-1][y-1][x-1] = 0.0;
 }
 
 __global__ void perform_stencil_structured(real* u, real* u1, char* k_d, real l2, real l, real g, int X, int Y, int Z) {
