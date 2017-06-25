@@ -14,18 +14,16 @@ if ( cudaSuccess != result )            \
     fprintf(stderr, "CUDA error %i in %s : %s ( %s ) \n", result, __FILE__, __LINE__, cudaGetErrorString( result ), #call); \
 }
 
-//Block size
-#define Bl 4
-#define Bm 8
-#define Bp 8
+//Bzock size
+#define Bz 4
+#define By 8
+#define Bx 8
 
 //Sphere radius
 #define R 64/2
 
 
-//        std::cerr << "CUDA error " << result << " in " << __FILE__ << ":" << __LINE__ << ": " << cudaGetErrorString( result ) << " (" << #call << ")" << std::endl; 
-
-typedef real bl_array[Bl][Bm][Bp];
+typedef real bl_array[Bz][By][Bx];
 struct block {
     int up; //z direction
     int down;
@@ -35,7 +33,7 @@ struct block {
     int aft;
     bl_array u;
     bl_array u1;
-    char k[Bl][Bm][Bp];
+    char k[Bz][By][Bx];
 };
 
 __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int offset);
@@ -48,9 +46,9 @@ char is_block_internal(int x, int y, int z, char *array, int xmax, int ymax, int
     //This function takes coordinates and returns true if any points within a 
     // blocksize starting on that point are inside the room.
     int i, j, k;
-    for (i = x; i < x+Bl; i++) {
-        for (j = y; j < y+Bm; j++) {
-            for (k = z; k < z+Bp; k++) {
+    for (i = x; i < x+Bz; i++) {
+        for (j = y; j < y+By; j++) {
+            for (k = z; k < z+Bx; k++) {
                 if (  i<zmax && j<ymax && k<xmax && array[i*ymax*xmax + j*xmax + k]) {
                     return TRUE;
                  }
@@ -63,9 +61,9 @@ char is_block_internal(int x, int y, int z, char *array, int xmax, int ymax, int
 
 char copy_to_struct(int x, int y, int z, struct block *bl, char *array, int xmax, int ymax, int zmax) {
     int i, j, k;
-    for (i = x; i < x+Bl; i++) {
-        for (j = y; j < y+Bm; j++) {
-            for (k = z; k < z+Bp; k++) {
+    for (i = x; i < x+Bz; i++) {
+        for (j = y; j < y+By; j++) {
+            for (k = z; k < z+Bx; k++) {
                 if ( i<zmax && j<ymax && k<xmax ) {
                     bl->k[i-x][j-y][k-z] = array[i*ymax*xmax + j*xmax + k];
                 } else {
@@ -96,9 +94,9 @@ int main() {
     real l = sqrt(l2);
     real r = 0.9; //Wall reflection coefficient.
     real g = (1-r)/(1+r);
-    real h = 0.02; //grid spacing (m)
+    real h = 0.015; //grid spacing (m)
     real c = 343; //Speed of sound
-    real duration = 100.1; //seconds
+    real duration = 0.1; //seconds
 
     //Execute circle example.
     real radius = 10.0; // meters
@@ -146,9 +144,9 @@ int main() {
 
     // BEGIN DATA PREP SECTION
 
-    int num_blocks_z = Z/Bl;
-    int num_blocks_y = Y/Bm;
-    int num_blocks_x = X/Bp;
+    int num_blocks_z = (Z + Bz - 1)/Bz; //Round up in case end block is half populated.
+    int num_blocks_y = (Y + By - 1)/By;
+    int num_blocks_x = (X + Bx - 1)/Bx;
     int total_blocks = num_blocks_z*num_blocks_y*num_blocks_x;
 
     //Create an array storing the location of each block.
@@ -160,7 +158,7 @@ int main() {
     for (i = 0; i < num_blocks_z; i++) {
         for (j = 0; j < num_blocks_y; j++) {
             for (k = 0; k < num_blocks_x; k++) {
-                if ( is_block_internal(i * Bl, j * Bm, k * Bp, &(is_in_sphere[0]), X,Y,Z) ) {
+                if ( is_block_internal(i * Bz, j * By, k * Bx, &(is_in_sphere[0]), X,Y,Z) ) {
                     index_of_struct[i*num_blocks_y*num_blocks_x + j*num_blocks_x + k] = blocks_in;
                     blocks_in++;
                 }
@@ -192,7 +190,7 @@ int main() {
                 index = index_of_struct[i*num_blocks_y*num_blocks_x + j*num_blocks_x + k];
                 
                 if (index != 0) {
-                    copy_to_struct(i * Bl, j * Bm, k * Bp, &(aos[index]), &(is_in_sphere[0]), X, Y, Z);
+                    copy_to_struct(i * Bz, j * By, k * Bx, &(aos[index]), &(is_in_sphere[0]), X, Y, Z);
                 }
 
             }
@@ -228,6 +226,28 @@ int main() {
         }
     }
 
+    //Translate from structured array index to index of, and within, struct.
+
+    int coords[3]; //{x,y,z}
+
+    //Set this as origin for now
+    coords[0] = coords[1] = coords[2] = ori;
+    
+
+    int blockindx = coords[0]/Bx;
+    int blockindy = coords[1]/By;
+    int blockindz = coords[2]/Bz;
+
+    int io_block_ind = index_of_struct[blockindz *num_blocks_x*num_blocks_y + blockindy *num_blocks_x + blockindx];
+
+    int arrindx = coords[0]%Bx;
+    int arrindy = coords[1]%By;
+    int arrindz = coords[2]%Bz;
+
+    if ( aos[io_block_ind].k[arrindz][arrindy][arrindx]) {
+        printf("test1 pass\n");
+    }
+
     //=======================================================
     //=======================================================
     // END OF DATA PREP SECTION - put this into separate file eventually.
@@ -243,7 +263,7 @@ int main() {
  
     //Set Cuda coefficients,
     dim3 dimsBlocks(blocks_in,1,1);
-    dim3 dimsThreads(Bl,Bm,Bp);
+    dim3 dimsThreads(Bz,By,Bx);
 
     dim3 dimsIO(1,1,1);
 
@@ -269,21 +289,21 @@ int main() {
     offset = (int) ( ((char*) &(aos[0].u1[0][0][0])) - ((char*) &(aos[0].u[0][0][0])) );
 
     printf("offset between arrays in struct is %i chars.\n", offset);
- 
     
     //Set input and output locations
-    // HARDCODED: calculate from COORDS eventually.
-    real *input_d = &(aos_d[blocks_in/2].u[Bl/2][Bm/2][Bp/2]);
-
-    real *output_d = &(aos_d[blocks_in/2].u[Bl/2][Bm/2][Bp/2]);
+    real *input_d = &(aos[io_block_ind].u[arrindz][arrindy][arrindx]);
+    real *output_d = &(aos[io_block_ind].u[arrindz][arrindy][arrindx]);
   
+    printf("input/output point has %i neighbours.\n", aos[io_block_ind].k[arrindz][arrindy][arrindx]);
+
     struct timeval start, end;
     long secs_used,micros_used;
 
+    cudaDeviceSynchronize();
     gettimeofday(&start, NULL);
-    //Do the stuff you want to time here
     
     perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 1.0, 0, 0); 
+    perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 1.0, offset, 0); 
     cudaDeviceSynchronize();
 
     int t;
@@ -301,82 +321,22 @@ int main() {
     secs_used=(end.tv_sec - start.tv_sec); //avoid overflow by subtracting first
     micros_used= ((secs_used*1000000) + end.tv_usec) - (start.tv_usec);
     printf("For semistructured micros_used: %d\n\n",micros_used);
-
+/*
     real *out = (real *) malloc(big_n*sizeof(real));
-    cudaMemcpy(out, out_d, big_n*sizeof(real), cudaMemcpyDeviceToHost);
+    CUCALL( cudaMemcpy(out, out_d, big_n*sizeof(real), cudaMemcpyDeviceToHost) );
 
-    printf("first two elements of out_d: %f %f\n", out[0], out[1]);
+    cudaDeviceSynchronize();
+    printf("first two elements of out_d: %f %f %f %f\n", out[0], out[1], out[2], out[3]);
+*/
+    CUCALL( cudaMemcpy(aos, aos_d, total_mem, cudaMemcpyDeviceToHost) );
+    
+    cudaDeviceSynchronize();
+    printf("Element in aos is %f\n", aos[io_block_ind].u[arrindz][arrindy][arrindx]);
 
     cudaFree(aos_d);
+    cudaFree(out_d);
     free(aos);
     printf("freed cuda and host mem\n");
-
-    //===================================================
-    //Basic version.
-    // Set up grid and blocks
-    printf("running basic version of experiment\n");
-    int Gl = X/Bl;
-    int Gm = Y/Bm;
-    int Gp = Z/Bp;
-
-    dim3 dimBlockInt(Bl, Bm, Bp);
-    dim3 dimGridInt(Gl, Gm, Gp);
-    size_t mem_size = X*Y*Z*sizeof(real);
-    real *u_d, *u1_d, *dummy_ptr;
-    char *k_d;
-
-    // Initialise memory on device
-    printf("Allocating device memory.\n");
-    cudaMalloc(&u_d, mem_size); 
-    cudaMemset(u_d, 0, mem_size);
-    cudaMalloc(&u1_d, mem_size); 
-    cudaMemset(u1_d, 0, mem_size);
-    cudaMalloc(&k_d, X*Y*Z*sizeof(char));
-    printf("Copying data to device.\n");
-    cudaMemcpy(k_d, &(is_in_sphere[0]), X*Y*Z*sizeof(char), cudaMemcpyHostToDevice);
-
-    input_d = &(u_d[(X*Y*Z/2)]);
-    output_d = &(u_d[(X*Y*Z/2)]);
-    
-    printf("input/output point has %i neighbours.\n", is_in_sphere[X/2*Y/2*Z/2]);
-
-    gettimeofday(&start, NULL);
-
-    perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 1.0, 0, 0); 
-    cudaDeviceSynchronize();
-
-    for (t = 1; t < big_n; t++) {
-        
-        // update pointers
-        dummy_ptr = u1_d;
-        u1_d = u_d;
-        u_d = dummy_ptr;
-        
-        input_d = &(u_d[(X*Y*Z/2)]);
-        output_d = &(u_d[(X*Y*Z/2)]);
-
-        //do stencil
-        perform_stencil_structured<<<dimGridInt,dimBlockInt>>>(u_d, u1_d, k_d, l2, l, g, X, Y, Z);
-        cudaDeviceSynchronize();
-
-        perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 0, 0, t); 
-        cudaDeviceSynchronize();
-    }
-
-    cudaMemcpy(out, out_d, big_n*sizeof(real), cudaMemcpyDeviceToHost);
-
-    gettimeofday(&end, NULL);
-
-    secs_used=(end.tv_sec - start.tv_sec); //avoid overflow by subtracting first
-    micros_used= ((secs_used*1000000) + end.tv_usec) - (start.tv_usec);
-    printf("For structured: micros_used: %d\n",micros_used);
-
-
-    printf("first two elements of out_d: %f %f\n", out[0], out[1]);
-
-    cudaFree(u_d);
-    cudaFree(u_d);
-    cudaFree(u1_d);
 
     return 0;
 }
@@ -406,8 +366,8 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
     int k = aos[bl].k[x][y][z];
     //point to arrays in global memory. These should use Cuda broadcast when compiled.
 
-    bl_array *u1_g = (bl_array*) ( (char*) &aos[bl].u1[0][0][0] - offset);
-    bl_array *u_g  = (bl_array*) ( (char*) &aos[bl].u[0][0][0] + offset);
+    bl_array *u1_g = (bl_array*) ( (char*) &(aos[bl].u1[0][0][0]) - offset);
+    bl_array *u_g  = (bl_array*) ( (char*) &(aos[bl].u[0][0][0]) + offset);
 
     bl_array *u1_r_g  = (bl_array*) ( (char*) &(aos[aos[bl].right].u1[0][0][0]) - offset);
     bl_array *u1_l_g  = (bl_array*) ( (char*) &(aos[aos[bl].left ].u1[0][0][0]) - offset);
@@ -418,24 +378,24 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
     bl_array *u1_u_g  = (bl_array*) ( (char*) &(aos[aos[bl].up  ].u1[0][0][0]) - offset);
     bl_array *u1_d_g  = (bl_array*) ( (char*) &(aos[aos[bl].down].u1[0][0][0]) - offset);
 
-    __shared__ real u1_s[Bl+2][Bm+2][Bp+2]; //u1 in shared (L1 cache) memory.
+    __shared__ real u1_s[Bz+2][By+2][Bx+2]; //u1 in shared (L1 cache) memory.
 
     u1_s[x+1][y+1][z+1] = *u1_g[x][y][z];
 
     if ( x == 0 ) { 
-        u1_s[x][y][z] = *u1_l_g[Bl-1][y][z];
-    } else if( x == Bl-1 ) {
+        u1_s[x][y][z] = *u1_l_g[Bz-1][y][z];
+    } else if( x == Bz-1 ) {
         u1_s[x][y][z] = *u1_r_g[0][y][z];
     }
     else if ( y == 0 ) { 
-        u1_s[x][y][z] = *u1_a_g[x][Bm-1][z];
-    } else if( y == Bm-1 ) {
+        u1_s[x][y][z] = *u1_a_g[x][By-1][z];
+    } else if( y == By-1 ) {
         u1_s[x][y][z] = *u1_f_g[x][0][z];
     }
 
     else if ( z == 0 ) {
-        u1_s[x][y][z] = *u1_d_g[x][y][Bp-1];
-    } else if( z == Bp-1 ) {
+        u1_s[x][y][z] = *u1_d_g[x][y][Bx-1];
+    } else if( z == Bx-1 ) {
         u1_s[x][y][z] = *u1_u_g[x][y][0];
     }
     
@@ -453,15 +413,19 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
                                           (0.5 * l * g * (6 - k) - 1) * *u_g[x-1][y-1][z-1])/(1 + 0.5 * l * g * (6 - k));
 
     if (k == 0) {
-        *u_g[x-1][y-1][z-1] = 0;
+        *u_g[x-1][y-1][z-1] = 0.0;
     }
+
+    __syncthreads();
+    aos[bl].u[x-1][y-1][z-1] = 0.0;
+    aos[bl].u1[x-1][y-1][z-1] = 0.0;
 }
 
 __global__ void perform_stencil_structured(real* u, real* u1, char* k_d, real l2, real l, real g, int X, int Y, int Z) {
     // get x,y,z from thread and block Id’s
-    int x = blockIdx.x * Bl + threadIdx.x;
-    int y = blockIdx.y * Bm + threadIdx.y;
-    int z = blockIdx.z * Bp + threadIdx.z;
+    int x = blockIdx.x * Bz + threadIdx.x;
+    int y = blockIdx.y * By + threadIdx.y;
+    int z = blockIdx.z * Bx + threadIdx.z;
 
     // Test that not at boundary
     if( (x>0) && (x<(X-1))
@@ -475,4 +439,87 @@ __global__ void perform_stencil_structured(real* u, real* u1, char* k_d, real l2
                 l2*(u1[cp-1]+u1[cp+1]+u1[cp-X]+u1[cp+X]+u1[cp-Y*X]+u1[cp+Y*X]) +
                 (0.5 * l * g * (6 - k) - 1) * u[cp])/(1 + 0.5 * l * g * (6 - k));
     }
+}
+
+void structured_version(int X, int Y, int Z, int big_n, char *is_in_sphere, real l, real l2, real g, int coords[3]) {
+    //===================================================
+    // Set up grid and blocks
+    printf("running basic version of experiment\n");
+    int Gl = X/Bz;
+    int Gm = Y/By;
+    int Gp = Z/Bx;
+
+    dim3 dimBzockInt(Bz, By, Bx);
+    dim3 dimGridInt(Gl, Gm, Gp);
+    dim3 dimsIO(1,1,1);
+
+    size_t mem_size = X*Y*Z*sizeof(real);
+    real *u_d, *u1_d, *dummy_ptr;
+    char *k_d;
+
+    // Initialise memory on device
+    printf("Allocating device memory.\n");
+    cudaMalloc(&u_d, mem_size); 
+    cudaMemset(u_d, 0, mem_size);
+    cudaMalloc(&u1_d, mem_size); 
+    cudaMemset(u1_d, 0, mem_size);
+    cudaMalloc(&k_d, X*Y*Z*sizeof(char));
+    printf("Copying data to device.\n");
+
+    cudaMemcpy(k_d, &(is_in_sphere[0]), X*Y*Z*sizeof(char), cudaMemcpyHostToDevice);
+
+    real *out_d;
+    CUCALL( cudaMalloc((void**)&out_d, big_n *sizeof(real)) );
+    CUCALL( cudaMemset(out_d, 0, big_n *sizeof(real)) );
+
+
+    real *input_d, *output_d;
+    input_d = &(u_d[(X*Y*Z/2)]);
+    output_d = &(u_d[(X*Y*Z/2)]);
+    
+    printf("input/output point has %i neighbours.\n", is_in_sphere[X/2*Y/2*Z/2]);
+ 
+    struct timeval start, end;
+    long secs_used,micros_used;
+   
+    int t;
+    gettimeofday(&start, NULL);
+
+    perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 1.0, 0, 0); 
+    cudaDeviceSynchronize();
+    
+    for (t = 1; t < big_n; t++) {
+        
+        // update pointers
+        dummy_ptr = u1_d;
+        u1_d = u_d;
+        u_d = dummy_ptr;
+        
+        input_d = &(u_d[(X*Y*Z/2)]);
+        output_d = &(u_d[(X*Y*Z/2)]);
+
+        //do stencil
+        perform_stencil_structured<<<dimGridInt,dimBzockInt>>>(u_d, u1_d, k_d, l2, l, g, X, Y, Z);
+        cudaDeviceSynchronize();
+
+        perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 0, 0, t); 
+        cudaDeviceSynchronize();
+    }
+
+    real *out = (real *) malloc(big_n*sizeof(real));
+    cudaMemcpy(out, out_d, big_n*sizeof(real), cudaMemcpyDeviceToHost);
+
+    gettimeofday(&end, NULL);
+
+    secs_used=(end.tv_sec - start.tv_sec); //avoid overflow by subtracting first
+    micros_used= ((secs_used*1000000) + end.tv_usec) - (start.tv_usec);
+    printf("For structured: micros_used: %d\n",micros_used);
+
+
+    printf("first two elements of out_d: %f %f %f %f\n", out[0], out[1], out[2], out[3]);
+
+    cudaFree(u_d);
+    cudaFree(u_d);
+    cudaFree(u1_d);
+
 }
