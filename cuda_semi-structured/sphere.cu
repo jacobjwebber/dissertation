@@ -15,7 +15,7 @@ if ( cudaSuccess != result )            \
 }
 
 //Bzock size
-#define Bz 8
+#define Bz 4
 #define By 8
 #define Bx 8
 
@@ -311,9 +311,13 @@ int main() {
     int t;
     for (t = 1; t < big_n; t++) {
         //do stencil
-        perform_stencil<<<7,dimsThreads>>>(aos_d, l2, l, g, t%2);
-        //CUCALL( cudaGetLastError());
+        perform_stencil<<<dimsBlocks,dimsThreads>>>(aos_d, l2, l, g, t%2);
         cudaDeviceSynchronize();
+        if ( cudaGetLastError() != cudaSuccess) {
+            printf("PJG: Error!\n");
+            CUCALL( cudaGetLastError());
+            break;
+        }
 
         perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 0, 0, t); 
         cudaDeviceSynchronize();
@@ -400,20 +404,24 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
         u1_d_g  = &aos[aos[bl].down].u;
     }
  
-
     __shared__ real u1_s[Bz+2][By+2][Bx+2]; //u1 in shared (L1 cache) memory.
 
     u1_s[x+1][y+1][z+1] = *(u1_g)[z][y][x];
 
     if ( x == 0 ) { 
-        u1_s[z][y][x] = *(u1_l_g)[Bx-1][y][x];
+        u1_s[z][y][x] = *(u1_l_g)[Bz-1][y][x];
     } else if( x == Bz-1 ) {
         u1_s[z][y][x] = *(u1_r_g)[0][y][x];
     }
     else if ( y == 0 ) { 
-        u1_s[z][y][x] = *(u1_a_g)[x][By-1][x];
+        printf("PJG %d %d %d %d\n",bl, z, By-1, x);
+        u1_s[z][y][x] =
+        aos[aos[bl].aft ].u[z][By-1][x];
+        //*(u1_a_g)[z]
+        //[By-1]
+        //[x];
     } else if( y == By-1 ) {
-        u1_s[z][y][x] = *(u1_f_g)[x][0][x];
+        u1_s[z][y][x] = *(u1_f_g)[z][0][x];
     }
 
     else if ( z == 0 ) {
