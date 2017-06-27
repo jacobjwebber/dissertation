@@ -370,7 +370,7 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
 
     int bl = blockIdx.x;
 
-    int k = aos[bl].k[z][y][x];
+    char k = aos[bl].k[z][y][x];
     //point to arrays in global memory. These should use Cuda broadcast when compiled.
     
     bl_array *u1_g, *u_g, *u1_r_g, *u1_l_g, *u1_f_g, *u1_a_g, *u1_u_g, *u1_d_g;
@@ -426,14 +426,16 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
 
     x++;y++;z++;
 
-    (*u_g)[z-1][y-1][x-1] = ((2 - l2 * k) * u1_s[z][y][x] +
+    //uzz(IN)=((2-l2*Ki(IN)).*uz(IN) + l2*(uz(iIN+1) + uz(iIN-1) + uz(iIN+Ni) + uz(iIN-Ni) + uz(iIN+Ni*Nj) + uz(iIN-Ni*Nj))+(0.5*l*g*(6-Ki(IN))-1).*uzz(IN))./(1+0.5*l*g*(6-Ki(IN)));
+    
+    (*u_g)[z-1][y-1][x-1] = ((2.0 - l2 * (real) k) * u1_s[z][y][x] +
                                    l2 * ( u1_s[z][y][x+1] + 
                                           u1_s[z][y][x-1] + 
                                           u1_s[z][y+1][x] + 
                                           u1_s[z][y-1][x] + 
                                           u1_s[z+1][y][x] +
                                           u1_s[z-1][y][x] ) +
-                                          (0.5 * l * g * (6 - k) - 1) * (*u_g)[z-1][y-1][x-1])/(1 + 0.5 * l * g * (6 - k));
+                                          (0.5 * l * g * (6.0 - (real) k) - 1.0) * (*u_g)[z-1][y-1][x-1])/(1 + 0.5 * l * g * (6 - k));
 
     if (k == 0) {
         (*u_g)[z-1][y-1][x-1] = 0.0;
