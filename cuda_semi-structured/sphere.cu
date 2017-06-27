@@ -94,7 +94,7 @@ int main() {
     real l = sqrt(l2);
     real r = 0.9; //Wall reflection coefficient.
     real g = (1-r)/(1+r);
-    real h = 1.0; //grid spacing (m)
+    real h = 0.10; //grid spacing (m)
     real c = 343; //Speed of sound
     real duration = 0.1; //seconds
 
@@ -249,6 +249,7 @@ int main() {
     }
 
     aos[io_block_ind].u1[arrindz][arrindy][arrindx] = 1.0;
+    aos[io_block_ind].u[arrindz][arrindy][arrindx] = 1.0;
 
     //=======================================================
     //=======================================================
@@ -293,11 +294,6 @@ int main() {
     real *output_d = &(aos[io_block_ind].u[arrindz][arrindy][arrindx]);
   
     printf("input/output point has %i neighbours.\n", aos[io_block_ind].k[arrindz][arrindy][arrindx]);
-
-    printf("in block 8: u,d,f,a,l,r = %i %i %i %i %i %i\n", aos[8].up, aos[8].down, aos[8].fore, aos[8].aft, aos[8].left, aos[8].right);
-    printf("in block 7: u,d,f,a,l,r = %i %i %i %i %i %i\n", aos[7].up, aos[7].down, aos[7].fore, aos[7].aft, aos[7].left, aos[7].right);
-    printf("in block 6: u,d,f,a,l,r = %i %i %i %i %i %i\n", aos[6].up, aos[6].down, aos[6].fore, aos[6].aft, aos[6].left, aos[6].right);
-    printf("in block 0: u,d,f,a,l,r = %i %i %i %i %i %i\n", aos[0].up, aos[0].down, aos[0].fore, aos[0].aft, aos[0].left, aos[0].right);
 
     struct timeval start, end;
     long secs_used,micros_used;
@@ -344,6 +340,7 @@ int main() {
     }
     cudaDeviceSynchronize();
     printf("Element in aos is %f\n", aos[io_block_ind].u[arrindz][arrindy][arrindx]);
+    printf("Element in aos is %f\n", aos[io_block_ind+1].u[arrindz][arrindy][arrindx]);
 
     cudaFree(aos_d);
     cudaFree(out_d);
@@ -379,72 +376,67 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
     bl_array *u1_g, *u_g, *u1_r_g, *u1_l_g, *u1_f_g, *u1_a_g, *u1_u_g, *u1_d_g;
 
     if ( !swap ) {
-        u1_g = &aos[bl].u1;
-        u_g  = &aos[bl].u;
+        u1_g = &(aos[bl].u1);
+        u_g  = &(aos[bl].u);
 
-        u1_r_g  = &aos[aos[bl].right].u1;
-        u1_l_g  = &aos[aos[bl].left ].u1;
+        u1_r_g  = &(aos[aos[bl].right].u1);
+        u1_l_g  = &(aos[aos[bl].left ].u1);
 
-        u1_f_g  = &aos[aos[bl].fore].u1;
-        u1_a_g  = &aos[aos[bl].aft ].u1;
+        u1_f_g  = &(aos[aos[bl].fore].u1);
+        u1_a_g  = &(aos[aos[bl].aft ].u1);
 
-        u1_u_g  = &aos[aos[bl].up  ].u1;
-        u1_d_g  = &aos[aos[bl].down].u1;
+        u1_u_g  = &(aos[aos[bl].up  ].u1);
+        u1_d_g  = &(aos[aos[bl].down].u1);
     } else {
-        u1_g = &aos[bl].u;
-        u_g  = &aos[bl].u1;
+        u1_g = &(aos[bl].u);
+        u_g  = &(aos[bl].u1);
 
-        u1_r_g  = &aos[aos[bl].right].u;
-        u1_l_g  = &aos[aos[bl].left ].u;
+        u1_r_g  = &(aos[aos[bl].right].u);
+        u1_l_g  = &(aos[aos[bl].left ].u);
 
-        u1_f_g  = &aos[aos[bl].fore].u;
-        u1_a_g  = &aos[aos[bl].aft ].u;
+        u1_f_g  = &(aos[aos[bl].fore].u);
+        u1_a_g  = &(aos[aos[bl].aft ].u);
 
-        u1_u_g  = &aos[aos[bl].up  ].u;
-        u1_d_g  = &aos[aos[bl].down].u;
+        u1_u_g  = &(aos[aos[bl].up  ].u);
+        u1_d_g  = &(aos[aos[bl].down].u);
     }
  
     __shared__ real u1_s[Bz+2][By+2][Bx+2]; //u1 in shared (L1 cache) memory.
 
-    u1_s[x+1][y+1][z+1] = *(u1_g)[z][y][x];
+    u1_s[z+1][y+1][x+1] = (*u1_g)[z][y][x];
 
     if ( x == 0 ) { 
-        u1_s[z][y][x] = *(u1_l_g)[Bz-1][y][x];
+        u1_s[z][y][x] = (*u1_l_g)[Bz-1][y][x];
     } else if( x == Bz-1 ) {
-        u1_s[z][y][x] = *(u1_r_g)[0][y][x];
+        u1_s[z][y][x] = (*u1_r_g)[0][y][x];
     }
     else if ( y == 0 ) { 
-        printf("PJG %d %d %d %d\n",bl, z, By-1, x);
-        u1_s[z][y][x] =
-        aos[aos[bl].aft ].u[z][By-1][x];
-        //*(u1_a_g)[z]
-        //[By-1]
-        //[x];
+        u1_s[z][y][x] = (*u1_a_g)[z][By-1][x];
     } else if( y == By-1 ) {
-        u1_s[z][y][x] = *(u1_f_g)[z][0][x];
+        u1_s[z][y][x] = (*u1_f_g)[z][0][x];
     }
 
     else if ( z == 0 ) {
-        u1_s[z][y][x] = *(u1_d_g)[z][y][Bx-1];
+        u1_s[z][y][x] = (*u1_d_g)[z][y][Bx-1];
     } else if( z == Bx-1 ) {
-        u1_s[z][y][x] = *(u1_u_g)[z][y][0];
+        u1_s[z][y][x] = (*u1_u_g)[z][y][0];
     }
     
     __syncthreads();
 
     x++;y++;z++;
 
-    *(u_g)[z-1][y-1][x-1] = ((2 - l2 * k) * u1_s[z][y][x] +
+    (*u_g)[z-1][y-1][x-1] = ((2 - l2 * k) * u1_s[z][y][x] +
                                    l2 * ( u1_s[z][y][x+1] + 
                                           u1_s[z][y][x-1] + 
                                           u1_s[z][y+1][x] + 
                                           u1_s[z][y-1][x] + 
                                           u1_s[z+1][y][x] +
                                           u1_s[z-1][y][x] ) +
-                                          (0.5 * l * g * (6 - k) - 1) * *(u_g)[z-1][y-1][x-1])/(1 + 0.5 * l * g * (6 - k));
+                                          (0.5 * l * g * (6 - k) - 1) * (*u_g)[z-1][y-1][x-1])/(1 + 0.5 * l * g * (6 - k));
 
     if (k == 0) {
-        *(u_g)[z-1][y-1][x-1] = 0.0;
+        (*u_g)[z-1][y-1][x-1] = 0.0;
     }
     
 
