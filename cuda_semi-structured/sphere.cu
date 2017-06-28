@@ -16,7 +16,7 @@ if ( cudaSuccess != result )            \
 
 //Bzock size
 #define Bz 4
-#define By 8
+#define By 4
 #define Bx 8
 
 //Sphere radius
@@ -41,6 +41,8 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
 __global__ void perform_IO(real *input_d, real *output_d, real *out_d, real ins, int offset, int t);
 
 __global__ void perform_stencil_structured(real* u, real* u1, char* k_d, real l2, real l, real g, int X, int Y, int Z);
+
+void structured_version(int X, int Y, int Z, int big_n, char *is_in_sphere, real l, real l2, real g, int coords[3]);
 
 char is_block_internal(int x, int y, int z, char *array, int xmax, int ymax, int zmax) {
     //This function takes coordinates and returns true if any points within a 
@@ -94,7 +96,7 @@ int main() {
     real l = sqrt(l2);
     real r = 0.9; //Wall reflection coefficient.
     real g = (1-r)/(1+r);
-    real h = 0.10; //grid spacing (m)
+    real h = 0.15; //grid spacing (m)
     real c = 343; //Speed of sound
     real duration = 0.1; //seconds
 
@@ -248,8 +250,8 @@ int main() {
         printf("test1 pass\n");
     }
 
-    aos[io_block_ind].u1[arrindz][arrindy][arrindx] = 1.0;
-    aos[io_block_ind].u[arrindz][arrindy][arrindx] = 1.0;
+    aos[io_block_ind].u1[arrindz][arrindy][arrindx] = 0.1;
+    aos[io_block_ind].u[arrindz][arrindy][arrindx] = 0.1;
 
     //=======================================================
     //=======================================================
@@ -290,8 +292,8 @@ int main() {
     CUCALL( cudaGetLastError());
 
     //Set input and output locations
-    real *input_d = &(aos[io_block_ind].u[arrindz][arrindy][arrindx]);
-    real *output_d = &(aos[io_block_ind].u[arrindz][arrindy][arrindx]);
+    real *input_d = &(aos_d[io_block_ind].u[arrindz][arrindy][arrindx]);
+    real *output_d = &(aos_d[io_block_ind].u[arrindz][arrindy][arrindx]);
   
     printf("input/output point has %i neighbours.\n", aos[io_block_ind].k[arrindz][arrindy][arrindx]);
 
@@ -347,6 +349,10 @@ int main() {
     free(aos);
     printf("freed cuda and host mem\n");
 
+    int coordsy[3];
+
+    //structured_version( X, Y, Z, big_n, is_in_sphere, l, l2, g, coordsy);
+    
     return 0;
 }
 
@@ -354,11 +360,11 @@ __global__ void perform_IO(real *input_d, real *output_d, real* out_d, real ins,
     //Takes two pointers to reals in device memory for input/output locations.
     // These should be calculated from coords elsewhere.
     // sum in source
-    /*
-    *input_d += ins;
+    
+    //*input_d += ins;
     // set output
     out_d[t] = *output_d;
-    */
+    //*/
 }
 
 __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int swap) {
@@ -501,10 +507,10 @@ void structured_version(int X, int Y, int Z, int big_n, char *is_in_sphere, real
 
 
     real *input_d, *output_d;
-    input_d = &(u_d[(X*Y*Z/2)]);
-    output_d = &(u_d[(X*Y*Z/2)]);
+    input_d = &(u_d[coords[2]*X*Y + coords[1]*X + coords[0]]);
+    output_d = &(u_d[coords[2]*X*Y + coords[1]*X + coords[0]]);
     
-    printf("input/output point has %i neighbours.\n", is_in_sphere[X/2*Y/2*Z/2]);
+    printf("input/output point has %i neighbours.\n", is_in_sphere[coords[2]*X*Y + coords[1]*X + coords[0]]);
  
     struct timeval start, end;
     long secs_used,micros_used;
@@ -531,7 +537,11 @@ void structured_version(int X, int Y, int Z, int big_n, char *is_in_sphere, real
 
         perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 0, 0, t); 
         cudaDeviceSynchronize();
+        if (t%1000 == 0)
+            printf("#");
     }
+
+    printf("\n");
 
     real *out = (real *) malloc(big_n*sizeof(real));
     cudaMemcpy(out, out_d, big_n*sizeof(real), cudaMemcpyDeviceToHost);
@@ -545,7 +555,6 @@ void structured_version(int X, int Y, int Z, int big_n, char *is_in_sphere, real
 
     printf("first two elements of out_d: %f %f %f %f\n", out[0], out[1], out[2], out[3]);
 
-    cudaFree(u_d);
     cudaFree(u_d);
     cudaFree(u1_d);
 

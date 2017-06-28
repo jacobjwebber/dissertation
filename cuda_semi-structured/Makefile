@@ -1,6 +1,6 @@
 #Makefile for 2d example
 CC = nvcc
-CFLAGS = -lm -I/opt/cuda7/samples/common/inc -g -G
+CFLAGS = -lm -arch=sm_52 -g -G
 
 
 sphere : sphere.o
