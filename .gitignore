@@ -5,6 +5,7 @@
 deviceQuery/deviceQuery
 */sphere
 *.o
+cuda_semi-structured/sphere
 
 #Swaps
 *.swp
