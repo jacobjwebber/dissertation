@@ -5,7 +5,7 @@
 
 #define TRUE 1
 #define FALSE 0
-#define real double
+#define real float
 
 #define CUCALL( call )               \
 {                                       \
@@ -15,9 +15,9 @@ if ( cudaSuccess != result )            \
 }
 
 //Bzock size
-#define Bz 4
-#define By 4
-#define Bx 8
+#define Bz 2
+#define By 2
+#define Bx 32
 
 //Sphere radius
 #define R 64/2
@@ -350,8 +350,9 @@ int main() {
     printf("freed cuda and host mem\n");
 
     int coordsy[3];
+    coordsy[0] = coordsy[1] = coordsy[2] = ori;
 
-    //structured_version( X, Y, Z, big_n, is_in_sphere, l, l2, g, coordsy);
+    structured_version( X, Y, Z, big_n, is_in_sphere, l, l2, g, coordsy);
     
     return 0;
 }
@@ -361,7 +362,7 @@ __global__ void perform_IO(real *input_d, real *output_d, real* out_d, real ins,
     // These should be calculated from coords elsewhere.
     // sum in source
     
-    //*input_d += ins;
+    *input_d += ins;
     // set output
     out_d[t] = *output_d;
     //*/
@@ -501,6 +502,8 @@ void structured_version(int X, int Y, int Z, int big_n, char *is_in_sphere, real
 
     cudaMemcpy(k_d, &(is_in_sphere[0]), X*Y*Z*sizeof(char), cudaMemcpyHostToDevice);
 
+    printf("Copied data to device.\n");
+
     real *out_d;
     CUCALL( cudaMalloc((void**)&out_d, big_n *sizeof(real)) );
     CUCALL( cudaMemset(out_d, 0, big_n *sizeof(real)) );
@@ -557,5 +560,7 @@ void structured_version(int X, int Y, int Z, int big_n, char *is_in_sphere, real
 
     cudaFree(u_d);
     cudaFree(u1_d);
+    
+    CUCALL( cudaGetLastError());
 
 }
