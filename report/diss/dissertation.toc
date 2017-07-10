@@ -1,0 +1,14 @@
+\contentsline {section}{\numberline {1}Introduction}{1}
+\contentsline {section}{\numberline {2}Background and Literature Review}{2}
+\contentsline {subsection}{\numberline {2.1}Room Acoustics}{2}
+\contentsline {subsection}{\numberline {2.2}Graphics Processing Units (GPUs)}{2}
+\contentsline {subsection}{\numberline {2.3}The Proposed Data Structure and Method}{2}
+\contentsline {subsection}{\numberline {2.4}Possible Spectral Techniques}{2}
+\contentsline {section}{\numberline {3}Design and Implementation}{3}
+\contentsline {subsection}{\numberline {3.1}Software Development Process}{3}
+\contentsline {subsection}{\numberline {3.2}Debugging and Profiling Tools}{3}
+\contentsline {section}{\numberline {4}Results and Analysis}{4}
+\contentsline {subsection}{\numberline {4.1}Some results}{4}
+\contentsline {subsubsection}{\numberline {4.1.1}More results}{4}
+\contentsline {subsubsection}{\numberline {4.1.2}Graphs}{4}
+\contentsline {section}{\numberline {5}Conclusions}{4}
