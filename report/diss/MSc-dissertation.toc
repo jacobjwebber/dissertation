@@ -1,9 +1,9 @@
 \contentsline {chapter}{\numberline {1}Introduction}{1}
 \contentsline {chapter}{\numberline {2}Background and Literature Review}{2}
 \contentsline {section}{\numberline {2.1}Room Acoustics}{2}
-\contentsline {section}{\numberline {2.2}Graphics Processing Units (GPUs)}{2}
-\contentsline {section}{\numberline {2.3}The Proposed Data Structure and Method}{2}
-\contentsline {section}{\numberline {2.4}Possible Spectral Techniques}{2}
+\contentsline {section}{\numberline {2.2}Graphics Processing Units (GPUs)}{3}
+\contentsline {section}{\numberline {2.3}The Proposed Data Structure and Method}{3}
+\contentsline {section}{\numberline {2.4}Possible Spectral Techniques}{3}
 \contentsline {chapter}{\numberline {3}Design and Implementation}{4}
 \contentsline {section}{\numberline {3.1}Software Development Process}{4}
 \contentsline {section}{\numberline {3.2}Debugging and Profiling Tools}{4}

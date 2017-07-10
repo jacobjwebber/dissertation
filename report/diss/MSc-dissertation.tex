@@ -142,9 +142,20 @@ In the work leading up to this report, a novel technique was devised and impleme
 
 Sound is modelled using the wave equation.
 
-\begin{displaymath}
-E=mc^{2}
-\end{displaymath}
+\begin{equation}
+\frac{\partial ^2 \textbf{p}}{\partial x^2 } - \frac{1}{{c^2 }}\frac{{\partial ^2 \textbf{p}}}{{\partial t^2 }} = 0
+\end{equation}
+
+where $\textbf{p}$ is the deviation from the ambient air pressure, and $c$ is the speed of sound. This result is derived by, among others, Richard Feynman in \cite{feynman}. It is trivial to generalise this for 3 dimensional systems, which yields
+
+\begin{equation}
+\nabla^{2} \textbf{p} - \frac{1}{{c^2 }}\frac{{\partial ^2 \textbf{p}}}{{\partial t^2 }} = 0
+\end{equation}
+
+\begin{equation}
+\Bigg(\nabla \equiv \hat\textbf{i} \frac{\partial }{\partial x} + \hat \textbf{j} \frac{\partial }{\partial y} + \hat \textbf{k} \frac{\partial }{\partial z}\Bigg)
+\end{equation}
+
 
 \section{Graphics Processing Units (GPUs)}
 
@@ -161,18 +172,9 @@ the figure relative to the text if it cannot be fitted onto the current page.
 While no work was done on this, I am going to talk about it anyway.
 
 \begin{equation}
-h(x) = f \otimes g = \int\limits_{-\infty}^{\infty} f(x-u)g(u) du = \mathcal{F}^{-1}(\sqrt{2\pi} \mathcal{F}[f] \cdot \mathcal{F}[g])
+h(x) = f \otimes g = \int\limits_{-\infty}^{\infty}f(x-u)g(u) du = \mathcal{F}^{-1}\Big(\sqrt{2\pi} \mathcal{F}[f] \cdot \mathcal{F}[g]\Big)
+\label{equation:convolution}
 \end{equation}
-
-
-
-\begin{equation} \delta N_{\nu} = (\delta N_{\nu})_{ex} + (\delta N_{\nu})_{au} 
-\label{equation:delsplit}
-% note that the label is optional but allows you to refer to this
-% equation later.
-\end{equation}
-
-
 
 \begin{figure}
 
