@@ -5,7 +5,7 @@
 
 #define TRUE 1
 #define FALSE 0
-#define real float
+#define real double
 
 #define CUCALL( call )               \
 {                                       \
@@ -14,7 +14,7 @@ if ( cudaSuccess != result )            \
     fprintf(stderr, "CUDA error  %s \n", cudaGetErrorString( result ) ); \
 }
 
-//Bzock size
+//Block size
 #define Bz 2
 #define By 2
 #define Bx 32
@@ -250,8 +250,8 @@ int main() {
         printf("test1 pass\n");
     }
 
-    aos[io_block_ind].u1[arrindz][arrindy][arrindx] = 0.1;
-    aos[io_block_ind].u[arrindz][arrindy][arrindx] = 0.1;
+    aos[io_block_ind].u1[arrindz][arrindy][arrindx] = 0.0; //ZERO
+    aos[io_block_ind].u[arrindz][arrindy][arrindx] = 0.0; //ZERO
 
     //=======================================================
     //=======================================================
@@ -304,7 +304,7 @@ int main() {
     cudaDeviceSynchronize();
     gettimeofday(&start, NULL);
     
-    perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 1.0, 0, 0); 
+    perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 1.0, 0, 0); //ZERO
     cudaDeviceSynchronize();
     int t;
     for (t = 1; t < big_n; t++) {
@@ -448,11 +448,6 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
         (*u_g)[z-1][y-1][x-1] = 0.0;
     }
     
-
-    /*__syncthreads();
-    aos[bl].u[z-1][y-1][x-1] = 0.0;
-    aos[bl].u1[z-1][y-1][x-1] = 0.0;
-    */
 }
 
 __global__ void perform_stencil_structured(real* u, real* u1, char* k_d, real l2, real l, real g, int X, int Y, int Z) {
