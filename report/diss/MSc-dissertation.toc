@@ -1,16 +1,18 @@
 \contentsline {chapter}{\numberline {1}Introduction}{1}
 \contentsline {chapter}{\numberline {2}Background and Literature Review}{2}
 \contentsline {section}{\numberline {2.1}Room Acoustics}{2}
-\contentsline {section}{\numberline {2.2}Graphics Processing Units (GPUs)}{3}
-\contentsline {section}{\numberline {2.3}The Proposed Data Structure and Method}{3}
-\contentsline {section}{\numberline {2.4}Possible Spectral Techniques}{3}
-\contentsline {chapter}{\numberline {3}Design and Implementation}{4}
-\contentsline {section}{\numberline {3.1}Software Development Process}{4}
-\contentsline {section}{\numberline {3.2}Debugging and Profiling Tools}{4}
-\contentsline {chapter}{\numberline {4}Results and Analysis}{5}
-\contentsline {section}{\numberline {4.1}Some results}{5}
-\contentsline {subsection}{\numberline {4.1.1}More results}{5}
-\contentsline {chapter}{\numberline {5}Conclusions}{6}
-\contentsline {section}{\numberline {5.1}Future Work}{6}
-\contentsline {chapter}{\numberline {A}Stuff which is too detailed}{7}
-\contentsline {chapter}{\numberline {B}Stuff which no-one will read}{8}
+\contentsline {subsection}{\numberline {2.1.1}Classical Acoustics}{2}
+\contentsline {subsection}{\numberline {2.1.2}Finite Difference Schemes}{3}
+\contentsline {section}{\numberline {2.2}Graphics Processing Units (GPUs)}{5}
+\contentsline {section}{\numberline {2.3}The Proposed Data Structure and Method}{5}
+\contentsline {section}{\numberline {2.4}Other Methods}{5}
+\contentsline {chapter}{\numberline {3}Design and Implementation}{6}
+\contentsline {section}{\numberline {3.1}Software Development Process}{6}
+\contentsline {section}{\numberline {3.2}Debugging and Profiling Tools}{6}
+\contentsline {chapter}{\numberline {4}Results and Analysis}{7}
+\contentsline {section}{\numberline {4.1}Some results}{7}
+\contentsline {subsection}{\numberline {4.1.1}More results}{7}
+\contentsline {chapter}{\numberline {5}Conclusions}{8}
+\contentsline {section}{\numberline {5.1}Future Work}{8}
+\contentsline {chapter}{\numberline {A}Stuff which is too detailed}{9}
+\contentsline {chapter}{\numberline {B}Stuff which no-one will read}{10}

@@ -3,6 +3,7 @@
 \usepackage{epcc}
 \usepackage{graphics}
 \usepackage{epigraph}
+\usepackage{amsmath}
 
 \setlength\epigraphwidth{.8\textwidth}
 \setlength\epigraphrule{0pt}
@@ -139,22 +140,111 @@ In the work leading up to this report, a novel technique was devised and impleme
 \epigraph{\itshape ``He who loves practice without theory is like the sailor who boards ship without a rudder and compass and never knows where he may cast.''}{Leonardo da Vinci}
 
 \section{Room Acoustics}
-
-Sound is modelled using the wave equation.
-
-\begin{equation}
-\frac{\partial ^2 \textbf{p}}{\partial x^2 } - \frac{1}{{c^2 }}\frac{{\partial ^2 \textbf{p}}}{{\partial t^2 }} = 0
-\end{equation}
-
-where $\textbf{p}$ is the deviation from the ambient air pressure, and $c$ is the speed of sound. This result is derived by, among others, Richard Feynman in \cite{feynman}. It is trivial to generalise this for 3 dimensional systems, which yields
+\subsection{Classical Acoustics}
+Sound is modelled using the wave equation:
 
 \begin{equation}
-\nabla^{2} \textbf{p} - \frac{1}{{c^2 }}\frac{{\partial ^2 \textbf{p}}}{{\partial t^2 }} = 0
+\frac{\partial ^2 P}{\partial x^2 } - \frac{1}{{c^2 }}\frac{{\partial ^2 P}}{{\partial t^2 }} = 0
+\end{equation}
+
+where scalar field $P$ is the deviation from the ambient air pressure, and $c$ is the speed of sound. This result is derived by, among others, Richard Feynman in \cite{feynman}. It is trivial to generalise this for 3 dimensional systems, which yields
+
+\begin{equation}
+\label{equation:wave}
+\nabla^{2} P - \frac{1}{{c^2 }}\frac{{\partial ^2 P}}{{\partial t^2 }} = 0
+\end{equation}
+where
+
+\begin{equation}
+\label{equation:laplace}
+\nabla \equiv \hat{ \textbf{i}} \frac{\partial}{\partial x} + \hat{ \textbf{j}} \frac{\partial }{\partial y} + \hat{ \textbf{k}} \frac{\partial }{\partial z}
+\end{equation}
+
+Intuitively we know that a room's acoustic properties are dependent on its size and what materials form the walls and other surfaces. This is reflected in the solutions to the wave equation, where almost all environmental data is encoded in boundary conditions imposed on the $P$ scalar field. In real world applications these boundary conditions are too sophisticated for the wave equation to be solved analytically. This sophistication stems from both the shape of the room and the reflective properties of its boundaries. These reflective properties are a function of the frequency of the sound reflected.
+
+\subsection{Finite Difference Schemes}
+
+Finite difference schemes are therefore used to solve the wave equation for complex room shapes. These can provide an approximate numerical solution to the continuous wave equation.
+
+A simple equivalence between first and second order derivatives and their corresponding central difference schemes is shown in \ref{equation:difference} and \ref{equation:difference-second}.
+
+\begin{equation}
+\label{equation:difference}
+\frac{df(u)}{du} \approx \frac{f(u+h) - f(u-h)}{2h}
 \end{equation}
 
 \begin{equation}
-\Bigg(\nabla \equiv \hat\textbf{i} \frac{\partial }{\partial x} + \hat \textbf{j} \frac{\partial }{\partial y} + \hat \textbf{k} \frac{\partial }{\partial z}\Bigg)
+\label{equation:difference-second}
+\frac{d^{2}f(u)}{du^{2}} \approx \frac{f(u+h) - 2f(u) + f(u-h)}{h^{2}}
 \end{equation}
+
+This can be easily discretised if $h$ is set to be the distance in space or time between samples.
+
+When discretising the space within the room, the scalar field of pressure within room is represented as a three dimensional array of floating point numbers. The letters $l$, $m$, and $p$ are chosen to represent the samples index in each spacial dimension within the array, with n giving the time step. This means $P_{l,m,p}^{n}$ gives an approximation to $P$ at the point $(x,y,z)$ at time $t$ where $x = lH$, $y = mH$, $z = pH$ and $t = nT$. $T$ and $H$ are the sample rates in time and space respectively.
+
+When equation \ref{equation:wave} is expanded out, it is shown that in order to compute a numerical approximation of the wave equation, discrete equivalents are required to the derivatives in time, and in each of the three spacial dimensions.
+
+\begin{equation}
+\label{equation:wave-expanded}
+\frac{{\partial ^2 P}}{{\partial t^2 }} = c^2 \Bigg( \frac{\partial ^2 P}{\partial x^2 } + \frac{\partial ^2 P}{\partial y^2 }  + \frac{\partial ^2 P}{\partial z^2 } \Bigg)
+\end{equation}
+
+To replace these continuous partial derivatives a new finite difference operator, $\delta$, is introduced. From \ref{equation:difference-second} the following relations can be derived by simply replacing $h$ with $H$:
+
+\begin{equation}
+\label{equation:part1}
+\delta_{t}^{2} P_{l,m,p}^{n} \equiv \frac{1}{T^{2}} \Big(P_{l,m,p}^{n+1} - 2 P_{l,m,p}^{n} + P_{l,m,p}^{n-1}\Big) \approx \frac{{\partial ^2 P}}{{\partial t^2 }}
+\end{equation}
+
+\begin{equation}
+\label{equation:part2}
+\delta_{x}^{2} P_{l,m,p}^{n} \equiv \frac{1}{H^{2}} \Big(P_{l+1,m,p}^{n} - 2 P_{l,m,p}^{n} + P_{l-1,m,p}^{n}\Big) \approx \frac{{\partial ^2 P}}{{\partial x^2 }}
+\end{equation}
+
+\begin{equation}
+\label{equation:part3}
+\delta_{y}^{2} P_{l,m,p}^{n} \equiv \frac{1}{H^{2}} \Big(P_{l,m+1,p}^{n} - 2 P_{l,m,p}^{n} + P_{l,m-1,p}^{n}\Big) \approx \frac{{\partial ^2 P}}{{\partial y^2 }}
+\end{equation}
+
+\begin{equation}
+\label{equation:part4}
+\delta_{z}^{2} P_{l,m,p}^{n} \equiv \frac{1}{H^{2}} \Big(P_{l,m,p+1}^{n} - 2 P_{l,m,p}^{n} + P_{l,m,p-1}^{n}\Big) \approx \frac{{\partial ^2 P}}{{\partial z^2 }}
+\end{equation}
+
+It is now possible to use these operators to discretise \ref{equation:wave-expanded}.
+
+\begin{equation}
+\label{equation:discrete}
+\delta_{t}^{2} P_{l,m,p}^{n} = c^2 \big(\delta_{x}^{2} P_{l,m,p}^{n} + \delta_{y}^{2} P_{l,m,p}^{n} + \delta_{z}^{2} P_{l,m,p}^{n} \big)
+\end{equation}
+
+Equation \ref{equation:discrete} can then be expanded using the results of equations \ref{equation:part1}-\ref{equation:part4}. This yields
+
+\begin{multline}
+\label{equation:stencil-big}
+P_{l,m,p}^{n+1} - 2 P_{l,m,p}^{n} + P_{l,m,p}^{n-1} = \frac{c^2 T^2}{H^2} \big(P_{l+1,m,p}^{n} + P_{l-1,m,p}^{n} + P_{l,m+1,p}^{n} + P_{l,m-1,p}^{n} \\ 
++ P_{l,m,p+1}^{n} + P_{l,m,p-1}^{n} - 6 P_{l,m,p}^{n} \big)
+\end{multline}
+
+Letting the Courant number be defined as 
+
+\begin{equation}
+\lambda \equiv \frac{c T}{H}
+\end{equation}
+
+and our stencil 
+
+\begin{equation}
+S = P_{l+1,m,p}^{n} + P_{l-1,m,p}^{n} + P_{l,m+1,p}^{n} + P_{l,m-1,p}^{n} + P_{l,m,p+1}^{n} + P_{l,m,p-1}^{n}
+\end{equation}
+
+gives a somewhat neater version of equation \ref{equation:stencil-big}
+
+\begin{equation}
+P_{l,m,p}^{n+1} = (2 - 6 \lambda^2)P_{l,m,p}^{n} + \lambda^2 S - P_{l,m,p}^{n-1}
+\end{equation}
+
+More than simply being neat, this is now a representation of how to calculate new values for the three dimensional array from the previous ones using a simple stencil operation.
 
 
 \section{Graphics Processing Units (GPUs)}
@@ -163,12 +253,9 @@ where $\textbf{p}$ is the deviation from the ambient air pressure, and $c$ is th
 % note that labels do not need to include a description of the object
 % they are labelling but it can be helpful, eg \label{fig:figurename}.
 
-You can use a label on a figure to refer to it later. The university
-crest is in \ref{fig:eucrest}. Note that you should not use phrases like
-``the figure above'' or ``the following figure'' since Latex may move
-the figure relative to the text if it cannot be fitted onto the current page.
 
-\section{Possible Spectral Techniques}
+
+\section{Other Methods}
 While no work was done on this, I am going to talk about it anyway.
 
 \begin{equation}
@@ -176,16 +263,6 @@ h(x) = f \otimes g = \int\limits_{-\infty}^{\infty}f(x-u)g(u) du = \mathcal{F}^{
 \label{equation:convolution}
 \end{equation}
 
-\begin{figure}
-
-\begin{center}
-\resizebox{0.30\hsize}{!}{\includegraphics{logos/crest_bw}}
-\end{center}
-
-\caption{The University Crest}
-\label{fig:eucrest}
-
-\end{figure}
 
 
 % see the man page for dvips for details of the special command which is
@@ -241,6 +318,16 @@ headings which pass over more than one column}
 \end{table}
 
 \chapter{Conclusions}
+\begin{figure}
+
+\begin{center}
+\resizebox{0.30\hsize}{!}{\includegraphics{logos/crest_bw}}
+\end{center}
+
+\caption{The University Crest}
+\label{fig:eucrest}
+
+\end{figure}
 
 \section{Future Work}
 
