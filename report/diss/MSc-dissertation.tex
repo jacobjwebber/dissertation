@@ -6,6 +6,8 @@
 \usepackage{amsmath}
 \usepackage{url}
 \usepackage{listings}
+\usepackage[binary-units=true]{siunitx}
+
 
 \setlength\epigraphwidth{.8\textwidth}
 \setlength\epigraphrule{0pt}
@@ -144,6 +146,7 @@ This report includes some background on the theory of acoustics and difference s
 \epigraph{\itshape ``He who loves practice without theory is like the sailor who boards ship without a rudder and compass and never knows where he may cast.''}{Leonardo da Vinci}
 
 \section{Room Acoustics}
+\label{section:acoustics}
 \subsection{Classical Acoustics}
 Sound is modelled using the wave equation:
 
@@ -252,6 +255,7 @@ More than simply being neat, this is now a representation of how to calculate ne
 
 
 \section{Graphics Processing Units (GPUs)}
+\label{section:gpus}
 
 GPUs were originally designed for 3D game rendering \cite{ref:nvidia-gpu-cpu}. For this purpose they are equipped with the ability to process large arrays of floating point numbers very efficiently, both in terms of operations per second, and per Watt. It so happens that these qualities make these devices very well suited to the field of High Performance Computing (HPC). As it turns out, this coincidence is a happy one indeed, as it allows the very high research and development costs of bringing a new processor to market to be spread across the much larger gaming industry. The CEO of NVIDIA, which is the largest supplier of discrete graphics cards, described the budget of several billion US dollars for the design of the latest Pascal GPU architecture as so large it would probably be enough to send someone to Mars \cite{ref:nvidia-gpu-launch}.
 
@@ -259,16 +263,32 @@ GPUs have a number of technical features which make them particularly suited to 
 
 \subsection{GPUs and parallelism}
 
-GPUs primarily achieve their massive performance increases over CPUs by harnessing operating in a massively parallel fashion.
+GPUs primarily achieve their massive performance increases over CPUs by harnessing operating in a massively parallel fashion. This is done principally with a single instruction multiple data (SIMD) approach. This is where the same processor instructions can execute on multiple objects in memory.
 
+\subsection{GPU Memory Hierarchies}
 
-\subsection{GPU memory hierarchies}
+\section{The State of the Art in FDTD Acoustical Modelling}
 
-\section{Current state of the art in FDTD acoustical modelling}
+Combining the ideas as written about in sections \ref{section:acoustics} and \ref{section:gpus}, it is possible to describe the most successful techniques thus far in running FDTD room acoustics models.
+
+\subsection{Memory Considerations}
+
+The performance of FDTD models can be measured using two factors: the computation time and the amount of memory used. Because of their high bandwidth memory and fast floating point performance, GPUs routinely perform very well in the computation time category. However, the graphics memory that they operate on is much more limited in its supply than standard DRAM. By way of example, the high end HPC targeted NVIDIA K20 device primarily used in this project has 5 GiB. This is significantly less than many modern laptops will have as main memory.
+
+Going back to equation \ref{equation:stencil-big}, it is possible to derive a stability relation for the value of the Courant number, or $\lambda$. The approximate solution to the differential equation is said to be stable if results do not grow exponentially. A full derivation is given in \cite{ref:strik} using Von Neumann spectral analysis. This yields the important result that for stability it is required that $\lambda \leq \frac{1}{\sqrt{3}}$.
+
+This gives a concrete relation between the sample rates in time ($\frac{1}{T}$) and space ($H$).
+
+\begin{equation}
+\label{equation:stability}
+H \leq \sqrt{3}cT
+\end{equation}
+
+High sample rates in time are required to avoid temporal aliasing. This is an effect where the ear lacks enough information to determine whether a signal is one of two possible values within the audible range ($\approx$ \SI{20}{\hertz}-\SI{20}{\kilo\hertz}). The Nyquist limit requires that the sample rate be twice as high as the highest audible frequency to avoid this aliasing effect \cite{ref:harris}. This requires a very large number of points for even a moderate sized room. Taking a sample rate of \SI{44.1}{\kilo\hertz} (as is used in audio CDs), and the speed of sound in air as \SI{344}{\metre\per\second} the Courant limit becomes \SI{0.0135}{\metre}. This means that to model a room of even \SI{1}{\metre\cubed} a matrix of \num{75} by \num{75} by \num{75} points or \num{421875} floating point numbers are required. This means using \SI{3.22}{\mebi\byte} or \SI{1.61}{\mebi\byte} of memory for double or single precision respectively per \SI{}{\metre\cubed}.
 
 \section{Other Methods}
 
-The methods outlined in this section are described in a deliberately terse way. They do not form the body of the work done for this dissertation and are discussed here purely to offer some justification as to why not.
+The methods outlined in this section are described in a deliberately terse way. They do not form the body of the work done for this dissertation. They are discussed here to offer some justification as to why not, as well as to give the FDTD approach some context within its field.
 
 \subsection{Ray Tracing}
 
@@ -280,24 +300,7 @@ h(x) = f \otimes g = \int\limits_{-\infty}^{\infty}f(x-u)g(u) du = \mathcal{F}^{
 
 
 
-% see the man page for dvips for details of the special command which is
-% much more powerful than is shown here. It allows offsets in the
-% horizontal and vertical and scaling in x and y.
-
-% choosing suitable values for offset and scale can be a tiring matter
-% of trial and error.
-
-% note that labels do not need to include a description of the object
-% they are labelling but it can be helpful, eg \label{fig:figurename}.
-
-You can use a label on a figure to refer to it later. The university
-crest is in \ref{fig:eucrest}. Note that you should not use phrases like
-``the figure above'' or ``the following figure'' since Latex may move
-the figure relative to the text if it cannot be fitted onto the current page.
-
 \chapter{The Proposed Data Structure and Method}
-% note that labels do not need to include a description of the object
-% they are labelling but it can be helpful, eg \label{fig:figurename}.
 \epigraph{\itshape ``Nothing surpasses the beauty and elegance of a bad idea.''}{Craig Bruce}
 
 
@@ -415,6 +418,16 @@ Addison Publishing Company, Addison
 \bibitem{ref:nvidia-gpu-cpu} NVIDIA Corporation {\em What's the Difference Between a CPU and a GPU?} \url{https://blogs.nvidia.com/blog/2009/12/16/whats-the-difference-between-a-cpu-and-a-gpu/} retrieved \today.
 
 \bibitem{ref:nvidia-gpu-launch} NVIDIA Corporation {\em NVIDIA Special Event: The GeForce GTX 1080 and Pascal (Part 4)} \url{https://www.youtube.com/watch?v=0xnzwjPyx8A} retrieved \today.
+
+
+\bibitem{ref:mici} P. Micikevicius, \emph{3D finite difference computation on GPUs using CUDA.} Proceedings of 2nd Workshop on General Purpose Processing on Graphics Processing Units - GPGPU-2, New York, New York, USA, 2009, pp. 79-84, ACM Press.
+
+\bibitem{ref:zhao} K. Hou, Y. Zhao, J. Huang, and L. Zhang, \emph{Performance evaluation of the Three-Dimensional Finite-Difference Time-Domain(FDTD) method on Fermi architecture GPUs in Algorithms and Architectures for Parallel Processing} vol. 7016 of Lecture Notes in Computer Science, pp. 460-469. Springer Berlin
+/ Heidelberg, 2011.
+
+\bibitem{ref:strik} J. Strikwerda, \emph{Finite Difference Schemes and Partial Differential Equations}, Wadsworth and Brooks/Cole Advanced Books and Software, Pacific Grove, California, 1989.
+
+\bibitem{ref:harris} Harris, Frederic j. (Aug 2006). \emph{Multirate Signal Processing for Communication Systems}. Upper Saddle River, NJ: Prentice Hall PTR. ISBN 0-13-146511-2
 
 \bibitem{ref:lam} L.Lamport. {\em 1986 Latex User's Guide
 and Reference Manual.} Addison Wesley. pp242.
