@@ -4,6 +4,8 @@
 \usepackage{graphics}
 \usepackage{epigraph}
 \usepackage{amsmath}
+\usepackage{url}
+\usepackage{listings}
 
 \setlength\epigraphwidth{.8\textwidth}
 \setlength\epigraphrule{0pt}
@@ -133,7 +135,9 @@ The way we perceive sound depends on the environment in which we hear it as well
 
 The key technique currently used for these simulations is the finite-difference time-domain (FDTD) method for finding approximate solutions to the wave equation across a three dimensional space. This forms a simple stencil. This stencil process across a vast number of points in memory is well suited to the use of graphics processing units (GPUs) which have high band width graphics memory and can operate on very many points in a massively parallel fashion.
 
-In the work leading up to this report, a novel technique was devised and implemented that performs these simulations. This approach was designed to make best use of graphics memory, which is relatively scarce.
+In the work leading up to this report, currently state of the art GPU acoustics techniques as outlined in \cite{craig} and \cite{brian} were recreated. In addition to this a novel technique was devised and implemented that performs these simulations. This approach was designed to make best use of graphics memory, which is relatively scarce.
+
+This report includes some background on the theory of acoustics and difference schemes, a brief background in GPUs and an overview of the new techniques that were devised and trialled in the work leading up to this report. This is followed by description of the details of the implementation in CUDA C as well as software development, profiling and debugging strategies and tools. There is then a comparative analysis of existing and novel techniques both in terms of performance in compute time and memory use. The report finishes with some conclusions and ideas for further work.
 
 \chapter{Background and Literature Review}
 
@@ -249,15 +253,26 @@ More than simply being neat, this is now a representation of how to calculate ne
 
 \section{Graphics Processing Units (GPUs)}
 
-\section{The Proposed Data Structure and Method}
-% note that labels do not need to include a description of the object
-% they are labelling but it can be helpful, eg \label{fig:figurename}.
+GPUs were originally designed for 3D game rendering \cite{ref:nvidia-gpu-cpu}. For this purpose they are equipped with the ability to process large arrays of floating point numbers very efficiently, both in terms of operations per second, and per Watt. It so happens that these qualities make these devices very well suited to the field of High Performance Computing (HPC). As it turns out, this coincidence is a happy one indeed, as it allows the very high research and development costs of bringing a new processor to market to be spread across the much larger gaming industry. The CEO of NVIDIA, which is the largest supplier of discrete graphics cards, described the budget of several billion US dollars for the design of the latest Pascal GPU architecture as so large it would probably be enough to send someone to Mars \cite{ref:nvidia-gpu-launch}.
+
+GPUs have a number of technical features which make them particularly suited to running FDTD simulations. GPUs were shown in \cite{craig} to perform up to 2 orders of magnitude better than CPUs when running room acoustics simulations.
+
+\subsection{GPUs and parallelism}
+
+GPUs primarily achieve their massive performance increases over CPUs by harnessing operating in a massively parallel fashion.
 
 
+\subsection{GPU memory hierarchies}
+
+\section{Current state of the art in FDTD acoustical modelling}
 
 \section{Other Methods}
-While no work was done on this, I am going to talk about it anyway.
 
+The methods outlined in this section are described in a deliberately terse way. They do not form the body of the work done for this dissertation and are discussed here purely to offer some justification as to why not.
+
+\subsection{Ray Tracing}
+
+\subsection{Spectral Methods}
 \begin{equation}
 h(x) = f \otimes g = \int\limits_{-\infty}^{\infty}f(x-u)g(u) du = \mathcal{F}^{-1}\Big(\sqrt{2\pi} \mathcal{F}[f] \cdot \mathcal{F}[g]\Big)
 \label{equation:convolution}
@@ -280,10 +295,16 @@ crest is in \ref{fig:eucrest}. Note that you should not use phrases like
 ``the figure above'' or ``the following figure'' since Latex may move
 the figure relative to the text if it cannot be fitted onto the current page.
 
+\chapter{The Proposed Data Structure and Method}
+% note that labels do not need to include a description of the object
+% they are labelling but it can be helpful, eg \label{fig:figurename}.
+\epigraph{\itshape ``Nothing surpasses the beauty and elegance of a bad idea.''}{Craig Bruce}
+
 
 \chapter{Design and Implementation}
 
 \epigraph{\itshape ``The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.''}{Tom Cargill}
+\section{Design Overview}
 
 \section{Software Development Process}
 
@@ -334,11 +355,39 @@ headings which pass over more than one column}
 \appendix
 % the appendix command just changes heading styles for appendices.
 
-\chapter{Stuff which is too detailed}
-
-Appendices should contain all the material which is considered too
-detailed to be included in the main bod but which is, nevertheless,
-important enough to be included in the thesis.
+\chapter{NVIDIA K20 Device Details}
+\lstset{basicstyle=\footnotesize,  breaklines=true}
+\begin{lstlisting}
+  CUDA Driver Version / Runtime Version          8.0 / 7.0
+  CUDA Capability Major/Minor version number:    3.5
+  Total amount of global memory:                 5062 MBytes (5307367424 bytes)
+  (13) Multiprocessors, (192) CUDA Cores/MP:     2496 CUDA Cores
+  GPU Max Clock rate:                            706 MHz (0.71 GHz)
+  Memory Clock rate:                             2600 Mhz
+  Memory Bus Width:                              320-bit
+  L2 Cache Size:                                 1310720 bytes
+  Maximum Texture Dimension Size (x,y,z)         1D=(65536), 2D=(65536, 65536), 3D=(4096, 4096, 4096)
+  Maximum Layered 1D Texture Size, (num) layers  1D=(16384), 2048 layers
+  Maximum Layered 2D Texture Size, (num) layers  2D=(16384, 16384), 2048 layers
+  Total amount of constant memory:               65536 bytes
+  Total amount of shared memory per block:       49152 bytes
+  Total number of registers available per block: 65536
+  Warp size:                                     32
+  Maximum number of threads per multiprocessor:  2048
+  Maximum number of threads per block:           1024
+  Max dimension size of a thread block (x,y,z): (1024, 1024, 64)
+  Max dimension size of a grid size    (x,y,z): (2147483647, 65535, 65535)
+  Maximum memory pitch:                          2147483647 bytes
+  Texture alignment:                             512 bytes
+  Concurrent copy and kernel execution:          Yes with 2 copy engine(s)
+  Run time limit on kernels:                     No
+  Integrated GPU sharing Host Memory:            No
+  Support host page-locked memory mapping:       Yes
+  Alignment requirement for Surfaces:            Yes
+  Device has ECC support:                        Disabled
+  Device supports Unified Addressing (UVA):      Yes
+  Device PCI Domain ID / Bus ID / location ID:   0 / 2 / 0
+\end{lstlisting}
 
 \chapter{Stuff which no-one will read}
 
@@ -348,6 +397,24 @@ anything like this you include should contain some element of uniqueness
 which justifies its inclusion.
 
 \begin{thebibliography}{100}
+
+\bibitem{craig}
+Webb, C.J. (2009) \emph{Parallel computation techniques for virtual
+acoustics and physical modelling synthesis.} PhD thesis. University of Edinburgh. Available at: \url{http://www2.ph.ed.ac.uk/~cwebb2/Site/Docs/CJWebb_thesis_FINAL.pdf} (Accessed: 5 April 2017)
+
+\bibitem{brian}
+Hamilton, B. (2016) \emph{Finite Difference and Finite Volume Methods for
+Wave-based Modelling of Room Acoustics.} PhD thesis. University of Edinburgh. Available at: \url{http://www2.ph.ed.ac.uk/~s1164563/thesis/hamilton2016phdthesis.pdf} (Accessed: 5 April 2017)
+
+\bibitem{feynman}
+Richard Feynman,  1969, 
+\textit{Lectures in Physics, Volume 1,}
+Addison Publishing Company, Addison
+
+
+\bibitem{ref:nvidia-gpu-cpu} NVIDIA Corporation {\em What's the Difference Between a CPU and a GPU?} \url{https://blogs.nvidia.com/blog/2009/12/16/whats-the-difference-between-a-cpu-and-a-gpu/} retrieved \today.
+
+\bibitem{ref:nvidia-gpu-launch} NVIDIA Corporation {\em NVIDIA Special Event: The GeForce GTX 1080 and Pascal (Part 4)} \url{https://www.youtube.com/watch?v=0xnzwjPyx8A} retrieved \today.
 
 \bibitem{ref:lam} L.Lamport. {\em 1986 Latex User's Guide
 and Reference Manual.} Addison Wesley. pp242.

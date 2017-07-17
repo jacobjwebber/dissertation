@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2016.3.28)  14 JUL 2017 17:58
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2016.3.28)  17 JUL 2017 18:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -147,39 +147,72 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
 LaTeX Info: Redefining \[ on input line 2665.
 LaTeX Info: Redefining \] on input line 2666.
 )
+(/opt/texlive/texmf-local/tex/latex/latex2html/url.sty
+Package: url 1999/03/02  ver 1.4  Verb mode for urls, email addresses, and file
+ names
+)
+(/opt/texlive/2015/texmf-dist/tex/latex/listings/listings.sty
+(/opt/texlive/2015/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks19
+)
+\lst@mode=\count106
+\lst@gtempboxa=\box28
+\lst@token=\toks20
+\lst@length=\count107
+\lst@currlwidth=\dimen122
+\lst@column=\count108
+\lst@pos=\count109
+\lst@lostspace=\dimen123
+\lst@width=\dimen124
+\lst@newlines=\count110
+\lst@lineno=\count111
+\lst@maxwidth=\dimen125
+
+(/opt/texlive/2015/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2014/09/06 1.5e (Carsten Heinz)
+\c@lstnumber=\count112
+\lst@skipnumbers=\count113
+\lst@framebox=\box29
+)
+(/opt/texlive/2015/texmf-dist/tex/latex/listings/listings.cfg
+File: listings.cfg 2014/09/06 1.5e listings configuration
+))
+Package: listings 2014/09/06 1.5e (Carsten Heinz)
+
 (./MSc-dissertation.aux)
 \openout1 = `MSc-dissertation.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 65.
-LaTeX Font Info:    ... okay on input line 65.
-LaTeX Font Info:    Try loading font information for T1+ptm on input line 65.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 67.
+LaTeX Font Info:    ... okay on input line 67.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 67.
+LaTeX Font Info:    ... okay on input line 67.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 67.
+LaTeX Font Info:    ... okay on input line 67.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 67.
+LaTeX Font Info:    ... okay on input line 67.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 67.
+LaTeX Font Info:    ... okay on input line 67.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 67.
+LaTeX Font Info:    ... okay on input line 67.
+LaTeX Font Info:    Try loading font information for T1+ptm on input line 67.
 
 (/opt/texlive/2015/texmf-dist/tex/latex/psnfss/t1ptm.fd
 File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 )
 (/opt/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count106
-\scratchdimen=\dimen122
-\scratchbox=\box28
-\nofMPsegments=\count107
-\nofMParguments=\count108
-\everyMPshowfont=\toks19
-\MPscratchCnt=\count109
-\MPscratchDim=\dimen123
-\MPnumerator=\count110
-\makeMPintoPDFobject=\count111
-\everyMPtoPDFconversion=\toks20
+\scratchcounter=\count114
+\scratchdimen=\dimen126
+\scratchbox=\box30
+\nofMPsegments=\count115
+\nofMParguments=\count116
+\everyMPshowfont=\toks21
+\MPscratchCnt=\count117
+\MPscratchDim=\dimen127
+\MPnumerator=\count118
+\makeMPintoPDFobject=\count119
+\everyMPtoPDFconversion=\toks22
 ) (/opt/texlive/2015/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
 )
@@ -209,10 +242,6 @@ Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
 (/opt/texlive/2015/texmf-dist/tex/latex/oberdiek/kvoptions.sty
 Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
 
-(/opt/texlive/2015/texmf-dist/tex/latex/graphics/keyval.sty
-Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
-\KV@toks@=\toks21
-)
 (/opt/texlive/2015/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
 Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
 
@@ -232,17 +261,19 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
+\c@lstlisting=\count120
+
 <logos/logo_black.pdf, id=1, 662.475pt x 191.71625pt>
 File: logos/logo_black.pdf Graphic file (type pdf)
 
 <use logos/logo_black.pdf>
-Package pdftex.def Info: logos/logo_black.pdf used on input line 83.
+Package pdftex.def Info: logos/logo_black.pdf used on input line 85.
 (pdftex.def)             Requested size: 662.47339pt x 191.71577pt.
  <logos/crest_bw.pdf, id=2, 363.3575pt x 367.3725pt>
 File: logos/crest_bw.pdf Graphic file (type pdf)
 
 <use logos/crest_bw.pdf>
-Package pdftex.def Info: logos/crest_bw.pdf used on input line 83.
+Package pdftex.def Info: logos/crest_bw.pdf used on input line 85.
 (pdftex.def)             Requested size: 363.3566pt x 367.37158pt.
  [1
 
@@ -250,10 +281,10 @@ Package pdftex.def Info: logos/crest_bw.pdf used on input line 83.
 Non-PDF special ignored!{/opt/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pd
 ftex.map} <./logos/logo_black.pdf> <./logos/crest_bw.pdf>]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 100.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 102.
  [1]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <24.88> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 106.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 108.
 
 (./MSc-dissertation.toc)
 \tf@toc=\write3
@@ -276,18 +307,21 @@ LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <24.88> not available
 
 ]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <17.28> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 115.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 117.
  [1]
 Chapter 1.
+
+Overfull \hbox (3.12747pt too wide) in paragraph at lines 140--141
+[]\T1/ptm/m/n/12 This re-port in-cludes some back-ground on the the-ory of acou
+s-tics and dif-fer-ence schemes,
+ []
+
 [1
 
 ]
 Chapter 2.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 143.
-
-LaTeX Warning: Citation `feynman' on page 2 undefined on input line 150.
-
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 147.
 [2
 
 ] [3] [4] [5]
@@ -300,49 +334,108 @@ Chapter 4.
 
 ]
 Chapter 5.
+[8
+
+]
+Chapter 6.
 File: logos/crest_bw.pdf Graphic file (type pdf)
 <use logos/crest_bw.pdf>
-Package pdftex.def Info: logos/crest_bw.pdf used on input line 324.
+Package pdftex.def Info: logos/crest_bw.pdf used on input line 345.
 (pdftex.def)             Requested size: 363.3566pt x 367.37158pt.
- [8
+ [9
 
 ]
 Appendix A.
-[9
+[10
 
 ]
 Appendix B.
-[10
+[11
 
-] [11
+]
+LaTeX Font Info:    Try loading font information for T1+pcr on input line 403.
+ (/opt/texlive/2015/texmf-dist/tex/latex/psnfss/t1pcr.fd
+File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
+)
+Underfull \hbox (badness 1888) in paragraph at lines 402--404
+[]\T1/ptm/m/n/12 Webb, C.J. (2009) \T1/ptm/m/it/12 Par-al-lel com-pu-ta-tion te
+ch-niques for vir-tual acous-tics
+ []
 
-] (./MSc-dissertation.aux)
 
-LaTeX Warning: There were undefined references.
+Underfull \hbox (badness 2762) in paragraph at lines 402--404
+\T1/ptm/m/it/12 and phys-i-cal mod-elling syn-the-sis. \T1/ptm/m/n/12 PhD the-s
+is. Uni-ver-sity of Ed-in-burgh.
+ []
 
- ) 
+
+Underfull \hbox (badness 3930) in paragraph at lines 402--404
+\T1/ptm/m/n/12 Avail-able at: $\T1/pcr/m/n/12 http : / / www2 . ph . ed . ac . 
+uk / ~cwebb2 / Site / Docs /
+ []
+
+
+Underfull \hbox (badness 2990) in paragraph at lines 406--408
+[]\T1/ptm/m/n/12 Hamilton, B. (2016) \T1/ptm/m/it/12 Fi-nite Dif-fer-ence and F
+i-nite Vol-ume Meth-ods for
+ []
+
+
+Underfull \hbox (badness 5847) in paragraph at lines 406--408
+\T1/ptm/m/it/12 Wave-based Mod-elling of Room Acous-tics. \T1/ptm/m/n/12 PhD th
+e-sis. Uni-ver-sity of
+ []
+
+
+Underfull \hbox (badness 2065) in paragraph at lines 406--408
+\T1/ptm/m/n/12 Ed-in-burgh. Avail-able at: $\T1/pcr/m/n/12 http : / / www2 . ph
+ . ed . ac . uk / ~s1164563 /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 415--416
+[]\T1/ptm/m/n/12 NVIDIA Cor-po-ra-tion \T1/ptm/m/it/12 What's the Dif-fer-ence 
+Be-tween a CPU and
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 415--416
+\T1/ptm/m/it/12 a GPU? $\T1/pcr/m/n/12 https : / / blogs . nvidia . com / blog 
+/ 2009 / 12 / 16 /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 415--416
+\T1/pcr/m/n/12 whats-[]the-[]difference-[]between-[]a-[]cpu-[]and-[]a-[]gpu/$ \
+T1/ptm/m/n/12 re-trieved
+ []
+
+[12
+
+] (./MSc-dissertation.aux) ) 
 Here is how much of TeX's memory you used:
- 2537 strings out of 493089
- 32683 string characters out of 6103488
- 105167 words of memory out of 5000000
- 5975 multiletter control sequences out of 15000+600000
- 48082 words of font info for 62 fonts, out of 8000000 for 9000
+ 3825 strings out of 493089
+ 51537 string characters out of 6103488
+ 249204 words of memory out of 5000000
+ 7241 multiletter control sequences out of 15000+600000
+ 51652 words of font info for 67 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,12n,39p,688b,268s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/opt/texlive/2015/texmf-dist/fonts/enc/dvips/base/8r.enc}</opt/texlive/2015/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></opt/texlive/2015/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></opt/texlive/2015/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmmi8.pfb></opt/texlive/2015/texmf-dist/fonts/type1
-/public/amsfonts/cm/cmr12.pfb></opt/texlive/2015/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmr8.pfb></opt/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmsy10.pfb></opt/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy
-8.pfb></opt/texlive/2015/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></opt/texl
-ive/2015/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></opt/texlive/2015/texmf-d
-ist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on MSc-dissertation.pdf (17 pages, 153631 bytes).
+ 38i,12n,39p,901b,937s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/opt/texlive/2015/texmf-dist/fonts/enc/dvips/base/
+8r.enc}</opt/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb>
+</opt/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></opt/t
+exlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></opt/texlive/2
+015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></opt/texlive/2015/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></opt/texlive/2015/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmsy10.pfb></opt/texlive/2015/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmsy8.pfb></opt/texlive/2015/texmf-dist/fonts/type1/urw/c
+ourier/ucrr8a.pfb></opt/texlive/2015/texmf-dist/fonts/type1/urw/times/utmb8a.pf
+b></opt/texlive/2015/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></opt/texlive/
+2015/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on MSc-dissertation.pdf (18 pages, 176878 bytes).
 PDF statistics:
- 104 PDF objects out of 1000 (max. 8388607)
- 72 compressed objects within 1 object stream
+ 111 PDF objects out of 1000 (max. 8388607)
+ 77 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  11 words of extra memory for PDF output out of 10000 (max. 10000000)
 
