@@ -5,21 +5,23 @@
 \contentsline {subsection}{\numberline {2.1.2}Finite Difference Schemes}{3}
 \contentsline {section}{\numberline {2.2}Graphics Processing Units (GPUs)}{4}
 \contentsline {subsection}{\numberline {2.2.1}GPUs and parallelism}{5}
-\contentsline {subsection}{\numberline {2.2.2}GPU Memory Hierarchies}{5}
-\contentsline {section}{\numberline {2.3}The State of the Art in FDTD Acoustical Modelling}{5}
-\contentsline {subsection}{\numberline {2.3.1}Memory Considerations}{5}
-\contentsline {section}{\numberline {2.4}Other Methods}{6}
-\contentsline {subsection}{\numberline {2.4.1}Ray Tracing}{6}
-\contentsline {subsection}{\numberline {2.4.2}Spectral Methods}{6}
-\contentsline {chapter}{\numberline {3}The Proposed Data Structure and Method}{7}
-\contentsline {chapter}{\numberline {4}Design and Implementation}{8}
-\contentsline {section}{\numberline {4.1}Design Overview}{8}
-\contentsline {section}{\numberline {4.2}Software Development Process}{8}
-\contentsline {section}{\numberline {4.3}Debugging and Profiling Tools}{8}
-\contentsline {chapter}{\numberline {5}Results and Analysis}{9}
-\contentsline {section}{\numberline {5.1}Some results}{9}
-\contentsline {subsection}{\numberline {5.1.1}More results}{9}
-\contentsline {chapter}{\numberline {6}Conclusions}{10}
-\contentsline {section}{\numberline {6.1}Future Work}{10}
-\contentsline {chapter}{\numberline {A}NVIDIA K20 Device Details}{11}
-\contentsline {chapter}{\numberline {B}Stuff which no-one will read}{12}
+\contentsline {subsection}{\numberline {2.2.2}GPU Memory Hierarchies}{6}
+\contentsline {section}{\numberline {2.3}The State of the Art in FDTD Acoustical Modelling}{6}
+\contentsline {subsection}{\numberline {2.3.1}The Method}{6}
+\contentsline {subsection}{\numberline {2.3.2}Memory Capacity}{6}
+\contentsline {subsection}{\numberline {2.3.3}Memory Bandwidth}{7}
+\contentsline {section}{\numberline {2.4}Other Methods}{8}
+\contentsline {subsection}{\numberline {2.4.1}Ray Tracing}{8}
+\contentsline {subsection}{\numberline {2.4.2}Spectral Methods}{8}
+\contentsline {chapter}{\numberline {3}The Proposed Data Structure and Method}{10}
+\contentsline {chapter}{\numberline {4}Design and Implementation}{12}
+\contentsline {section}{\numberline {4.1}Design Overview}{12}
+\contentsline {section}{\numberline {4.2}Software Development Process}{12}
+\contentsline {section}{\numberline {4.3}Debugging and Profiling Tools}{12}
+\contentsline {chapter}{\numberline {5}Results and Analysis}{13}
+\contentsline {section}{\numberline {5.1}Some results}{13}
+\contentsline {subsection}{\numberline {5.1.1}More results}{13}
+\contentsline {chapter}{\numberline {6}Conclusions}{14}
+\contentsline {section}{\numberline {6.1}Future Work}{14}
+\contentsline {chapter}{\numberline {A}NVIDIA K20 Device Details}{15}
+\contentsline {chapter}{\numberline {B}Kernels}{16}

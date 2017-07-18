@@ -7,6 +7,12 @@
 \usepackage{url}
 \usepackage{listings}
 \usepackage[binary-units=true]{siunitx}
+\usepackage[justification=centering, margin=2cm, labelfont=bf, font={small}]{caption}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage[margin=3cm]{geometry}
+
 
 
 \setlength\epigraphwidth{.8\textwidth}
@@ -118,13 +124,7 @@ This is the bit where you summarise what is in your thesis.
 % environment as this initialises things like section and page numbering.
 \section*{Acknowledgements}
 
-This template is a slightly modified version of the one developed by
-Prof. Charles Duncan for MSc students in the Dept. of Meteorology. His
-acknowledgement follows:
-
-{\em This template has been produced with help from many former students who
-have shown different ways of doing things. Please make suggestions for
-further improvements.}
+I would like to extend my sincere thanks to Paul Graham and Dr Brian Hamilton for agreeing to supervise this project and all their help along the way.
 
 \end{titlepage}
 
@@ -262,29 +262,59 @@ GPUs were originally designed for 3D game rendering \cite{ref:nvidia-gpu-cpu}. F
 GPUs have a number of technical features which make them particularly suited to running FDTD simulations. GPUs were shown in \cite{craig} to perform up to 2 orders of magnitude better than CPUs when running room acoustics simulations.
 
 \subsection{GPUs and parallelism}
-
+\label{section:gpu-par}
 GPUs primarily achieve their massive performance increases over CPUs by harnessing operating in a massively parallel fashion. This is done principally with a single instruction multiple data (SIMD) approach. This is where the same processor instructions can execute on multiple objects in memory.
 
 \subsection{GPU Memory Hierarchies}
+\label{section:gpu-mem}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{../diagrams/memory-bandwidth}
+\caption{A graph from NVIDIA showing memory bandwidth of GPUs and CPUs through time \cite{ref:nvidia-gpu-programming-guide}.}
+\label{figure:memory-bandwidth}
+\end{figure}
 
 \section{The State of the Art in FDTD Acoustical Modelling}
 
 Combining the ideas as written about in sections \ref{section:acoustics} and \ref{section:gpus}, it is possible to describe the most successful techniques thus far in running FDTD room acoustics models.
 
-\subsection{Memory Considerations}
+\subsection{The Method}
+\label{section:method-soa}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.25\textwidth]{../diagrams/stencil}
+\caption{Diagram showing 3 dimensional Von Neumann stencil. Credit: Wikimedia Commons.}
+\label{stencil}
+\end{figure}
+
+\subsection{Memory Capacity}
 
 The performance of FDTD models can be measured using two factors: the computation time and the amount of memory used. Because of their high bandwidth memory and fast floating point performance, GPUs routinely perform very well in the computation time category. However, the graphics memory that they operate on is much more limited in its supply than standard DRAM. By way of example, the high end HPC targeted NVIDIA K20 device primarily used in this project has 5 GiB. This is significantly less than many modern laptops will have as main memory.
 
 Going back to equation \ref{equation:stencil-big}, it is possible to derive a stability relation for the value of the Courant number, or $\lambda$. The approximate solution to the differential equation is said to be stable if results do not grow exponentially. A full derivation is given in \cite{ref:strik} using Von Neumann spectral analysis. This yields the important result that for stability it is required that $\lambda \leq \frac{1}{\sqrt{3}}$.
 
-This gives a concrete relation between the sample rates in time ($\frac{1}{T}$) and space ($H$).
+This gives a concrete relation between the sample rates in time ($\frac{1}{T}$) and space ($\frac{1}{H}$).
 
 \begin{equation}
 \label{equation:stability}
 H \leq \sqrt{3}cT
 \end{equation}
 
-High sample rates in time are required to avoid temporal aliasing. This is an effect where the ear lacks enough information to determine whether a signal is one of two possible values within the audible range ($\approx$ \SI{20}{\hertz}-\SI{20}{\kilo\hertz}). The Nyquist limit requires that the sample rate be twice as high as the highest audible frequency to avoid this aliasing effect \cite{ref:harris}. This requires a very large number of points for even a moderate sized room. Taking a sample rate of \SI{44.1}{\kilo\hertz} (as is used in audio CDs), and the speed of sound in air as \SI{344}{\metre\per\second} the Courant limit becomes \SI{0.0135}{\metre}. This means that to model a room of even \SI{1}{\metre\cubed} a matrix of \num{75} by \num{75} by \num{75} points or \num{421875} floating point numbers are required. This means using \SI{3.22}{\mebi\byte} or \SI{1.61}{\mebi\byte} of memory for double or single precision respectively per \SI{}{\metre\cubed}.
+High sample rates in time are required to avoid temporal aliasing. This is an effect where the ear lacks enough information to determine whether a signal is one of two possible values within the audible range ($\approx$ \SI{20}{\hertz}-\SI{20}{\kilo\hertz}). The Nyquist limit requires that the sample rate be twice as high as the highest audible frequency to avoid this aliasing effect \cite{ref:harris}. This requires a very large number of points for even a moderate sized room. Taking a sample rate of \SI{44.1}{\kilo\hertz} (as is used in audio CDs), and the speed of sound in air as \SI{344}{\metre\per\second} the Courant limit becomes \SI{0.0135}{\metre}. This means that to model a room of even \SI{1}{\metre\cubed} a matrix of \num{75} by \num{75} by \num{75} floating point numbers is required. This equates to a total array size of \num{421875}, or \SI{3.22}{\mebi\byte} or \SI{1.61}{\mebi\byte} of memory for double or single precision respectively per \SI{}{\metre\cubed}.
+
+As an example, The Royal Albert hall is popularly claimed to have a volume of approximately \SI{80000}{\metre\cubed}. This would require up to \SI{270}{\gibi\byte} just to meet the Courant limit at a sample rate of \SI{44.1}{\kilo\hertz}.
+
+In addition, the Courant limit simply provides a minimum number of points that will provide numerical stability. In order to get good results the number of points required is significantly higher. In the field of electro-magnetism - where FDTD techniques are most commonly used - it has been shown that many tens of samples per wavelength are required to accurately model the propagation of a wave \cite{ref:electro}. This makes sense at a more intuitive level that the result of the Courant calculation and yields an even more taxing requirement on memory quantities.
+
+\subsection{Memory Bandwidth}
+
+In addition to requirements on memory capacity, the performance of FDTD simulations on given hardware is largely determined its memory bandwidth.  Two factors that affect the memory bandwidth performance of FDTD simulations are the load/store efficiencies and the compute to memory access ratio (CMA).
+
+Stencil operations by their nature have a low ratio of floating point operations (FLOPS) to memory access. For ideal performance, data will be loaded from global memory to a register or to cache and then be operated on multiple times. For the methods such as the stencil operation outlined in section \ref{section:method-soa}, this CMA value approaches \num{1.0}. This is because for each time step the stencil operation must be completed for all points in the grid followed by a process of synchronisation. This synchronisation overhead proves to be very expensive, as it requires that all points in utilised memory be read and written to for a relatively trivial amount of computation. Under a simple three dimensional Von Neumann stencil as shown in figure \ref{stencil} each point is used in 6 FLOPS. This yields a theoretical maximum CMA of \num{6.0}. However, because of the nature of GPGPU programming, storing these values in local memory as described in section \ref{section:gpu-mem} results in very marginal gains, if gains at all, at the expense of more complex code. 
+
+This is because of a factor called \emph{occupancy}, which is a measure of how many register files and how much L1 cache a compute kernel uses. High occupancy reduces the efficiency of SMT as outlined in section \ref{section:gpu-par}. Instead, any performance boost from this comes from hardware managed L2 cache. Cache hit rates as found in the literature are low, meaning there is a very low effective CMA for this method \cite{craig}.
+
+GPU DRAM differs from CPU DRAM primarily in that it is optimised for bandwidth rather than latency. As a result each memory load and write can operate on a relatively large chunk of memory at a time. Global memory accesses using current GDDR5 technology are optimised for \SI{128}{\byte} vectorised accesses. These are by default cached in L1 and L2 which also have \SI{128}{\byte} sized cache lines. These large reads can be wasted if memory accesses are scattered. This is the case when large three dimensional arrays are stored. In such an array only neighbouring points in one dimension will be neighbouring in memory and the other will have some considerable offset. This results in memory reads being wasted, cache lines being \emph{overfetched}, or storing unnecessary data, as well as less efficient non-vectorised memory accesses being used. The fist of these problems can be partially fixed by using a compilation flag to disable L1 cache. This technique is recommended in \cite{ref:nvidia-gpu-programming-guide} for scattered memory accesses and was shown in \cite{craig} to yield marginal improvements in performance for the FDTD problem.
 
 \section{Other Methods}
 
@@ -292,17 +322,34 @@ The methods outlined in this section are described in a deliberately terse way. 
 
 \subsection{Ray Tracing}
 
+Ray tracing methods treat sound waves as rays that travel in straight lines. Sound waves are launched in multiple directions from a source position and those that cross a given output location. This has the combined effect of allowing some filtering to occur at the room boundary as well as providing a digital filtering effect from the differing path lengths of all the possible reflective paths that could lead the sound to the output location. This method yields credible results with much less computational expense than FDTD techniques and has therefore been used in the computer gaming and virtual reality industries \cite{ref:ray-trace}. It is, however, fundamentally limited by the fact it cannot model more complex wave effects like diffraction \cite{brian}. 
+
 \subsection{Spectral Methods}
+
+Stencil effects such as the FDTD approach can be shown to be equivalent to a convolution. It is well known that a convolution in the space domain is equivalent to a pointwise vector multiplication in the frequency domain:
+
 \begin{equation}
 h(x) = f \otimes g = \int\limits_{-\infty}^{\infty}f(x-u)g(u) du = \mathcal{F}^{-1}\Big(\sqrt{2\pi} \mathcal{F}[f] \cdot \mathcal{F}[g]\Big)
 \label{equation:convolution}
 \end{equation}
 
+Such an approach would remove the synchronisation overhead in the stencil operation and allow very high CMA ratios to be achieved by performing this pointwise multiplication of the Fourier transformed stencil and pressure field matrices to be performed multiple times on each memory location in turn, without having to read and write through all memory every time step.
 
+While these approaches have been applied to stencil techniques in image processing \cite{ref:vision} they are not applicable here. This is because the boundary conditions are the only feature that varies between different rooms and a technique for encoding these well in the frequency space is not known. In addition to model any input signal larger than one sample long it would be necessary to transform the arrays back from the frequency domain after every time step, removing any advantage from applying this method and adding a considerable overhead in the performance of two FFTs for every time step.
 
 \chapter{The Proposed Data Structure and Method}
 \epigraph{\itshape ``Nothing surpasses the beauty and elegance of a bad idea.''}{Craig Bruce}
 
+The bulk of the work in this project went into the design and implementation of a new algorithm for the computation of FDTD simulations. This section details the design of this algorithm and some of its theoretical performance benefits.
+
+The purpose of this technique improve memory usage for irregularly shaped rooms and memory locality in large 3D FDTD acoustics simulations. The proposed method is to replace the large 3D arrays currently used with an array of structs. Each struct will store a smaller sub-array containing points in the simulation, as well as information on the location of neighbouring points to those points of the edge of each sub-array. This will allow blocks where no points are inside the room being simulated to not have to be stored in expensive GPU memory. This technique may also improve data locality. The smaller 3D sub-arrays will result in neighbouring points being scattered less far apart in memory. 
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{../diagrams/church}
+\caption{A diagram showing a schematic of a church building. Credit: McCrery Architects.}
+\label{church}
+\end{figure}
 
 \chapter{Design and Implementation}
 
@@ -316,6 +363,7 @@ h(x) = f \otimes g = \int\limits_{-\infty}^{\infty}f(x-u)g(u) du = \mathcal{F}^{
 
 
 \chapter{Results and Analysis}
+\label{chapter:results}
 
 \section{Some results}
 Here are some results.
@@ -342,16 +390,7 @@ headings which pass over more than one column}
 \end{table}
 
 \chapter{Conclusions}
-\begin{figure}
 
-\begin{center}
-\resizebox{0.30\hsize}{!}{\includegraphics{logos/crest_bw}}
-\end{center}
-
-\caption{The University Crest}
-\label{fig:eucrest}
-
-\end{figure}
 
 \section{Future Work}
 
@@ -392,12 +431,9 @@ headings which pass over more than one column}
   Device PCI Domain ID / Bus ID / location ID:   0 / 2 / 0
 \end{lstlisting}
 
-\chapter{Stuff which no-one will read}
+\chapter{Kernels}
 
-Some people include in their thesis a lot of detail, particularly
-computer code, which no-one will ever read. You should be careful that
-anything like this you include should contain some element of uniqueness
-which justifies its inclusion.
+The following kernels where used.
 
 \begin{thebibliography}{100}
 
@@ -419,6 +455,7 @@ Addison Publishing Company, Addison
 
 \bibitem{ref:nvidia-gpu-launch} NVIDIA Corporation {\em NVIDIA Special Event: The GeForce GTX 1080 and Pascal (Part 4)} \url{https://www.youtube.com/watch?v=0xnzwjPyx8A} retrieved \today.
 
+\bibitem{ref:nvidia-gpu-programming-guide} NVIDIA Corporation {\em CUDA C Programming Guide} \url{http://docs.nvidia.com/cuda/cuda-c-programming-guide} retrieved \today.
 
 \bibitem{ref:mici} P. Micikevicius, \emph{3D finite difference computation on GPUs using CUDA.} Proceedings of 2nd Workshop on General Purpose Processing on Graphics Processing Units - GPGPU-2, New York, New York, USA, 2009, pp. 79-84, ACM Press.
 
@@ -429,11 +466,14 @@ Addison Publishing Company, Addison
 
 \bibitem{ref:harris} Harris, Frederic j. (Aug 2006). \emph{Multirate Signal Processing for Communication Systems}. Upper Saddle River, NJ: Prentice Hall PTR. ISBN 0-13-146511-2
 
-\bibitem{ref:lam} L.Lamport. {\em 1986 Latex User's Guide
-and Reference Manual.} Addison Wesley. pp242.
+\bibitem{ref:electro}
+D. W. Zingy , H. Lomax , and H. Jurgens , \emph{High-accuracy finite-difference schemes for linear wave propagation}, SIAM J. Sci. Comput. 17, 328346, 1996.
 
-\bibitem{ref:bloggs} F.Bloggs. {\em 1993 Latex Users do it
-in Environments} Int. Journal of Silly Findings. pp 23-29.
+\bibitem{ref:ray-trace}
+L. Savioja and U. P. Svensson, \emph{Overview of geometrical room acoustic modeling techniques}, Journal of the Acoustical Society of America, vol. 138, no. 2, pp. 708–730, 2015.
+
+\bibitem{ref:vision}
+Shapiro, L. G. and Stockman, G. C: \emph{Computer Vision}, page 137, 150. Prentice Hall, 2001
 
 \end{thebibliography}
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2016.3.28)  17 JUL 2017 23:18
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2016.3.28)  18 JUL 2017 20:31
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -484,39 +484,101 @@ Variant \prop_get:NVNTF already defined; not changing it on line 382
 Package: translator 2010/06/12 ver 1.10
 
 (/opt/texlive/2015/texmf-dist/tex/latex/beamer/translator/translator-language-m
-appings.tex))) (./MSc-dissertation.aux)
+appings.tex))) (/opt/texlive/2015/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2013/05/02 v3.3-89 Customizing captions (AR)
+
+(/opt/texlive/2015/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2013/05/02 v1.6-88 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 57.
+\captionmargin=\dimen171
+\captionmargin@=\dimen172
+\captionwidth=\dimen173
+\caption@tempdima=\dimen174
+\caption@indent=\dimen175
+\caption@parindent=\dimen176
+\caption@hangindent=\dimen177
+)
+\c@ContinuedFloat=\count159
+Package caption Info: listings package is loaded.
+)
+(/opt/texlive/2015/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count160
+\float@exts=\toks22
+\float@box=\box52
+\@float@everytoks=\toks23
+\@floatcapt=\box53
+)
+(/opt/texlive/2015/texmf-dist/tex/latex/caption/subcaption.sty
+Package: subcaption 2013/02/03 v1.1-62 Sub-captions (AR)
+\c@subfigure=\count161
+\c@subtable=\count162
+)
+(/opt/texlive/2015/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
+\Gin@req@height=\dimen178
+\Gin@req@width=\dimen179
+)
+(/opt/texlive/2015/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2010/09/12 v5.6 Page Geometry
+
+(/opt/texlive/2015/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in PDF mode is detected.
+)
+(/opt/texlive/2015/texmf-dist/tex/generic/oberdiek/ifvtex.sty
+Package: ifvtex 2010/03/01 v1.5 Detect VTeX and its facilities (HO)
+Package ifvtex Info: VTeX not detected.
+)
+(/opt/texlive/2015/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+\Gm@cnth=\count163
+\Gm@cntv=\count164
+\c@Gm@tempcnt=\count165
+\Gm@bindingoffset=\dimen180
+\Gm@wd@mp=\dimen181
+\Gm@odd@mp=\dimen182
+\Gm@even@mp=\dimen183
+\Gm@layoutwidth=\dimen184
+\Gm@layoutheight=\dimen185
+\Gm@layouthoffset=\dimen186
+\Gm@layoutvoffset=\dimen187
+\Gm@dimlist=\toks24
+)
+(./MSc-dissertation.aux)
 \openout1 = `MSc-dissertation.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Try loading font information for T1+ptm on input line 69.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 75.
+LaTeX Font Info:    ... okay on input line 75.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 75.
+LaTeX Font Info:    ... okay on input line 75.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 75.
+LaTeX Font Info:    ... okay on input line 75.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 75.
+LaTeX Font Info:    ... okay on input line 75.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 75.
+LaTeX Font Info:    ... okay on input line 75.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 75.
+LaTeX Font Info:    ... okay on input line 75.
+LaTeX Font Info:    Try loading font information for T1+ptm on input line 75.
 
 (/opt/texlive/2015/texmf-dist/tex/latex/psnfss/t1ptm.fd
 File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 )
 (/opt/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count159
-\scratchdimen=\dimen171
-\scratchbox=\box52
-\nofMPsegments=\count160
-\nofMParguments=\count161
-\everyMPshowfont=\toks22
-\MPscratchCnt=\count162
-\MPscratchDim=\dimen172
-\MPnumerator=\count163
-\makeMPintoPDFobject=\count164
-\everyMPtoPDFconversion=\toks23
+\scratchcounter=\count166
+\scratchdimen=\dimen188
+\scratchbox=\box54
+\nofMPsegments=\count167
+\nofMParguments=\count168
+\everyMPshowfont=\toks25
+\MPscratchCnt=\count169
+\MPscratchDim=\dimen189
+\MPnumerator=\count170
+\makeMPintoPDFobject=\count171
+\everyMPtoPDFconversion=\toks26
 ) (/opt/texlive/2015/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
 )
@@ -524,10 +586,6 @@ Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
 (/opt/texlive/2015/texmf-dist/tex/generic/oberdiek/ifluatex.sty
 Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
 Package ifluatex Info: LuaTeX not detected.
-)
-(/opt/texlive/2015/texmf-dist/tex/generic/oberdiek/ifpdf.sty
-Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
-Package ifpdf Info: pdfTeX in PDF mode is detected.
 )
 Package pdftexcmds Info: LuaTeX not detected.
 Package pdftexcmds Info: \pdf@primitive is available.
@@ -565,7 +623,7 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-\c@lstlisting=\count165
+\c@lstlisting=\count172
 
 (/opt/texlive/2015/texmf-dist/tex/latex/beamer/translator/dicts/translator-basi
 c-dictionary/translator-basic-dictionary-English.dict
@@ -577,20 +635,57 @@ File: siunitx-abbreviations.cfg 2015/01/21 v2.6e siunitx: Abbreviated units
 (/opt/texlive/2015/texmf-dist/tex/latex/siunitx/siunitx-binary.cfg
 File: siunitx-binary.cfg 2015/01/21 v2.6e siunitx: Binary units
 )
-\c__siunitx_mathsf_int=\count166
-\c__siunitx_mathtt_int=\count167
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: float package is loaded.
+Package caption Info: End \AtBeginDocument code.
 
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(85.35826pt, 426.79135pt, 85.35826pt)
+* v-part:(T,H,B)=(85.35826pt, 674.33032pt, 85.35826pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=426.79135pt
+* \textheight=674.33032pt
+* \oddsidemargin=13.08827pt
+* \evensidemargin=13.08827pt
+* \topmargin=-25.41173pt
+* \headheight=14.5pt
+* \headsep=24.0pt
+* \topskip=12.0pt
+* \footskip=30.0pt
+* \marginparwidth=62.27pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.8pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+\c__siunitx_mathsf_int=\count173
+\c__siunitx_mathtt_int=\count174
 <logos/logo_black.pdf, id=1, 662.475pt x 191.71625pt>
 File: logos/logo_black.pdf Graphic file (type pdf)
 
 <use logos/logo_black.pdf>
-Package pdftex.def Info: logos/logo_black.pdf used on input line 87.
+Package pdftex.def Info: logos/logo_black.pdf used on input line 93.
 (pdftex.def)             Requested size: 662.47339pt x 191.71577pt.
  <logos/crest_bw.pdf, id=2, 363.3575pt x 367.3725pt>
 File: logos/crest_bw.pdf Graphic file (type pdf)
 
 <use logos/crest_bw.pdf>
-Package pdftex.def Info: logos/crest_bw.pdf used on input line 87.
+Package pdftex.def Info: logos/crest_bw.pdf used on input line 93.
 (pdftex.def)             Requested size: 363.3566pt x 367.37158pt.
  [1
 
@@ -598,10 +693,10 @@ Package pdftex.def Info: logos/crest_bw.pdf used on input line 87.
 Non-PDF special ignored!{/opt/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pd
 ftex.map} <./logos/logo_black.pdf> <./logos/crest_bw.pdf>]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 104.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 110.
  [1]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <24.88> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 110.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 116.
 
 (./MSc-dissertation.toc)
 \tf@toc=\write3
@@ -624,13 +719,13 @@ LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <24.88> not available
 
 ]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <17.28> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 119.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 125.
  [1]
 Chapter 1.
 
-Overfull \hbox (3.12747pt too wide) in paragraph at lines 142--143
-[]\T1/ptm/m/n/12 This re-port in-cludes some back-ground on the the-ory of acou
-s-tics and dif-fer-ence schemes,
+Overfull \hbox (0.94412pt too wide) in paragraph at lines 138--139
+[]\T1/ptm/m/n/12 The key tech-nique cur-rently used for these sim-u-la-tions is
+ the finite-difference time-domain
  []
 
 [1
@@ -641,103 +736,103 @@ LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <14.4> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 150.
 [2
 
-] [3] [4] [5] [6]
+] [3] [4] <../diagrams/memory-bandwidth.png, id=48, 710.655pt x 519.3804pt>
+File: ../diagrams/memory-bandwidth.png Graphic file (type png)
+
+<use ../diagrams/memory-bandwidth.png>
+Package pdftex.def Info: ../diagrams/memory-bandwidth.png used on input line 27
+2.
+(pdftex.def)             Requested size: 426.79135pt x 311.92386pt.
+LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10.95> not available
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 273.
+ [5 <../diagrams/memory-bandwidth.png>]
+<../diagrams/stencil.pdf, id=54, 196.48407pt x 230.36063pt>
+File: ../diagrams/stencil.pdf Graphic file (type pdf)
+
+<use ../diagrams/stencil.pdf>
+Package pdftex.def Info: ../diagrams/stencil.pdf used on input line 285.
+(pdftex.def)             Requested size: 106.69783pt x 125.09587pt.
+ [6 <../diagrams/stencil.pdf>] [7] [8] [9]
 Chapter 3.
-[7
+<../diagrams/church.png, id=70, 913.91437pt x 581.17125pt>
+File: ../diagrams/church.png Graphic file (type png)
 
-]
-Chapter 4.
-[8
-
-]
-Chapter 5.
-[9
-
-]
-Chapter 6.
-File: logos/crest_bw.pdf Graphic file (type pdf)
-<use logos/crest_bw.pdf>
-Package pdftex.def Info: logos/crest_bw.pdf used on input line 348.
-(pdftex.def)             Requested size: 363.3566pt x 367.37158pt.
+<use ../diagrams/church.png>
+Package pdftex.def Info: ../diagrams/church.png used on input line 349.
+(pdftex.def)             Requested size: 426.79135pt x 271.40353pt.
  [10
 
-]
-Appendix A.
-[11
-
-]
-Appendix B.
+] [11 <../diagrams/church.png>]
+Chapter 4.
 [12
 
 ]
-LaTeX Font Info:    Try loading font information for T1+pcr on input line 406.
+Chapter 5.
+[13
+
+]
+Chapter 6.
+[14
+
+]
+Appendix A.
+[15
+
+]
+Appendix B.
+[16
+
+]
+LaTeX Font Info:    Try loading font information for T1+pcr on input line 442.
  (/opt/texlive/2015/texmf-dist/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 )
-Underfull \hbox (badness 1888) in paragraph at lines 405--407
-[]\T1/ptm/m/n/12 Webb, C.J. (2009) \T1/ptm/m/it/12 Par-al-lel com-pu-ta-tion te
-ch-niques for vir-tual acous-tics
+Underfull \hbox (badness 2486) in paragraph at lines 441--443
+\T1/ptm/m/it/12 phys-i-cal mod-elling syn-the-sis. \T1/ptm/m/n/12 PhD the-sis. 
+Uni-ver-sity of Ed-in-burgh. Avail-
  []
 
 
-Underfull \hbox (badness 2762) in paragraph at lines 405--407
-\T1/ptm/m/it/12 and phys-i-cal mod-elling syn-the-sis. \T1/ptm/m/n/12 PhD the-s
-is. Uni-ver-sity of Ed-in-burgh.
- []
-
-
-Underfull \hbox (badness 3930) in paragraph at lines 405--407
-\T1/ptm/m/n/12 Avail-able at: $\T1/pcr/m/n/12 http : / / www2 . ph . ed . ac . 
-uk / ~cwebb2 / Site / Docs /
- []
-
-
-Underfull \hbox (badness 2990) in paragraph at lines 409--411
+Underfull \hbox (badness 5077) in paragraph at lines 445--447
 []\T1/ptm/m/n/12 Hamilton, B. (2016) \T1/ptm/m/it/12 Fi-nite Dif-fer-ence and F
 i-nite Vol-ume Meth-ods for
  []
 
 
-Underfull \hbox (badness 5847) in paragraph at lines 409--411
+Underfull \hbox (badness 1112) in paragraph at lines 445--447
 \T1/ptm/m/it/12 Wave-based Mod-elling of Room Acous-tics. \T1/ptm/m/n/12 PhD th
-e-sis. Uni-ver-sity of
+e-sis. Uni-ver-sity of Ed-in-
  []
 
 
-Underfull \hbox (badness 2065) in paragraph at lines 409--411
-\T1/ptm/m/n/12 Ed-in-burgh. Avail-able at: $\T1/pcr/m/n/12 http : / / www2 . ph
- . ed . ac . uk / ~s1164563 /
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 418--419
+Underfull \hbox (badness 10000) in paragraph at lines 454--455
 []\T1/ptm/m/n/12 NVIDIA Cor-po-ra-tion \T1/ptm/m/it/12 What's the Dif-fer-ence 
 Be-tween a CPU and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 418--419
+Underfull \hbox (badness 10000) in paragraph at lines 454--455
 \T1/ptm/m/it/12 a GPU? $\T1/pcr/m/n/12 https : / / blogs . nvidia . com / blog 
 / 2009 / 12 / 16 /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 418--419
+Underfull \hbox (badness 10000) in paragraph at lines 454--455
 \T1/pcr/m/n/12 whats-[]the-[]difference-[]between-[]a-[]cpu-[]and-[]a-[]gpu/$ \
 T1/ptm/m/n/12 re-trieved
  []
 
-[13
+[17
 
-] [14] (./MSc-dissertation.aux) ) 
+] [18] (./MSc-dissertation.aux) ) 
 Here is how much of TeX's memory you used:
- 12460 strings out of 493089
- 252813 string characters out of 6103488
- 395330 words of memory out of 5000000
- 15824 multiletter control sequences out of 15000+600000
- 55422 words of font info for 83 fonts, out of 8000000 for 9000
+ 14143 strings out of 493089
+ 281363 string characters out of 6103488
+ 430153 words of memory out of 5000000
+ 17477 multiletter control sequences out of 15000+600000
+ 58225 words of font info for 85 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 39i,12n,39p,10383b,904s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 39i,12n,41p,10468b,904s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/opt/texlive/2015/texmf-dist/fonts/enc/dvips/
 base/8r.enc}</opt/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10
 .pfb></opt/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></
@@ -749,10 +844,10 @@ s/type1/public/amsfonts/cm/cmsy8.pfb></opt/texlive/2015/texmf-dist/fonts/type1/
 urw/courier/ucrr8a.pfb></opt/texlive/2015/texmf-dist/fonts/type1/urw/times/utmb
 8a.pfb></opt/texlive/2015/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></opt/tex
 live/2015/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on MSc-dissertation.pdf (20 pages, 184296 bytes).
+Output written on MSc-dissertation.pdf (24 pages, 323563 bytes).
 PDF statistics:
- 118 PDF objects out of 1000 (max. 8388607)
- 82 compressed objects within 1 object stream
+ 137 PDF objects out of 1000 (max. 8388607)
+ 93 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 11 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 26 words of extra memory for PDF output out of 10000 (max. 10000000)
 
