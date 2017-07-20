@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2016.3.28)  18 JUL 2017 20:31
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015) (preloaded format=xelatex 2016.3.28)  20 JUL 2017 20:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -64,23 +64,16 @@ Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 (/opt/texlive/2015/texmf-dist/tex/latex/latexconfig/graphics.cfg
 File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
 )
-Package graphics Info: Driver file: pdftex.def on input line 94.
+Package graphics Info: Driver file: xetex.def on input line 94.
 
-(/opt/texlive/2015/texmf-dist/tex/latex/pdftex-def/pdftex.def
-File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
-
-(/opt/texlive/2015/texmf-dist/tex/generic/oberdiek/infwarerr.sty
-Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
-)
-(/opt/texlive/2015/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
-Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
-)
-\Gread@gobject=\count91
+(/opt/texlive/2015/texmf-dist/tex/xelatex/xetex-def/xetex.def
+File: xetex.def 2015/03/25 v4.04 LaTeX color/graphics driver for XeTeX (TeX Liv
+e/RRM/JK)
 ))
 \t@bSkip=\dimen111
 \reverseT@bSkip=\dimen112
-\hh=\count92
-\mm=\count93
+\hh=\count91
+\mm=\count92
 RCSident: $Id: epcc.sty,v 3.6 1998/01/09 09:32:33 st Exp $
 )
 (./epigraph.sty
@@ -109,13 +102,13 @@ Package: amsbsy 1999/11/29 v1.2d
 (/opt/texlive/2015/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 1999/12/14 v2.01 operator names
 )
-\inf@bad=\count94
+\inf@bad=\count93
 LaTeX Info: Redefining \frac on input line 210.
-\uproot@=\count95
-\leftroot@=\count96
+\uproot@=\count94
+\leftroot@=\count95
 LaTeX Info: Redefining \overline on input line 306.
-\classnum@=\count97
-\DOTSCASE@=\count98
+\classnum@=\count96
+\DOTSCASE@=\count97
 LaTeX Info: Redefining \ldots on input line 378.
 LaTeX Info: Redefining \dots on input line 381.
 LaTeX Info: Redefining \cdots on input line 466.
@@ -124,15 +117,15 @@ LaTeX Info: Redefining \cdots on input line 466.
 \big@size=\dimen115
 LaTeX Font Info:    Redeclaring font encoding OML on input line 566.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
-\macc@depth=\count99
-\c@MaxMatrixCols=\count100
+\macc@depth=\count98
+\c@MaxMatrixCols=\count99
 \dotsspace@=\muskip10
-\c@parentequation=\count101
-\dspbrk@lvl=\count102
+\c@parentequation=\count100
+\dspbrk@lvl=\count101
 \tag@help=\toks15
-\row@=\count103
-\column@=\count104
-\maxfields@=\count105
+\row@=\count102
+\column@=\count103
+\maxfields@=\count104
 \andhelp@=\toks16
 \eqnshift@=\dimen116
 \alignsep@=\dimen117
@@ -156,23 +149,23 @@ Package: url 1999/03/02  ver 1.4  Verb mode for urls, email addresses, and file
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks19
 )
-\lst@mode=\count106
+\lst@mode=\count105
 \lst@gtempboxa=\box28
 \lst@token=\toks20
-\lst@length=\count107
+\lst@length=\count106
 \lst@currlwidth=\dimen122
-\lst@column=\count108
-\lst@pos=\count109
+\lst@column=\count107
+\lst@pos=\count108
 \lst@lostspace=\dimen123
 \lst@width=\dimen124
-\lst@newlines=\count110
-\lst@lineno=\count111
+\lst@newlines=\count109
+\lst@lineno=\count110
 \lst@maxwidth=\dimen125
 
 (/opt/texlive/2015/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2014/09/06 1.5e (Carsten Heinz)
-\c@lstnumber=\count112
-\lst@skipnumbers=\count113
+\c@lstnumber=\count111
+\lst@skipnumbers=\count112
 \lst@framebox=\box29
 )
 (/opt/texlive/2015/texmf-dist/tex/latex/listings/listings.cfg
@@ -194,24 +187,24 @@ L3 Module: l3tl 2015/01/27 v5500 L3 Token lists
 L3 Module: l3str 2015/03/01 v5545 L3 Strings
 L3 Module: l3seq 2014/08/23 v5354 L3 Sequences and stacks
 L3 Module: l3int 2015/02/21 v5529 L3 Integers
-\c_max_int=\count114
-\l_tmpa_int=\count115
-\l_tmpb_int=\count116
-\g_tmpa_int=\count117
-\g_tmpb_int=\count118
+\c_max_int=\count113
+\l_tmpa_int=\count114
+\l_tmpb_int=\count115
+\g_tmpa_int=\count116
+\g_tmpb_int=\count117
 L3 Module: l3quark 2014/08/23 v5354 L3 Quarks
 L3 Module: l3prg 2014/08/23 v5354 L3 Control structures
-\g__prg_map_int=\count119
+\g__prg_map_int=\count118
 L3 Module: l3clist 2014/08/23 v5354 L3 Comma separated lists
 L3 Module: l3token 2014/09/15 v5422 L3 Experimental token manipulation
 L3 Module: l3prop 2014/08/23 v5354 L3 Property lists
 L3 Module: l3msg 2015/02/26 v5537 L3 Messages
 L3 Module: l3file 2014/08/24 v5369 L3 File and I/O operations
-\l_iow_line_count_int=\count120
-\l__iow_target_count_int=\count121
-\l__iow_current_line_int=\count122
-\l__iow_current_word_int=\count123
-\l__iow_current_indentation_int=\count124
+\l_iow_line_count_int=\count119
+\l__iow_target_count_int=\count120
+\l__iow_current_line_int=\count121
+\l__iow_current_word_int=\count122
+\l__iow_current_indentation_int=\count123
 L3 Module: l3skip 2014/08/23 v5354 L3 Dimensions and skips
 \c_zero_dim=\dimen126
 \c_max_dim=\dimen127
@@ -232,18 +225,18 @@ L3 Module: l3skip 2014/08/23 v5354 L3 Dimensions and skips
 \g_tmpa_muskip=\muskip15
 \g_tmpb_muskip=\muskip16
 L3 Module: l3keys 2015/01/27 v5500 L3 Key-value interfaces
-\g__keyval_level_int=\count125
-\l_keys_choice_int=\count126
+\g__keyval_level_int=\count124
+\l_keys_choice_int=\count125
 L3 Module: l3fp 2014/08/22 v5336 L3 Floating points
-\c__fp_leading_shift_int=\count127
-\c__fp_middle_shift_int=\count128
-\c__fp_trailing_shift_int=\count129
-\c__fp_big_leading_shift_int=\count130
-\c__fp_big_middle_shift_int=\count131
-\c__fp_big_trailing_shift_int=\count132
-\c__fp_Bigg_leading_shift_int=\count133
-\c__fp_Bigg_middle_shift_int=\count134
-\c__fp_Bigg_trailing_shift_int=\count135
+\c__fp_leading_shift_int=\count126
+\c__fp_middle_shift_int=\count127
+\c__fp_trailing_shift_int=\count128
+\c__fp_big_leading_shift_int=\count129
+\c__fp_big_middle_shift_int=\count130
+\c__fp_big_trailing_shift_int=\count131
+\c__fp_Bigg_leading_shift_int=\count132
+\c__fp_Bigg_middle_shift_int=\count133
+\c__fp_Bigg_trailing_shift_int=\count134
 L3 Module: l3box 2014/08/23 v5354 L3 Experimental boxes
 \c_empty_box=\box30
 \l_tmpa_box=\box31
@@ -292,17 +285,16 @@ L3 Module: l3candidates 2015/03/01 v5544 L3 Experimental additions to l3kernel
 (/opt/texlive/2015/texmf-dist/tex/latex/l3kernel/l3unicode-data.def
 File: l3unicode-data.def 2015/03/01 v5544 L3 Unicode data
 )
-(/opt/texlive/2015/texmf-dist/tex/latex/l3kernel/l3pdfmode.def
-File: l3pdfmode.def 2015/03/01 v5544 L3 Experimental driver: PDF mode
-\l__driver_color_stack_int=\count136
+(/opt/texlive/2015/texmf-dist/tex/latex/l3kernel/l3xdvipdfmx.def
+File: l3xdvidpfmx.def 2015/03/01 v5544 L3 Experimental driver: xdvipdfmx
 ))
 (/opt/texlive/2015/texmf-dist/tex/latex/l3packages/xparse/xparse.sty
 Package: xparse 2014/11/25 v5471 L3 Experimental document command parser
-\l__xparse_current_arg_int=\count137
-\l__xparse_m_args_int=\count138
-\l__xparse_mandatory_args_int=\count139
-\l__xparse_processor_int=\count140
-\l__xparse_v_nesting_int=\count141
+\l__xparse_current_arg_int=\count135
+\l__xparse_m_args_int=\count136
+\l__xparse_mandatory_args_int=\count137
+\l__xparse_processor_int=\count138
+\l__xparse_v_nesting_int=\count139
 )
 Package: siunitx 2015/01/21 v2.6e A comprehensive (SI) units package
 
@@ -320,30 +312,30 @@ Package: l3keys2e 2014/11/25 v5471 LaTeX2e option processing using LaTeX3 keys
 Variant \tl_if_blank:VTF already defined; not changing it on line 50
 \l__siunitx_tmp_box=\box45
 \l__siunitx_tmp_dim=\dimen159
-\l__siunitx_tmp_int=\count142
+\l__siunitx_tmp_int=\count140
 Variant \prop_get:NVNT already defined; not changing it on line 380
 Variant \prop_get:NVNF already defined; not changing it on line 381
 Variant \prop_get:NVNTF already defined; not changing it on line 382
-\l__siunitx_number_mantissa_length_int=\count143
-\l__siunitx_number_uncert_length_int=\count144
-\l__siunitx_round_int=\count145
-\l__siunitx_process_decimal_int=\count146
-\l__siunitx_process_uncertainty_int=\count147
-\l__siunitx_process_fixed_int=\count148
-\l__siunitx_process_integer_min_int=\count149
-\l__siunitx_process_precision_int=\count150
-\l__siunitx_group_min_int=\count151
+\l__siunitx_number_mantissa_length_int=\count141
+\l__siunitx_number_uncert_length_int=\count142
+\l__siunitx_round_int=\count143
+\l__siunitx_process_decimal_int=\count144
+\l__siunitx_process_uncertainty_int=\count145
+\l__siunitx_process_fixed_int=\count146
+\l__siunitx_process_integer_min_int=\count147
+\l__siunitx_process_precision_int=\count148
+\l__siunitx_group_min_int=\count149
 \l__siunitx_angle_marker_box=\box46
 \l__siunitx_angle_unit_box=\box47
 \l__siunitx_angle_marker_dim=\dimen160
 \l__siunitx_angle_unit_dim=\dimen161
-\l__siunitx_unit_int=\count152
-\l__siunitx_unit_denominator_int=\count153
-\l__siunitx_unit_numerator_int=\count154
-\l__siunitx_unit_prefix_int=\count155
-\l__siunitx_unit_prefix_base_int=\count156
-\l__siunitx_unit_prefix_gram_int=\count157
-\l__siunitx_number_product_int=\count158
+\l__siunitx_unit_int=\count150
+\l__siunitx_unit_denominator_int=\count151
+\l__siunitx_unit_numerator_int=\count152
+\l__siunitx_unit_prefix_int=\count153
+\l__siunitx_unit_prefix_base_int=\count154
+\l__siunitx_unit_prefix_gram_int=\count155
+\l__siunitx_number_product_int=\count156
 \c__siunitx_one_fill_skip=\skip68
 \l__siunitx_table_unit_align_skip=\skip69
 \l__siunitx_table_exponent_dim=\dimen162
@@ -498,12 +490,12 @@ Package caption3 Info: TeX engine: e-TeX on input line 57.
 \caption@parindent=\dimen176
 \caption@hangindent=\dimen177
 )
-\c@ContinuedFloat=\count159
+\c@ContinuedFloat=\count157
 Package caption Info: listings package is loaded.
 )
 (/opt/texlive/2015/texmf-dist/tex/latex/float/float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count160
+\c@float@type=\count158
 \float@exts=\toks22
 \float@box=\box52
 \@float@everytoks=\toks23
@@ -511,8 +503,8 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 )
 (/opt/texlive/2015/texmf-dist/tex/latex/caption/subcaption.sty
 Package: subcaption 2013/02/03 v1.1-62 Sub-captions (AR)
-\c@subfigure=\count161
-\c@subtable=\count162
+\c@subfigure=\count159
+\c@subtable=\count160
 )
 (/opt/texlive/2015/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
@@ -524,7 +516,7 @@ Package: geometry 2010/09/12 v5.6 Page Geometry
 
 (/opt/texlive/2015/texmf-dist/tex/generic/oberdiek/ifpdf.sty
 Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
-Package ifpdf Info: pdfTeX in PDF mode is detected.
+Package ifpdf Info: pdfTeX in PDF mode is not detected.
 )
 (/opt/texlive/2015/texmf-dist/tex/generic/oberdiek/ifvtex.sty
 Package: ifvtex 2010/03/01 v1.5 Detect VTeX and its facilities (HO)
@@ -533,9 +525,9 @@ Package ifvtex Info: VTeX not detected.
 (/opt/texlive/2015/texmf-dist/tex/generic/ifxetex/ifxetex.sty
 Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 )
-\Gm@cnth=\count163
-\Gm@cntv=\count164
-\c@Gm@tempcnt=\count165
+\Gm@cnth=\count161
+\Gm@cntv=\count162
+\c@Gm@tempcnt=\count163
 \Gm@bindingoffset=\dimen180
 \Gm@wd@mp=\dimen181
 \Gm@odd@mp=\dimen182
@@ -546,84 +538,221 @@ Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 \Gm@layoutvoffset=\dimen187
 \Gm@dimlist=\toks24
 )
+(/opt/texlive/2015/texmf-dist/tex/latex/pst-solides3d/pst-solides3d.sty
+(/opt/texlive/2015/texmf-dist/tex/latex/pstricks/pstricks.sty
+Package: pstricks 2013/12/12 v0.60 LaTeX wrapper for `PSTricks' (RN,HV)
+
+(/opt/texlive/2015/texmf-dist/tex/generic/pstricks/pstricks.tex
+(/opt/texlive/2015/texmf-dist/tex/generic/xkeyval/pst-xkey.tex
+File: pst-xkey.tex 2005/11/25 v1.6 PSTricks specialization of xkeyval (HA)
+
+(/opt/texlive/2015/texmf-dist/tex/latex/xkeyval/xkeyval.sty
+Package: xkeyval 2014/12/03 v2.7a package option processing (HA)
+
+(/opt/texlive/2015/texmf-dist/tex/generic/xkeyval/xkeyval.tex
+(/opt/texlive/2015/texmf-dist/tex/generic/xkeyval/xkvutils.tex
+\XKV@toks=\toks25
+\XKV@tempa@toks=\toks26
+)
+\XKV@depth=\count164
+File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
+)))
+(/opt/texlive/2015/texmf-dist/tex/generic/pstricks/pst-fp.tex
+`pst-fp' v0.05, 2010/01/17 (hv)
+\pstFP@xs=\count165
+\pstFP@xia=\count166
+\pstFP@xib=\count167
+\pstFP@xfa=\count168
+\pstFP@xfb=\count169
+\pstFP@rega=\count170
+\pstFP@regb=\count171
+\pstFP@regs=\count172
+\pstFP@times=\count173
+)
+(/opt/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex
+\pgfutil@everybye=\toks27
+\pgfutil@tempdima=\dimen188
+\pgfutil@tempdimb=\dimen189
+
+(/opt/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfutil-common-lists.te
+x)) (/opt/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+\pgfkeys@pathtoks=\toks28
+\pgfkeys@temptoks=\toks29
+
+(/opt/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfkeysfiltered.code.te
+x
+\pgfkeys@tmptoks=\toks30
+)) (/opt/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex
+(/opt/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+(/opt/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex
+(/opt/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex
+\pgf@x=\dimen190
+\pgf@xa=\dimen191
+\pgf@xb=\dimen192
+\pgf@xc=\dimen193
+\pgf@y=\dimen194
+\pgf@ya=\dimen195
+\pgf@yb=\dimen196
+\pgf@yc=\dimen197
+\c@pgf@counta=\count174
+\c@pgf@countb=\count175
+\c@pgf@countc=\count176
+\c@pgf@countd=\count177
+\pgfutil@tempcnta=\count178
+\pgfutil@tempcntb=\count179
+)
+(/opt/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex
+\pgfmath@dimen=\dimen198
+\pgfmath@count=\count180
+\pgfmath@box=\box54
+\pgfmath@toks=\toks31
+\pgfmath@stack@operand=\toks32
+\pgfmath@stack@operation=\toks33
+)
+(/opt/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex
+(/opt/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code.
+tex)
+(/opt/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonometr
+ic.code.tex)
+(/opt/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.code
+.tex)
+(/opt/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison.
+code.tex)
+(/opt/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.t
+ex)
+(/opt/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code.
+tex)
+(/opt/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.t
+ex)
+(/opt/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerarit
+hmetics.code.tex)))
+(/opt/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex
+\c@pgfmathroundto@lastzeros=\count181
+))
+\pgffor@iter=\dimen199
+\pgffor@skip=\dimen200
+\pgffor@stack=\toks34
+\pgffor@toks=\toks35
+)
+\psLoopIndex=\count182
+
+`PSTricks' v2.60  <2014/10/25> (tvz)
+\pst@dima=\dimen201
+\pst@dimb=\dimen202
+\pst@dimc=\dimen203
+\pst@dimd=\dimen204
+\pst@dimg=\dimen205
+\pst@dimh=\dimen206
+\pst@dimm=\dimen207
+\pst@dimn=\dimen208
+\pst@dimo=\dimen209
+\pst@dimp=\dimen210
+\pst@hbox=\box55
+\pst@ibox=\box56
+\pst@boxg=\box57
+\pst@cnta=\count183
+\pst@cntb=\count184
+\pst@cntc=\count185
+\pst@cntd=\count186
+\pst@cntg=\count187
+\pst@cnth=\count188
+\pst@cntm=\count189
+\pst@cntn=\count190
+\pst@cnto=\count191
+\pst@cntp=\count192
+\@zero=\count193
+\pst@toks=\toks36
+(/opt/texlive/2015/texmf-dist/tex/xelatex/xetex-pstricks/pstricks.con
+(/opt/texlive/2015/texmf-dist/tex/generic/pstricks/config/xdvipdfmx.cfg))
+\psunit=\dimen211
+\psxunit=\dimen212
+\psyunit=\dimen213
+\pst@C@@rType=\count194
+\pslinewidth=\dimen214
+\psk@startLW=\dimen215
+\psk@endLW=\dimen216
+\pst@customdefs=\toks37
+\pslinearc=\dimen217
+\pst@symbolStep=\dimen218
+\pst@symbolWidth=\dimen219
+\pst@symbolLinewidth=\dimen220
+\everypsbox=\toks38
+\psframesep=\dimen221
+\pslabelsep=\dimen222
+\sh@wgridXunit=\dimen223
+\sh@wgridYunit=\dimen224
+\pst@shift=\dimen225
+
+(/opt/texlive/2015/texmf-dist/tex/xelatex/xetex-pstricks/pstricks.con
+(/opt/texlive/2015/texmf-dist/tex/generic/pstricks/config/xdvipdfmx.cfg
+Using PSTricks configuration for XeTeX+xdvipdfmx
+)))
+File: pstricks.tex 2014/10/25 v2.60 `PSTricks' (tvz,hv)
+ (/opt/texlive/2015/texmf-dist/tex/generic/pstricks/pst-fp.tex)
+File: pst-fp.tex 2014/10/25 v2.60 `PST-fp' (hv)
+
+(/opt/texlive/2015/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2007/01/21 v2.11 LaTeX color extensions (UK)
+
+(/opt/texlive/2015/texmf-dist/tex/latex/latexconfig/color.cfg
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package xcolor Info: Driver file: xetex.def on input line 225.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1337.
+Package xcolor Info: Model `RGB' extended on input line 1353.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1355.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1356.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1357.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1358.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1359.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1360.
+))
+Package: pst-solides3d 2009/07/25 package wrapper for pst-solides3d
+
+(/opt/texlive/2015/texmf-dist/tex/generic/pst-solides3d/pst-solides3d.tex
+(/opt/texlive/2015/texmf-dist/tex/generic/pst-node/pst-node.tex
+ v1.35, 2014/08/04
+\psrow=\count195
+\pscol=\count196
+\psmatrixcnt=\count197
+\psrowsep=\skip72
+\pscolsep=\skip73
+\pst@args=\count198
+\num@pts=\count199
+\pst@argcnt=\count200
+)
+(/opt/texlive/2015/texmf-dist/tex/generic/multido/multido.tex
+ v1.42, 2010/05/14 <tvz>
+\multido@count=\count201
+\multidocount=\count202
+\multido@stuff=\toks39
+) `PSTSOLIDESIIID' v4.28, 2014/09/05
+\test@mode=\count203
+Invalid UTF-8 byte or sequence at line 993 replaced by U+FFFD.
+)
+File: pst-solides3d.tex 2014/09/05 v4.28 `PST-solides3D'
+)
 (./MSc-dissertation.aux)
 \openout1 = `MSc-dissertation.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 75.
-LaTeX Font Info:    ... okay on input line 75.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 75.
-LaTeX Font Info:    ... okay on input line 75.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 75.
-LaTeX Font Info:    ... okay on input line 75.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 75.
-LaTeX Font Info:    ... okay on input line 75.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 75.
-LaTeX Font Info:    ... okay on input line 75.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 75.
-LaTeX Font Info:    ... okay on input line 75.
-LaTeX Font Info:    Try loading font information for T1+ptm on input line 75.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Try loading font information for T1+ptm on input line 76.
 
 (/opt/texlive/2015/texmf-dist/tex/latex/psnfss/t1ptm.fd
 File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 )
-(/opt/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
-[Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count166
-\scratchdimen=\dimen188
-\scratchbox=\box54
-\nofMPsegments=\count167
-\nofMParguments=\count168
-\everyMPshowfont=\toks25
-\MPscratchCnt=\count169
-\MPscratchDim=\dimen189
-\MPnumerator=\count170
-\makeMPintoPDFobject=\count171
-\everyMPtoPDFconversion=\toks26
-) (/opt/texlive/2015/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
-Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
-)
-
-(/opt/texlive/2015/texmf-dist/tex/generic/oberdiek/ifluatex.sty
-Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
-Package ifluatex Info: LuaTeX not detected.
-)
-Package pdftexcmds Info: LuaTeX not detected.
-Package pdftexcmds Info: \pdf@primitive is available.
-Package pdftexcmds Info: \pdf@ifprimitive is available.
-Package pdftexcmds Info: \pdfdraftmode found.
-)
-(/opt/texlive/2015/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
-Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
-
-(/opt/texlive/2015/texmf-dist/tex/latex/oberdiek/grfext.sty
-Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
-
-(/opt/texlive/2015/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
-Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
-))
-(/opt/texlive/2015/texmf-dist/tex/latex/oberdiek/kvoptions.sty
-Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
-
-(/opt/texlive/2015/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
-Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
-
-(/opt/texlive/2015/texmf-dist/tex/generic/oberdiek/etexcmds.sty
-Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
-Package etexcmds Info: Could not find \expanded.
-(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
-(etexcmds)             that some package has redefined \expanded.
-(etexcmds)             In the latter case, load this package earlier.
-)))
-Package grfext Info: Graphics extension search list:
-(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
-G,.JBIG2,.JB2,.eps]
-(grfext)             \AppendGraphicsExtensions on input line 452.
-
-(/opt/texlive/2015/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
-File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
-e
-))
-\c@lstlisting=\count172
+\c@lstlisting=\count204
 
 (/opt/texlive/2015/texmf-dist/tex/latex/beamer/translator/dicts/translator-basi
 c-dictionary/translator-basic-dictionary-English.dict
@@ -640,9 +769,9 @@ Package caption Info: float package is loaded.
 Package caption Info: End \AtBeginDocument code.
 
 *geometry* driver: auto-detecting
-*geometry* detected driver: pdftex
+*geometry* detected driver: xetex
 *geometry* verbose mode - [ preamble ] result:
-* driver: pdftex
+* driver: xetex
 * paper: a4paper
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
@@ -673,57 +802,46 @@ Package caption Info: End \AtBeginDocument code.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-\c__siunitx_mathsf_int=\count173
-\c__siunitx_mathtt_int=\count174
-<logos/logo_black.pdf, id=1, 662.475pt x 191.71625pt>
-File: logos/logo_black.pdf Graphic file (type pdf)
+\c__siunitx_mathsf_int=\count205
+\c__siunitx_mathtt_int=\count206
+File: logos/logo_black.pdf Graphic file (type QTm)
+<use  "logos/logo_black.pdf" >
+File: logos/crest_bw.pdf Graphic file (type QTm)
+ <use  "logos/crest_bw.pdf" > [1
 
-<use logos/logo_black.pdf>
-Package pdftex.def Info: logos/logo_black.pdf used on input line 93.
-(pdftex.def)             Requested size: 662.47339pt x 191.71577pt.
- <logos/crest_bw.pdf, id=2, 363.3575pt x 367.3725pt>
-File: logos/crest_bw.pdf Graphic file (type pdf)
-
-<use logos/crest_bw.pdf>
-Package pdftex.def Info: logos/crest_bw.pdf used on input line 93.
-(pdftex.def)             Requested size: 363.3566pt x 367.37158pt.
- [1
-
-
-Non-PDF special ignored!{/opt/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pd
-ftex.map} <./logos/logo_black.pdf> <./logos/crest_bw.pdf>]
+]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 110.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 111.
  [1]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <24.88> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 116.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 117.
 
-(./MSc-dissertation.toc)
+(./MSc-dissertation.toc [1
+
+])
 \tf@toc=\write3
 \openout3 = `MSc-dissertation.toc'.
 
- [1
-
-] (./MSc-dissertation.lot)
+ [2] (./MSc-dissertation.lot)
 \tf@lot=\write4
 \openout4 = `MSc-dissertation.lot'.
 
- [2
+ [3
 
 ]
 (./MSc-dissertation.lof)
 \tf@lof=\write5
 \openout5 = `MSc-dissertation.lof'.
 
- [3
+ [4
 
 ]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <17.28> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 125.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 126.
  [1]
 Chapter 1.
 
-Overfull \hbox (0.94412pt too wide) in paragraph at lines 138--139
+Overfull \hbox (0.94412pt too wide) in paragraph at lines 139--140
 []\T1/ptm/m/n/12 The key tech-nique cur-rently used for these sim-u-la-tions is
  the finite-difference time-domain
  []
@@ -733,121 +851,102 @@ Overfull \hbox (0.94412pt too wide) in paragraph at lines 138--139
 ]
 Chapter 2.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 150.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 151.
 [2
 
-] [3] [4] <../diagrams/memory-bandwidth.png, id=48, 710.655pt x 519.3804pt>
-File: ../diagrams/memory-bandwidth.png Graphic file (type png)
-
-<use ../diagrams/memory-bandwidth.png>
-Package pdftex.def Info: ../diagrams/memory-bandwidth.png used on input line 27
-2.
-(pdftex.def)             Requested size: 426.79135pt x 311.92386pt.
+] [3] [4]
+File: ../diagrams/memory-bandwidth.png Graphic file (type QTm)
+ <use  "../diagrams/memory-bandwidth.png" >
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 273.
- [5 <../diagrams/memory-bandwidth.png>]
-<../diagrams/stencil.pdf, id=54, 196.48407pt x 230.36063pt>
-File: ../diagrams/stencil.pdf Graphic file (type pdf)
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 287.
+File: ../diagrams/stencil.pdf Graphic file (type QTm)
 
-<use ../diagrams/stencil.pdf>
-Package pdftex.def Info: ../diagrams/stencil.pdf used on input line 285.
-(pdftex.def)             Requested size: 106.69783pt x 125.09587pt.
- [6 <../diagrams/stencil.pdf>] [7] [8] [9]
+<use  "../diagrams/stencil.pdf" > [5] [6] [7] [8] [9] [10]
 Chapter 3.
-<../diagrams/church.png, id=70, 913.91437pt x 581.17125pt>
-File: ../diagrams/church.png Graphic file (type png)
-
-<use ../diagrams/church.png>
-Package pdftex.def Info: ../diagrams/church.png used on input line 349.
-(pdftex.def)             Requested size: 426.79135pt x 271.40353pt.
- [10
-
-] [11 <../diagrams/church.png>]
-Chapter 4.
-[12
+(/opt/texlive/2015/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2014/09/06 1.5e listings language file
+)
+(/opt/texlive/2015/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2014/09/06 1.5e (Carsten Heinz)
+) [11
 
 ]
-Chapter 5.
+File: ../diagrams/church.png Graphic file (type QTm)
+
+<use  "../diagrams/church.png" > [12]
+Chapter 4.
 [13
 
 ]
-Chapter 6.
+Chapter 5.
 [14
 
-]
-Appendix A.
-[15
-
-]
-Appendix B.
+] [15]
+Chapter 6.
 [16
 
 ]
-LaTeX Font Info:    Try loading font information for T1+pcr on input line 442.
+Appendix A.
+LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 516.
+[17
+
+]
+Appendix B.
+[18
+
+]
+LaTeX Font Info:    Try loading font information for T1+pcr on input line 530.
  (/opt/texlive/2015/texmf-dist/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 )
-Underfull \hbox (badness 2486) in paragraph at lines 441--443
+Underfull \hbox (badness 2486) in paragraph at lines 529--531
 \T1/ptm/m/it/12 phys-i-cal mod-elling syn-the-sis. \T1/ptm/m/n/12 PhD the-sis. 
 Uni-ver-sity of Ed-in-burgh. Avail-
  []
 
 
-Underfull \hbox (badness 5077) in paragraph at lines 445--447
+Underfull \hbox (badness 5077) in paragraph at lines 533--535
 []\T1/ptm/m/n/12 Hamilton, B. (2016) \T1/ptm/m/it/12 Fi-nite Dif-fer-ence and F
 i-nite Vol-ume Meth-ods for
  []
 
 
-Underfull \hbox (badness 1112) in paragraph at lines 445--447
+Underfull \hbox (badness 1112) in paragraph at lines 533--535
 \T1/ptm/m/it/12 Wave-based Mod-elling of Room Acous-tics. \T1/ptm/m/n/12 PhD th
 e-sis. Uni-ver-sity of Ed-in-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 454--455
+Underfull \hbox (badness 10000) in paragraph at lines 542--543
 []\T1/ptm/m/n/12 NVIDIA Cor-po-ra-tion \T1/ptm/m/it/12 What's the Dif-fer-ence 
 Be-tween a CPU and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 454--455
+Underfull \hbox (badness 10000) in paragraph at lines 542--543
 \T1/ptm/m/it/12 a GPU? $\T1/pcr/m/n/12 https : / / blogs . nvidia . com / blog 
 / 2009 / 12 / 16 /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 454--455
+Underfull \hbox (badness 10000) in paragraph at lines 542--543
 \T1/pcr/m/n/12 whats-[]the-[]difference-[]between-[]a-[]cpu-[]and-[]a-[]gpu/$ \
 T1/ptm/m/n/12 re-trieved
  []
 
-[17
+[19
 
-] [18] (./MSc-dissertation.aux) ) 
+]
+Missing character: There is no – in font ptmr8t!
+ [20] (./MSc-dissertation.aux) ) 
 Here is how much of TeX's memory you used:
- 14143 strings out of 493089
- 281363 string characters out of 6103488
- 430153 words of memory out of 5000000
- 17477 multiletter control sequences out of 15000+600000
- 58225 words of font info for 85 fonts, out of 8000000 for 9000
- 1141 hyphenation exceptions out of 8191
- 39i,12n,41p,10468b,904s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/opt/texlive/2015/texmf-dist/fonts/enc/dvips/
-base/8r.enc}</opt/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10
-.pfb></opt/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></
-opt/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></opt/texl
-ive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></opt/texlive/2015
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></opt/texlive/2015/texmf-di
-st/fonts/type1/public/amsfonts/cm/cmsy10.pfb></opt/texlive/2015/texmf-dist/font
-s/type1/public/amsfonts/cm/cmsy8.pfb></opt/texlive/2015/texmf-dist/fonts/type1/
-urw/courier/ucrr8a.pfb></opt/texlive/2015/texmf-dist/fonts/type1/urw/times/utmb
-8a.pfb></opt/texlive/2015/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></opt/tex
-live/2015/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on MSc-dissertation.pdf (24 pages, 323563 bytes).
-PDF statistics:
- 137 PDF objects out of 1000 (max. 8388607)
- 93 compressed objects within 1 object stream
- 0 named destinations out of 1000 (max. 500000)
- 26 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 21610 strings out of 493706
+ 417565 string characters out of 6118259
+ 571587 words of memory out of 5000000
+ 24722 multiletter control sequences out of 15000+600000
+ 46425 words of font info for 73 fonts, out of 8000000 for 9000
+ 1328 hyphenation exceptions out of 8191
+ 43i,12n,78p,10468b,1117s stack positions out of 5000i,500n,10000p,200000b,80000s
 
+Output written on MSc-dissertation.pdf (27 pages).

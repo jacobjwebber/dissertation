@@ -3,25 +3,29 @@
 \contentsline {section}{\numberline {2.1}Room Acoustics}{2}
 \contentsline {subsection}{\numberline {2.1.1}Classical Acoustics}{2}
 \contentsline {subsection}{\numberline {2.1.2}Finite Difference Schemes}{3}
-\contentsline {section}{\numberline {2.2}Graphics Processing Units (GPUs)}{4}
-\contentsline {subsection}{\numberline {2.2.1}GPUs and parallelism}{5}
-\contentsline {subsection}{\numberline {2.2.2}GPU Memory Hierarchies}{6}
-\contentsline {section}{\numberline {2.3}The State of the Art in FDTD Acoustical Modelling}{6}
-\contentsline {subsection}{\numberline {2.3.1}The Method}{6}
-\contentsline {subsection}{\numberline {2.3.2}Memory Capacity}{6}
-\contentsline {subsection}{\numberline {2.3.3}Memory Bandwidth}{7}
-\contentsline {section}{\numberline {2.4}Other Methods}{8}
-\contentsline {subsection}{\numberline {2.4.1}Ray Tracing}{8}
-\contentsline {subsection}{\numberline {2.4.2}Spectral Methods}{8}
-\contentsline {chapter}{\numberline {3}The Proposed Data Structure and Method}{10}
-\contentsline {chapter}{\numberline {4}Design and Implementation}{12}
-\contentsline {section}{\numberline {4.1}Design Overview}{12}
-\contentsline {section}{\numberline {4.2}Software Development Process}{12}
-\contentsline {section}{\numberline {4.3}Debugging and Profiling Tools}{12}
-\contentsline {chapter}{\numberline {5}Results and Analysis}{13}
-\contentsline {section}{\numberline {5.1}Some results}{13}
-\contentsline {subsection}{\numberline {5.1.1}More results}{13}
-\contentsline {chapter}{\numberline {6}Conclusions}{14}
-\contentsline {section}{\numberline {6.1}Future Work}{14}
-\contentsline {chapter}{\numberline {A}NVIDIA K20 Device Details}{15}
-\contentsline {chapter}{\numberline {B}Kernels}{16}
+\contentsline {section}{\numberline {2.2}Boundary Conditions}{4}
+\contentsline {section}{\numberline {2.3}Graphics Processing Units (GPUs)}{5}
+\contentsline {subsection}{\numberline {2.3.1}GPUs and parallelism}{5}
+\contentsline {subsection}{\numberline {2.3.2}GPU Memory Hierarchies}{5}
+\contentsline {section}{\numberline {2.4}The State of the Art in FDTD Acoustical Modelling}{5}
+\contentsline {subsection}{\numberline {2.4.1}The Method}{7}
+\contentsline {subsection}{\numberline {2.4.2}Memory Capacity}{7}
+\contentsline {subsection}{\numberline {2.4.3}Memory Bandwidth}{8}
+\contentsline {section}{\numberline {2.5}Other Methods}{9}
+\contentsline {subsection}{\numberline {2.5.1}Ray Tracing}{9}
+\contentsline {subsection}{\numberline {2.5.2}Spectral Methods}{9}
+\contentsline {chapter}{\numberline {3}The Proposed Data Structure and Method}{11}
+\contentsline {section}{\numberline {3.1}The Data Structure}{12}
+\contentsline {section}{\numberline {3.2}The Algorithm}{12}
+\contentsline {section}{\numberline {3.3}Theoretical Benefits}{12}
+\contentsline {chapter}{\numberline {4}Design and Implementation}{13}
+\contentsline {section}{\numberline {4.1}Design Overview}{13}
+\contentsline {section}{\numberline {4.2}Software Development Process}{13}
+\contentsline {section}{\numberline {4.3}Debugging and Profiling Tools}{13}
+\contentsline {chapter}{\numberline {5}Results and Analysis}{14}
+\contentsline {section}{\numberline {5.1}Memory Usage}{14}
+\contentsline {subsection}{\numberline {5.1.1}More results}{15}
+\contentsline {chapter}{\numberline {6}Conclusions and Further Work}{16}
+\contentsline {section}{\numberline {6.1}Future Work}{16}
+\contentsline {chapter}{\numberline {A}NVIDIA K20 Device Details}{17}
+\contentsline {chapter}{\numberline {B}Kernels}{18}

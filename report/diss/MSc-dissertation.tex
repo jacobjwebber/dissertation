@@ -12,6 +12,7 @@
 \usepackage{subcaption}
 \usepackage{graphicx}
 \usepackage[margin=3cm]{geometry}
+\usepackage{pst-solides3d}
 
 
 
@@ -248,11 +249,24 @@ S \equiv P_{l+1,m,p}^{n} + P_{l-1,m,p}^{n} + P_{l,m+1,p}^{n} + P_{l,m-1,p}^{n} +
 gives a somewhat neater version of equation \ref{equation:stencil-big}
 
 \begin{equation}
+\label{equation:stencil-small}
 P_{l,m,p}^{n+1} = (2 - 6 \lambda^2)P_{l,m,p}^{n} + \lambda^2 S - P_{l,m,p}^{n-1}
 \end{equation}
 
-More than simply being neat, this is now a representation of how to calculate new values for the three dimensional array from the previous ones using a simple stencil operation.
+More than simply being neat, this is now a representation of how to calculate new values for the three dimensional array from the previous ones using a simple stencil operation. This yields a new propagation relation
 
+\section{Boundary Conditions}
+
+All of the physical properties of the room are encoded in the boundary conditions imposed on the differential equation. Modelling different boundary materials such as room walls is the subject of significant research at present. However, the main purpose of this report is to look at the computational aspects of applying stencil operations. As such a relatively simple boundary scheme is applied.
+
+For the purposes of a Von Neumann stencil most grid points that are inside the room will have 6 neighbours. However, on the edge of the room, there will be points that have less. The amount of these neighbours is stored in a new $K$ grid, with one value for every point. This allows for the first time rooms of irregular shape to be considered, as those points outside the room are encoded with a zero $K$ value.
+
+The boundary scheme used modifies equation \ref{equation:stencil-small} by replacing the \num{6} value with a $K_{l,m,p}$ value. All values of $P_{l,m,p}^{n}$ where $K_{l,m,p} = 0$ are also assumed to be zero.
+
+\begin{equation}
+\label{equation:stencil-boundary}
+P_{l,m,p}^{n+1} = (2 - \lambda^2 K_{l,m,p} )P_{l,m,p}^{n} + \lambda^2 S - P_{l,m,p}^{n-1}
+\end{equation}
 
 \section{Graphics Processing Units (GPUs)}
 \label{section:gpus}
@@ -275,7 +289,7 @@ GPUs primarily achieve their massive performance increases over CPUs by harnessi
 \end{figure}
 
 \section{The State of the Art in FDTD Acoustical Modelling}
-
+\label{chapter:state-of-art}
 Combining the ideas as written about in sections \ref{section:acoustics} and \ref{section:gpus}, it is possible to describe the most successful techniques thus far in running FDTD room acoustics models.
 
 \subsection{The Method}
@@ -342,7 +356,32 @@ While these approaches have been applied to stencil techniques in image processi
 
 The bulk of the work in this project went into the design and implementation of a new algorithm for the computation of FDTD simulations. This section details the design of this algorithm and some of its theoretical performance benefits.
 
-The purpose of this technique improve memory usage for irregularly shaped rooms and memory locality in large 3D FDTD acoustics simulations. The proposed method is to replace the large 3D arrays currently used with an array of structs. Each struct will store a smaller sub-array containing points in the simulation, as well as information on the location of neighbouring points to those points of the edge of each sub-array. This will allow blocks where no points are inside the room being simulated to not have to be stored in expensive GPU memory. This technique may also improve data locality. The smaller 3D sub-arrays will result in neighbouring points being scattered less far apart in memory. 
+The purpose of this technique improve memory usage for irregularly shaped rooms and memory locality in large 3D FDTD acoustics simulations. The proposed method is to replace the large 3D arrays currently used with an array of structs. Each struct will store a smaller sub-array containing points in the simulation, as well as information on the location of neighbouring points to those points of the edge of each sub-array. This will allow blocks where no points are inside the room being simulated to not have to be stored in expensive GPU memory. This technique also improves data locality. The smaller 3D sub-arrays will result in neighbouring points being scattered less far apart in memory.
+
+\section{The Data Structure} 
+
+\lstset{language=C,caption={The Data Struct},label=listing:struct}
+\begin{center}
+\begin{minipage}{0.8\textwidth}
+\begin{lstlisting}[frame=single]
+typedef real bl_array[Bz][By][Bx];
+struct block {
+    int up;
+    int down;
+    int left;
+    int right;
+    int fore;
+    int aft;
+    bl_array u;
+    bl_array u1;
+    char k[Bz][By][Bx];
+};
+\end{lstlisting}
+\end{minipage}
+\end{center}
+
+\section{The Algorithm}
+
 
 \begin{figure}
 \centering
@@ -351,11 +390,19 @@ The purpose of this technique improve memory usage for irregularly shaped rooms 
 \label{church}
 \end{figure}
 
+\section{Theoretical Benefits}
+\label{section:benefits}
+
 \chapter{Design and Implementation}
 
 \epigraph{\itshape ``The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.''}{Tom Cargill}
-\section{Design Overview}
 
+The software was written in CUDA C. This is a proprietary language developed by NVIDIA and is an extension to ANSI C that allows for GPGPU programming.
+
+The work stems from a Matlab script that implements the scheme using a bounding box as described in \ref{chapter:state-of-art}. There were also CUDA kernels from \cite{craig} that served as inspiration, but these did not model cases where non-cuboid rooms were used. This meant that they were of limited use. The project was therefore largely one of software development from scratch.
+
+\section{Design Overview}
+bobobobobobob
 \section{Software Development Process}
 
 \section{Debugging and Profiling Tools}
@@ -365,8 +412,47 @@ The purpose of this technique improve memory usage for irregularly shaped rooms 
 \chapter{Results and Analysis}
 \label{chapter:results}
 
-\section{Some results}
-Here are some results.
+\section{Memory Usage}
+
+\begin{figure}[H]
+\centering
+\begin{pspicture}[shift=*](-4.2,-4.2)(4.2,4.2)
+%
+\psset{lightsrc=10 20 30,viewpoint=30 10 30 rtp2xyz,Decran=40}
+
+ %\axesIIID(3,3,3)(6,4,4)
+%\psgrid
+\psSolid[
+object=sphere,
+r=2,
+ngrid=18 18, axesboxed]%
+
+\psSolid[
+action=draw,
+object=cube,
+RotZ=30,
+%show=all,
+]%
+
+\end{pspicture}
+\caption{Computer graphic showing a sphere of unit diameter within a cube of unit side.}
+\label{figure:sphere-cube}
+\end{figure}
+
+Very high memory usage is currently the biggest inhibiting factor to the performance of FDTD simulations. To determine if the efficiencies as theorised in section \ref{section:benefits} were realised, the example of a spherically shaped room was used, as shown in figure \ref{figure:sphere-cube}. While the existence of such a shaped room seems far-fetched, the example illustrates some of the benefits of the data structure described even in somewhat unfavourable conditions. This configuration tests the performance of the new struct based method when a curved room shape is chosen that will necessarily result in partially empty block arrays being stored within some structs. The arrangement is also not particularly sparse. The volume of the sphere $V_{s}$ is given by: 
+
+\begin{equation}
+V_{s} = \frac{\pi d^3}{6}
+\end{equation}
+
+meaning that that the fraction of points in the cube that are also inside the room is:
+
+\begin{equation}
+\frac{\pi d^3}{6} \approx 0.5236...
+\end{equation}
+
+Under existing bounding box techniques for modelling non-cuboid whaters whaters.
+
 
 \subsection{More results}
 When showing results you are likely to use tables and graphs. You can
@@ -389,7 +475,9 @@ headings which pass over more than one column}
 \label{simple_table}
 \end{table}
 
-\chapter{Conclusions}
+\chapter{Conclusions and Further Work}
+\epigraph{\itshape ``It is not incumbent upon you to finish the task. Yet, you are not free to desist from it.''}{Tarphon}
+
 
 
 \section{Future Work}
@@ -398,7 +486,7 @@ headings which pass over more than one column}
 % the appendix command just changes heading styles for appendices.
 
 \chapter{NVIDIA K20 Device Details}
-\lstset{basicstyle=\footnotesize,  breaklines=true}
+\lstset{basicstyle=\footnotesize,  breaklines=true,label=listing:K20,caption={Output from deviceQuery program}}
 \begin{lstlisting}
   CUDA Driver Version / Runtime Version          8.0 / 7.0
   CUDA Capability Major/Minor version number:    3.5
