@@ -3,38 +3,7 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 
-#define TRUE 1
-#define FALSE 0
-#define real double
-
-#define CUCALL( call )               \
-{                                       \
-cudaError_t result = call;              \
-if ( cudaSuccess != result )            \
-    fprintf(stderr, "CUDA error  %s \n", cudaGetErrorString( result ) ); \
-}
-
-//Block size
-#define Bz 2
-#define By 2
-#define Bx 32
-
-//Sphere radius
-#define R 64/2
-
-
-typedef real bl_array[Bz][By][Bx];
-struct block {
-    int up; //z direction
-    int down;
-    int left; //x direction
-    int right;
-    int fore; //y direction.
-    int aft;
-    bl_array u;
-    bl_array u1;
-    char k[Bz][By][Bx];
-};
+#include "semi-structured_lib.h"
 
 __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int swap);
 
@@ -43,39 +12,6 @@ __global__ void perform_IO(real *input_d, real *output_d, real *out_d, real ins,
 __global__ void perform_stencil_structured(real* u, real* u1, char* k_d, real l2, real l, real g, int X, int Y, int Z);
 
 void structured_version(int X, int Y, int Z, int big_n, char *is_in_sphere, real l, real l2, real g, int coords[3]);
-
-char is_block_internal(int x, int y, int z, char *array, int xmax, int ymax, int zmax) {
-    //This function takes coordinates and returns true if any points within a 
-    // blocksize starting on that point are inside the room.
-    int i, j, k;
-    for (i = x; i < x+Bz; i++) {
-        for (j = y; j < y+By; j++) {
-            for (k = z; k < z+Bx; k++) {
-                if (  i<zmax && j<ymax && k<xmax && array[i*ymax*xmax + j*xmax + k]) {
-                    return TRUE;
-                 }
-            }
-        }
-    }
-
-    return FALSE;
-}
-
-char copy_to_struct(int x, int y, int z, struct block *bl, char *array, int xmax, int ymax, int zmax) {
-    int i, j, k;
-    for (i = x; i < x+Bz; i++) {
-        for (j = y; j < y+By; j++) {
-            for (k = z; k < z+Bx; k++) {
-                if ( i<zmax && j<ymax && k<xmax ) {
-                    bl->k[i-x][j-y][k-z] = array[i*ymax*xmax + j*xmax + k];
-                } else {
-                    bl->k[i-x][j-y][k-z] = 0;
-                }
-            }
-        }
-    }
-    return TRUE;
-}
 
 real *hann(int big_n) {
     real *hanning = (real *) calloc(big_n, sizeof(real));
@@ -88,6 +24,8 @@ real *hann(int big_n) {
 
     return hanning;
 }
+
+
 
 int main() {
 
@@ -145,117 +83,33 @@ int main() {
 
 
     // BEGIN DATA PREP SECTION
+    struct block *aos;
+    int blocks_in;
+    int *index_of_struct;
+    create_aos(X, Y, Z, is_in_sphere, &blocks_in, &aos, &index_of_struct);
+    //end data prep
 
-    int num_blocks_z = (Z + Bz - 1)/Bz; //Round up in case end block is half populated.
-    int num_blocks_y = (Y + By - 1)/By;
-    int num_blocks_x = (X + Bx - 1)/Bx;
-    int total_blocks = num_blocks_z*num_blocks_y*num_blocks_x;
-
-    //Create an array storing the location of each block.
-    int *index_of_struct = (int*) calloc(total_blocks, sizeof(int));
-
-    //total number of internal blocks.
-    int blocks_in = 1;
-
-    for (i = 0; i < num_blocks_z; i++) {
-        for (j = 0; j < num_blocks_y; j++) {
-            for (k = 0; k < num_blocks_x; k++) {
-                if ( is_block_internal(i * Bz, j * By, k * Bx, &(is_in_sphere[0]), X,Y,Z) ) {
-                    index_of_struct[i*num_blocks_y*num_blocks_x + j*num_blocks_x + k] = blocks_in;
-                    blocks_in++;
-                }
-            }
-        }
-    }
-
-    printf("%i blocks are internal out of %i blocks in total\n", blocks_in, total_blocks);
-
-    printf("Allocating host memory for %i blocks\n", blocks_in);
-
-    //Assign a block for all volumes containing points
-    // aos is short for array of structs.
-    struct block *aos = (struct block *) calloc(blocks_in, sizeof(struct block));
-
-    if (aos) {
-        printf("Memory successfully allocated \n");
-    } else {
-        printf("Memory allocation error.\n");
-        return -1;
-    }
-
-    //Copy is in sphere array to k arrrays within blocks.
-    printf("Copying data to blocks\n");
-    int index;
-    for (i = 0; i < num_blocks_z; i++) {
-        for (j = 0; j < num_blocks_y; j++) {
-            for (k = 0; k < num_blocks_x; k++) {
-                index = index_of_struct[i*num_blocks_y*num_blocks_x + j*num_blocks_x + k];
-                
-                if (index != 0) {
-                    copy_to_struct(i * Bz, j * By, k * Bx, &(aos[index]), &(is_in_sphere[0]), X, Y, Z);
-                }
-
-            }
-        }
-    }
-
-
-
-    // SET LEFT AND RIGHT WITHIN STRUCTS.
- 
-    printf("Assigning block neighbours\n");
-    struct block *bl;
-    //idea - let null neighbour = 0 . Leave 0th block empty.
-    for (i = 0; i < num_blocks_z; i++) {
-        for (j = 0; j < num_blocks_y; j++) {
-            for (k = 0; k < num_blocks_x; k++) {
-                
-                index = index_of_struct[i*num_blocks_y*num_blocks_x + j*num_blocks_x + k];
-                if ( index != 0) {
-                    bl = &(aos[index]);
-
-                    if (i>0) {bl->left  = index_of_struct[(i-1)*num_blocks_y*num_blocks_x + j*num_blocks_x + k];}
-                    if (i<(num_blocks_z-1)) {bl->right = index_of_struct[(i+1)*num_blocks_y*num_blocks_x + j*num_blocks_x + k];}
-                    
-                    if (j>0) {bl->aft   = index_of_struct[i*num_blocks_y*num_blocks_x + (j-1)*num_blocks_x + k];}
-                    if (j>num_blocks_y-1) { bl->fore  = index_of_struct[i*num_blocks_y*num_blocks_x + (j+1)*num_blocks_x + k];}
-
-                    if (k>0) { bl->down  = index_of_struct[i*num_blocks_y*num_blocks_x + j*num_blocks_x + (k-1)];}
-                    if (k<num_blocks_x) {bl->up    = index_of_struct[i*num_blocks_y*num_blocks_x + j*num_blocks_x + (k+1)];}
-                }
-
-            }
-        }
-    }
-
-    //Translate from structured array index to index of, and within, struct.
-
-    int coords[3]; //{x,y,z}
-
-    //Set this as origin for now
-    coords[0] = coords[1] = coords[2] = ori;
+    return 0;
+    //Set input and output locations
     
+    int arrindx;
+    int arrindy;
+    int arrindz;
+    int io_block_ind;
+    int arrindices[3];
+    int input_coords[3];
 
-    int blockindx = coords[0]/Bx;
-    int blockindy = coords[1]/By;
-    int blockindz = coords[2]/Bz;
+    input_coords[0] = ori;
+    input_coords[1] = ori;
+    input_coords[2] = ori;
 
-    int io_block_ind = index_of_struct[blockindz *num_blocks_x*num_blocks_y + blockindy *num_blocks_x + blockindx];
+  //int get_coords(int coords[3], int X, int Y, int Z, int** index_of_struct, int* io_block_ind, int* arrind[3]) {
+    get_coords(input_coords, X, Y, Z, &index_of_struct, &io_block_ind, arrindices);
 
-    int arrindx = coords[0]%Bx;
-    int arrindy = coords[1]%By;
-    int arrindz = coords[2]%Bz;
+    arrindx = arrindices[0];
+    arrindy = arrindices[1];
+    arrindz = arrindices[2];
 
-    if ( aos[io_block_ind].k[arrindz][arrindy][arrindx]) {
-        printf("test1 pass\n");
-    }
-
-    aos[io_block_ind].u1[arrindz][arrindy][arrindx] = 0.0; //ZERO
-    aos[io_block_ind].u[arrindz][arrindy][arrindx] = 0.0; //ZERO
-
-    //=======================================================
-    //=======================================================
-    // END OF DATA PREP SECTION - put this into separate file eventually.
 
     //Use Hanning curve as input.
     real Ts = h*l / c;
@@ -290,8 +144,6 @@ int main() {
     printf("Allocated and copied %f KiB of data to device successfully.\n", mem_in_KiB);
 
     CUCALL( cudaGetLastError());
-
-    //Set input and output locations
     real *input_d = &(aos_d[io_block_ind].u[arrindz][arrindy][arrindx]);
     real *output_d = &(aos_d[io_block_ind].u[arrindz][arrindy][arrindx]);
   
