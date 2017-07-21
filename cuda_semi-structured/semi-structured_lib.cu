@@ -36,6 +36,7 @@ char copy_to_struct(int x, int y, int z, struct block *bl, char *array, int xmax
 
 
 int create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct block** aos_pp, int** index_of_struct) {
+    //Creates an array of structs for stencil operation.
 
     int num_blocks_z = (Z + Bz - 1)/Bz; //Round up in case end block is half populated.
     int num_blocks_y = (Y + By - 1)/By;
@@ -44,34 +45,33 @@ int create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct b
 
     printf("allocating index of struct\n");
     //Create an array storing the location of each block.
-    *index_of_struct = (int*) calloc( 2, sizeof(int));//total_blocks, sizeof(int));
+    int* index_of_struct_s = (int*) calloc(total_blocks, sizeof(int));
 
     //total number of internal blocks.
-    *blocks_in = 1;
+    int blocks_in_s = 1;
 
-    printf("allocating index of struct %i\n", *index_of_struct[1]);
+    printf("allocating index of struct %i\n", index_of_struct_s[1]);
 
     int i,j,k;
     for (i = 0; i < num_blocks_z; i++) {
         for (j = 0; j < num_blocks_y; j++) {
             for (k = 0; k < num_blocks_x; k++) {
                 if ( is_block_internal(i * Bz, j * By, k * Bx, &(is_in_sphere[0]), X,Y,Z) ) {
-                    printf("%i %i %i\n",i,j,k);
-                    *index_of_struct[i*num_blocks_y*num_blocks_x + j*num_blocks_x + k] = *blocks_in;
-                    *blocks_in++;
+                    index_of_struct_s[i*num_blocks_y*num_blocks_x + j*num_blocks_x + k] = blocks_in_s;
+                    blocks_in_s++;
                 }
             }
         }
     }
 
 
-    printf("%i blocks are internal out of %i blocks in total\n", blocks_in, total_blocks);
+    printf("%i blocks are internal out of %i blocks in total\n", blocks_in_s, total_blocks);
 
-    printf("Allocating host memory for %i blocks\n", blocks_in);
+    printf("Allocating host memory for %i blocks\n", blocks_in_s);
 
     //Assign a block for all volumes containing points
     // aos is short for array of structs.
-    struct block *aos = (struct block *) calloc(*blocks_in, sizeof(struct block));
+    struct block *aos = (struct block *) calloc(blocks_in_s, sizeof(struct block));
 
     if (aos) {
         printf("Memory successfully allocated \n");
@@ -86,7 +86,7 @@ int create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct b
     for (i = 0; i < num_blocks_z; i++) {
         for (j = 0; j < num_blocks_y; j++) {
             for (k = 0; k < num_blocks_x; k++) {
-                index = *index_of_struct[i*num_blocks_y*num_blocks_x + j*num_blocks_x + k];
+                index = index_of_struct_s[i*num_blocks_y*num_blocks_x + j*num_blocks_x + k];
                 
                 if (index != 0) {
                     copy_to_struct(i * Bz, j * By, k * Bx, &(aos[index]), &(is_in_sphere[0]), X, Y, Z);
@@ -95,8 +95,6 @@ int create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct b
             }
         }
     }
-
-
 
     // SET LEFT AND RIGHT WITHIN STRUCTS.
  
@@ -107,30 +105,32 @@ int create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct b
         for (j = 0; j < num_blocks_y; j++) {
             for (k = 0; k < num_blocks_x; k++) {
                 
-                index = *index_of_struct[i*num_blocks_y*num_blocks_x + j*num_blocks_x + k];
+                index = index_of_struct_s[i*num_blocks_y*num_blocks_x + j*num_blocks_x + k];
                 if ( index != 0) {
                     bl = &(aos[index]);
 
-                    if (i>0) {bl->left  = *index_of_struct[(i-1)*num_blocks_y*num_blocks_x + j*num_blocks_x + k];}
-                    if (i<(num_blocks_z-1)) {bl->right = *index_of_struct[(i+1)*num_blocks_y*num_blocks_x + j*num_blocks_x + k];}
+                    if (i>0) {bl->left  = index_of_struct_s[(i-1)*num_blocks_y*num_blocks_x + j*num_blocks_x + k];}
+                    if (i<(num_blocks_z-1)) {bl->right = index_of_struct_s[(i+1)*num_blocks_y*num_blocks_x + j*num_blocks_x + k];}
                     
-                    if (j>0) {bl->aft   = *index_of_struct[i*num_blocks_y*num_blocks_x + (j-1)*num_blocks_x + k];}
-                    if (j>num_blocks_y-1) { bl->fore  = *index_of_struct[i*num_blocks_y*num_blocks_x + (j+1)*num_blocks_x + k];}
+                    if (j>0) {bl->aft   = index_of_struct_s[i*num_blocks_y*num_blocks_x + (j-1)*num_blocks_x + k];}
+                    if (j>num_blocks_y-1) { bl->fore  = index_of_struct_s[i*num_blocks_y*num_blocks_x + (j+1)*num_blocks_x + k];}
 
-                    if (k>0) { bl->down  = *index_of_struct[i*num_blocks_y*num_blocks_x + j*num_blocks_x + (k-1)];}
-                    if (k<num_blocks_x) {bl->up    = *index_of_struct[i*num_blocks_y*num_blocks_x + j*num_blocks_x + (k+1)];}
+                    if (k>0) { bl->down  = index_of_struct_s[i*num_blocks_y*num_blocks_x + j*num_blocks_x + (k-1)];}
+                    if (k<num_blocks_x) {bl->up    = index_of_struct_s[i*num_blocks_y*num_blocks_x + j*num_blocks_x + (k+1)];}
                 }
 
             }
         }
     }
 
+    *index_of_struct = index_of_struct_s;
+    *blocks_in = blocks_in_s;
 
     return TRUE;
 
 }
 
-int get_coords(int coords[3], int X, int Y, int Z, int** index_of_struct, int* io_block_ind, int arrind[3]) {
+int get_coords(int coords[3], int X, int Y, int Z, int* index_of_struct, int* io_block_ind, int arrind[3]) {
     //Translate from structured array index to index of, and within, struct.
 
     int num_blocks_z = (Z + Bz - 1)/Bz; //Round up in case end block is half populated.
@@ -143,7 +143,7 @@ int get_coords(int coords[3], int X, int Y, int Z, int** index_of_struct, int* i
     int blockindy = coords[1]/By;
     int blockindz = coords[2]/Bz;
 
-    *io_block_ind = *index_of_struct[blockindz *num_blocks_x*num_blocks_y + blockindy *num_blocks_x + blockindx];
+    *io_block_ind = index_of_struct[blockindz *num_blocks_x*num_blocks_y + blockindy *num_blocks_x + blockindx];
 
     arrind[0] = coords[0]%Bx;
     arrind[1] = coords[1]%By;

@@ -33,4 +33,4 @@ struct block {
 };
 
 int create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct block** aos_pp, int** index_of_struct);
-int get_coords(int coords[3], int X, int Y, int Z, int** index_of_struct, int* io_block_ind, int arrind[3]);
+int get_coords(int coords[3], int X, int Y, int Z, int* index_of_struct, int* io_block_ind, int arrind[3]);

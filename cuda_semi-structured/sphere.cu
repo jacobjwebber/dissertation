@@ -86,10 +86,11 @@ int main() {
     struct block *aos;
     int blocks_in;
     int *index_of_struct;
+    printf("***Calling library function to create aos***\n");
     create_aos(X, Y, Z, is_in_sphere, &blocks_in, &aos, &index_of_struct);
+    printf("***Function returned. Array contains %i structs***\n", blocks_in);
     //end data prep
 
-    return 0;
     //Set input and output locations
     
     int arrindx;
@@ -103,8 +104,7 @@ int main() {
     input_coords[1] = ori;
     input_coords[2] = ori;
 
-  //int get_coords(int coords[3], int X, int Y, int Z, int** index_of_struct, int* io_block_ind, int* arrind[3]) {
-    get_coords(input_coords, X, Y, Z, &index_of_struct, &io_block_ind, arrindices);
+    get_coords(input_coords, X, Y, Z, index_of_struct, &io_block_ind, arrindices);
 
     arrindx = arrindices[0];
     arrindy = arrindices[1];
@@ -159,6 +159,7 @@ int main() {
     perform_IO<<<dimsIO,dimsIO>>> (input_d, output_d, out_d, 1.0, 0, 0); //ZERO
     cudaDeviceSynchronize();
     int t;
+    big_n = 1;
     for (t = 1; t < big_n; t++) {
         //do stencil
         perform_stencil<<<dimsBlocks,dimsThreads>>>(aos_d, l2, l, g, t%2);
@@ -204,7 +205,7 @@ int main() {
     int coordsy[3];
     coordsy[0] = coordsy[1] = coordsy[2] = ori;
 
-    structured_version( X, Y, Z, big_n, is_in_sphere, l, l2, g, coordsy);
+    //structured_version( X, Y, Z, big_n, is_in_sphere, l, l2, g, coordsy);
     
     return 0;
 }
