@@ -35,7 +35,7 @@ char copy_to_struct(int x, int y, int z, struct block *bl, char *array, int xmax
 }
 
 
-int create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct block** aos_pp, int** index_of_struct) {
+ss_t create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct block** aos_pp, int** index_of_struct) {
     //Creates an array of structs for stencil operation.
 
     int num_blocks_z = (Z + Bz - 1)/Bz; //Round up in case end block is half populated.
@@ -43,14 +43,14 @@ int create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct b
     int num_blocks_x = (X + Bx - 1)/Bx;
     int total_blocks = num_blocks_z*num_blocks_y*num_blocks_x;
 
-    printf("allocating index of struct\n");
+    //printf("allocating index of struct\n");
     //Create an array storing the location of each block.
     int* index_of_struct_s = (int*) calloc(total_blocks, sizeof(int));
 
     //total number of internal blocks.
     int blocks_in_s = 1;
 
-    printf("allocating index of struct %i\n", index_of_struct_s[1]);
+    //printf("allocating index of struct %i\n", index_of_struct_s[1]);
 
     int i,j,k;
     for (i = 0; i < num_blocks_z; i++) {
@@ -65,23 +65,25 @@ int create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct b
     }
 
 
-    printf("%i blocks are internal out of %i blocks in total\n", blocks_in_s, total_blocks);
+    //printf("%i blocks are internal out of %i blocks in total\n", blocks_in_s, total_blocks);
 
-    printf("Allocating host memory for %i blocks\n", blocks_in_s);
+    //printf("Allocating host memory for %i blocks\n", blocks_in_s);
 
     //Assign a block for all volumes containing points
     // aos is short for array of structs.
     struct block *aos = (struct block *) calloc(blocks_in_s, sizeof(struct block));
 
+    int error;
+
     if (aos) {
-        printf("Memory successfully allocated \n");
+        //printf("Memory successfully allocated \n");
     } else {
         printf("Memory allocation error.\n");
-        return -1;
+        error = -1;
     }
 
     //Copy is in sphere array to k arrrays within blocks.
-    printf("Copying data to blocks\n");
+    //printf("Copying data to blocks\n");
     int index;
     for (i = 0; i < num_blocks_z; i++) {
         for (j = 0; j < num_blocks_y; j++) {
@@ -98,7 +100,7 @@ int create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct b
 
     // SET LEFT AND RIGHT WITHIN STRUCTS.
  
-    printf("Assigning block neighbours\n");
+    //printf("Assigning block neighbours\n");
     struct block *bl;
     //idea - let null neighbour = 0 . Leave 0th block empty.
     for (i = 0; i < num_blocks_z; i++) {
@@ -126,7 +128,17 @@ int create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct b
     *index_of_struct = index_of_struct_s;
     *blocks_in = blocks_in_s;
 
-    return TRUE;
+    ss_t data;
+
+    data.X = X;
+    data.Y = Y;
+    data.Z = Z;
+    data.blocks_in = blocks_in_s;
+    data.aos = aos;
+    data.index_of_struct = index_of_struct_s;
+    data.k = is_in_sphere;
+
+    return data;
 
 }
 

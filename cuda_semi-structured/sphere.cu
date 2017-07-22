@@ -25,28 +25,13 @@ real *hann(int big_n) {
     return hanning;
 }
 
-
-
-int main() {
-
-    //Coefficients
-    real l2 = 1.0/3.0; //courant number and courant number squared.
-    real l = sqrt(l2);
-    real r = 0.9; //Wall reflection coefficient.
-    real g = (1-r)/(1+r);
-    real h = 0.15; //grid spacing (m)
-    real c = 343; //Speed of sound
-    real duration = 0.1; //seconds
-
-    //Execute circle example.
-    real radius = 10.0; // meters
-    int diam = ceil(radius/h)+2;
+char* make_sphere(int diam) {
     int X, Y, Z;
     int ori = diam/2 + 1; //Add one so there is buffer round edge- why not?
     int rad = diam/2;
 
     X = Y = Z = diam;
-    
+   
     char *is_in_sphere = (char*) calloc(X*Y*Z, sizeof(char));
 
     if(!is_in_sphere) {
@@ -81,6 +66,28 @@ int main() {
         }
     }
 
+    return is_in_sphere;
+}
+
+int main() {
+
+    //Coefficients
+    real l2 = 1.0/3.0; //courant number and courant number squared.
+    real l = sqrt(l2);
+    real r = 0.9; //Wall reflection coefficient.
+    real g = (1-r)/(1+r);
+    real h = 0.15; //grid spacing (m)
+    real c = 343; //Speed of sound
+    real duration = 0.1; //seconds
+
+    //Execute circle example.
+    real radius = 10.0; // meters
+    int diam = ceil(radius/h)+2;
+    int X, Y, Z;
+    int ori = diam/2 + 1; //Add one so there is buffer round edge- why not?
+
+    X = Y = Z = diam;
+    char* is_in_sphere = make_sphere(diam);
 
     // BEGIN DATA PREP SECTION
     struct block *aos;
@@ -91,7 +98,23 @@ int main() {
     printf("***Function returned. Array contains %i structs***\n", blocks_in);
     //end data prep
 
-    //Set input and output locations
+    char* k_arr;
+    printf("Diam \tInternal \tSize \tSize-structured \tRatio\n");
+    for (diam = 8; diam <= 800; diam +=80) {
+        k_arr = make_sphere(diam);
+        X = Y = Z = diam;
+        // BEGIN DATA PREP SECTION
+        struct block *aos;
+        int blocks_in;
+        int *index_of_struct;
+        create_aos(X, Y, Z, k_arr, &blocks_in, &aos, &index_of_struct);
+        size_t bl_siz = ((blocks_in-1)*sizeof(struct block));
+        size_t s_siz = (X*Y*Z*(2*sizeof(real) + sizeof(char))) ;
+        float ratio = ((float) bl_siz) / ((float) s_siz);
+        printf("%i \t%i \t%f \t%f \t%f \n", diam, blocks_in, (float) bl_siz/(float)(1024*1024),(float) s_siz/ (float)(1024*1024), ratio);
+        //end data prep
+        //Set input and output locations
+    }
     
     int arrindx;
     int arrindy;
@@ -202,8 +225,8 @@ int main() {
     free(aos);
     printf("freed cuda and host mem\n");
 
-    int coordsy[3];
-    coordsy[0] = coordsy[1] = coordsy[2] = ori;
+    //int coordsy[3];
+    //coordsy[0] = coordsy[1] = coordsy[2] = ori;
 
     //structured_version( X, Y, Z, big_n, is_in_sphere, l, l2, g, coordsy);
     
