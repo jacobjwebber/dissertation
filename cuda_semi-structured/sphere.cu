@@ -98,20 +98,22 @@ int main() {
     printf("***Function returned. Array contains %i structs***\n", blocks_in);
     //end data prep
 
+    ss_t data;
     char* k_arr;
     printf("Diam \tInternal \tSize \tSize-structured \tRatio\n");
-    for (diam = 8; diam <= 800; diam +=80) {
+    for (diam = 8; diam <= 800; diam +=40) {
         k_arr = make_sphere(diam);
         X = Y = Z = diam;
         // BEGIN DATA PREP SECTION
         struct block *aos;
         int blocks_in;
         int *index_of_struct;
-        create_aos(X, Y, Z, k_arr, &blocks_in, &aos, &index_of_struct);
+        data = create_aos(X, Y, Z, k_arr, &blocks_in, &aos, &index_of_struct);
         size_t bl_siz = ((blocks_in-1)*sizeof(struct block));
         size_t s_siz = (X*Y*Z*(2*sizeof(real) + sizeof(char))) ;
         float ratio = ((float) bl_siz) / ((float) s_siz);
-        printf("%i \t%i \t%f \t%f \t%f \n", diam, blocks_in, (float) bl_siz/(float)(1024*1024),(float) s_siz/ (float)(1024*1024), ratio);
+        printf("%i \t%i \t%f \t%f \t%f \n", diam, blocks_in-1, (float) bl_siz/(float)(1024*1024),(float) s_siz/ (float)(1024*1024), ratio);
+        free_ss(data);
         //end data prep
         //Set input and output locations
     }

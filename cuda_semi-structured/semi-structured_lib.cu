@@ -34,6 +34,12 @@ char copy_to_struct(int x, int y, int z, struct block *bl, char *array, int xmax
     return TRUE;
 }
 
+int free_ss(ss_t data) {
+    //frees all data in ss_t.
+    free(data.aos);
+    free(data.k);
+    free(data.index_of_struct);
+}
 
 ss_t create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct block** aos_pp, int** index_of_struct) {
     //Creates an array of structs for stencil operation.
