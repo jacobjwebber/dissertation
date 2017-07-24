@@ -13,7 +13,8 @@
 \usepackage{graphicx}
 \usepackage[margin=3cm]{geometry}
 \usepackage{pst-solides3d}
-
+\usepackage{texdraw}
+\usepackage{gnuplottex}
 
 
 \setlength\epigraphwidth{.8\textwidth}
@@ -448,10 +449,37 @@ V_{s} = \frac{\pi d^3}{6}
 meaning that that the fraction of points in the cube that are also inside the room is:
 
 \begin{equation}
-\frac{\pi d^3}{6} \approx 0.5236...
+\frac{\pi}{6} \approx 0.5236...
 \end{equation}
 
 Under existing bounding box techniques for modelling non-cuboid whater whaters.
+
+%\begin{figure}%
+%\centering%
+%\begin{figure}
+%\input{../diagrams/mem-cap_sphere}
+%\end{figure}
+
+\begin{figure}%
+\centering%
+\begin{gnuplot}[terminal=epslatex, terminaloptions=color dashed]
+set xlabel "Diameter (Grid Points)"
+set autoscale
+set ylabel "$\\frac{S_{ss}}{S_{s}}$"
+set style data linespoints
+
+plot "../../semi-structured/results/data/memory-cap_graph" \
+with lines lt 1 lc rgb "blue" notitle, \
+"../../semi-structured/results/data/memory-cap_graph" \
+lc rgb "blue" notitle, \
+pi/6 lt 2 lc rgb "red" notitle
+
+\end{gnuplot}
+\caption{The fraction of memory used by the semi-structured approach with respect to the structured approach.}%
+\label{pic:epslatex}%
+\end{figure}%
+
+
 
 
 \subsection{More results}

@@ -1,6 +1,6 @@
-This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015) (preloaded format=xelatex 2016.3.28)  21 JUL 2017 12:59
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015) (preloaded format=xelatex 2016.3.28)  24 JUL 2017 20:38
 entering extended mode
- restricted \write18 enabled.
+ \write18 enabled.
  %&-line parsing enabled.
 **MSc-dissertation.tex
 (./MSc-dissertation.tex
@@ -732,27 +732,95 @@ Invalid UTF-8 byte or sequence at line 993 replaced by U+FFFD.
 )
 File: pst-solides3d.tex 2014/09/05 v4.28 `PST-solides3D'
 )
+(/opt/texlive/2015/texmf-dist/tex/generic/texdraw/texdraw.sty
+(/opt/texlive/2015/texmf-dist/tex/generic/texdraw/texdraw.tex
+\t@counta=\count204
+\t@countb=\count205
+\t@countc=\count206
+\t@countd=\count207
+\t@counte=\count208
+\t@pixa=\count209
+\t@pixb=\count210
+\t@pixc=\count211
+\t@pixd=\count212
+\t@xpos=\dimen226
+\t@ypos=\dimen227
+\xminpix=\count213
+\xmaxpix=\count214
+\yminpix=\count215
+\ymaxpix=\count216
+\a@lenpix=\count217
+\a@widpix=\count218
+\x@pix=\count219
+\y@pix=\count220
+\x@segoffpix=\count221
+\y@segoffpix=\count222
+\x@savepix=\count223
+\y@savepix=\count224
+\s@ppix=\count225
+\d@bs=\count226
+\t@xdnum=\count227
+\t@xdbox=\box58
+\drawfile=\write3
+\everytexdraw=\toks40
+)
+Package: texdraw 1995/12/19 TeXdraw V2R0
+)
+(/opt/texlive/2015/texmf-dist/tex/latex/gnuplottex/gnuplottex.sty
+Package: gnuplottex 2013/11/24 v0.8 gnuplot graphs in LaTeX
+
+(/opt/texlive/2015/texmf-dist/tex/latex/base/latexsym.sty
+Package: latexsym 1998/08/17 v2.2e Standard LaTeX package (lasy symbols)
+\symlasy=\mathgroup4
+LaTeX Font Info:    Overwriting symbol font `lasy' in version `bold'
+(Font)                  U/lasy/m/n --> U/lasy/b/n on input line 52.
+)
+(/opt/texlive/2015/texmf-dist/tex/latex/moreverb/moreverb.sty
+Package: moreverb 2008/06/03 v2.3a `more' verbatim facilities
+
+(/opt/texlive/2015/texmf-dist/tex/latex/tools/verbatim.sty
+Package: verbatim 2014/10/28 v1.5q LaTeX2e package for verbatim enhancements
+\every@verbatim=\toks41
+\verbatim@line=\toks42
+\verbatim@in@stream=\read2
+)
+\tab@position=\count228
+\tab@size=\count229
+\listing@line=\count230
+)
+(/opt/texlive/2015/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+)
+\verbatim@out=\write4
+runsystem(touch w18-test-20177241238.tex)...executed.
+
+runsystem(rm -f w18-test-20177241238.tex)...executed.
+
+Package gnuplottex Info: Automatically converting gnuplot files. on input line 
+109.
+\c@fignum=\count231
+)
 (./MSc-dissertation.aux)
 \openout1 = `MSc-dissertation.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 76.
-LaTeX Font Info:    ... okay on input line 76.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 76.
-LaTeX Font Info:    ... okay on input line 76.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 76.
-LaTeX Font Info:    ... okay on input line 76.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 76.
-LaTeX Font Info:    ... okay on input line 76.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 76.
-LaTeX Font Info:    ... okay on input line 76.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 76.
-LaTeX Font Info:    ... okay on input line 76.
-LaTeX Font Info:    Try loading font information for T1+ptm on input line 76.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Try loading font information for T1+ptm on input line 77.
 
 (/opt/texlive/2015/texmf-dist/tex/latex/psnfss/t1ptm.fd
 File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 )
-\c@lstlisting=\count204
+\c@lstlisting=\count232
 
 (/opt/texlive/2015/texmf-dist/tex/latex/beamer/translator/dicts/translator-basi
 c-dictionary/translator-basic-dictionary-English.dict
@@ -802,46 +870,51 @@ Package caption Info: End \AtBeginDocument code.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-\c__siunitx_mathsf_int=\count205
-\c__siunitx_mathtt_int=\count206
+\c__siunitx_mathsf_int=\count233
+LaTeX Font Info:    Try loading font information for U+lasy on input line 77.
+(/opt/texlive/2015/texmf-dist/tex/latex/base/ulasy.fd
+File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
+)
+\c__siunitx_mathtt_int=\count266
 File: logos/logo_black.pdf Graphic file (type QTm)
+
 <use  "logos/logo_black.pdf" >
 File: logos/crest_bw.pdf Graphic file (type QTm)
  <use  "logos/crest_bw.pdf" > [1
 
 ]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 111.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 112.
  [1]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <24.88> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 117.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 118.
 
 (./MSc-dissertation.toc [1
 
 ])
-\tf@toc=\write3
-\openout3 = `MSc-dissertation.toc'.
+\tf@toc=\write5
+\openout5 = `MSc-dissertation.toc'.
 
  [2] (./MSc-dissertation.lot)
-\tf@lot=\write4
-\openout4 = `MSc-dissertation.lot'.
+\tf@lot=\write6
+\openout6 = `MSc-dissertation.lot'.
 
  [3
 
 ]
 (./MSc-dissertation.lof)
-\tf@lof=\write5
-\openout5 = `MSc-dissertation.lof'.
+\tf@lof=\write7
+\openout7 = `MSc-dissertation.lof'.
 
  [4
 
 ]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <17.28> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 126.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 127.
  [1]
 Chapter 1.
 
-Overfull \hbox (0.94412pt too wide) in paragraph at lines 139--140
+Overfull \hbox (0.94412pt too wide) in paragraph at lines 140--141
 []\T1/ptm/m/n/12 The key tech-nique cur-rently used for these sim-u-la-tions is
  the finite-difference time-domain
  []
@@ -851,14 +924,14 @@ Overfull \hbox (0.94412pt too wide) in paragraph at lines 139--140
 ]
 Chapter 2.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 151.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 152.
 [2
 
 ] [3] [4]
 File: ../diagrams/memory-bandwidth.png Graphic file (type QTm)
  <use  "../diagrams/memory-bandwidth.png" >
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 287.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 288.
 File: ../diagrams/stencil.pdf Graphic file (type QTm)
 
 <use  "../diagrams/stencil.pdf" > [5] [6] [7] [8] [9] [10]
@@ -881,14 +954,25 @@ Chapter 4.
 Chapter 5.
 [14
 
-] [15]
+]
+\openout4 = `MSc-dissertation-gnuplottex-fig1.gnuplot'.
+
+ Opening gnuplot stream MSc-dissertation-gnuplottex-fig1.gnuplot
+runsystem(gnuplot MSc-dissertation-gnuplottex-fig1.gnuplot)...executed.
+
+Package gnuplottex Info: MSc-dissertation-gnuplottex-fig1.gnuplot converted on 
+input line 477.
+
+(./MSc-dissertation-gnuplottex-fig1.tex
+File: MSc-dissertation-gnuplottex-fig1.eps Graphic file (type eps)
+ <MSc-dissertation-gnuplottex-fig1.eps>) [15]
 Chapter 6.
 [16
 
 ]
 Appendix A.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 516.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 544.
 [17
 
 ]
@@ -896,41 +980,41 @@ Appendix B.
 [18
 
 ]
-LaTeX Font Info:    Try loading font information for T1+pcr on input line 530.
+LaTeX Font Info:    Try loading font information for T1+pcr on input line 558.
  (/opt/texlive/2015/texmf-dist/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 )
-Underfull \hbox (badness 2486) in paragraph at lines 529--531
+Underfull \hbox (badness 2486) in paragraph at lines 557--559
 \T1/ptm/m/it/12 phys-i-cal mod-elling syn-the-sis. \T1/ptm/m/n/12 PhD the-sis. 
 Uni-ver-sity of Ed-in-burgh. Avail-
  []
 
 
-Underfull \hbox (badness 5077) in paragraph at lines 533--535
+Underfull \hbox (badness 5077) in paragraph at lines 561--563
 []\T1/ptm/m/n/12 Hamilton, B. (2016) \T1/ptm/m/it/12 Fi-nite Dif-fer-ence and F
 i-nite Vol-ume Meth-ods for
  []
 
 
-Underfull \hbox (badness 1112) in paragraph at lines 533--535
+Underfull \hbox (badness 1112) in paragraph at lines 561--563
 \T1/ptm/m/it/12 Wave-based Mod-elling of Room Acous-tics. \T1/ptm/m/n/12 PhD th
 e-sis. Uni-ver-sity of Ed-in-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 542--543
+Underfull \hbox (badness 10000) in paragraph at lines 570--571
 []\T1/ptm/m/n/12 NVIDIA Cor-po-ra-tion \T1/ptm/m/it/12 What's the Dif-fer-ence 
 Be-tween a CPU and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 542--543
+Underfull \hbox (badness 10000) in paragraph at lines 570--571
 \T1/ptm/m/it/12 a GPU? $\T1/pcr/m/n/12 https : / / blogs . nvidia . com / blog 
 / 2009 / 12 / 16 /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 542--543
+Underfull \hbox (badness 10000) in paragraph at lines 570--571
 \T1/pcr/m/n/12 whats-[]the-[]difference-[]between-[]a-[]cpu-[]and-[]a-[]gpu/$ \
 T1/ptm/m/n/12 re-trieved
  []
@@ -941,11 +1025,11 @@ T1/ptm/m/n/12 re-trieved
 Missing character: There is no – in font ptmr8t!
  [20] (./MSc-dissertation.aux) ) 
 Here is how much of TeX's memory you used:
- 21610 strings out of 493706
- 417565 string characters out of 6118259
- 571587 words of memory out of 5000000
- 24722 multiletter control sequences out of 15000+600000
- 46425 words of font info for 73 fonts, out of 8000000 for 9000
+ 22013 strings out of 493706
+ 422953 string characters out of 6118259
+ 579650 words of memory out of 5000000
+ 25090 multiletter control sequences out of 15000+600000
+ 47273 words of font info for 81 fonts, out of 8000000 for 9000
  1328 hyphenation exceptions out of 8191
  43i,12n,78p,10468b,1117s stack positions out of 5000i,500n,10000p,200000b,80000s
 
