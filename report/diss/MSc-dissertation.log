@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015) (preloaded format=xelatex 2016.3.28)  24 JUL 2017 20:38
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015) (preloaded format=xelatex 2016.3.28)  25 JUL 2017 21:28
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -792,35 +792,46 @@ Package: verbatim 2014/10/28 v1.5q LaTeX2e package for verbatim enhancements
 Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
 )
 \verbatim@out=\write4
-runsystem(touch w18-test-20177241238.tex)...executed.
+runsystem(touch w18-test-20177251288.tex)...executed.
 
-runsystem(rm -f w18-test-20177241238.tex)...executed.
+runsystem(rm -f w18-test-20177251288.tex)...executed.
 
 Package gnuplottex Info: Automatically converting gnuplot files. on input line 
 109.
 \c@fignum=\count231
 )
+(/opt/texlive/2015/texmf-dist/tex/latex/csvsimple/csvsimple.sty
+Package: csvsimple 2014/07/14 version 1.12 LaTeX CSV file processing
+
+(/opt/texlive/2015/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+(/opt/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex))
+\csv@file=\read3
+\c@csvinputline=\count232
+\c@csvrow=\count233
+\c@csvcol=\count266
+\csv@out=\write5
+)
 (./MSc-dissertation.aux)
 \openout1 = `MSc-dissertation.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 77.
-LaTeX Font Info:    ... okay on input line 77.
-LaTeX Font Info:    Try loading font information for T1+ptm on input line 77.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 78.
+LaTeX Font Info:    ... okay on input line 78.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 78.
+LaTeX Font Info:    ... okay on input line 78.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 78.
+LaTeX Font Info:    ... okay on input line 78.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 78.
+LaTeX Font Info:    ... okay on input line 78.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 78.
+LaTeX Font Info:    ... okay on input line 78.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 78.
+LaTeX Font Info:    ... okay on input line 78.
+LaTeX Font Info:    Try loading font information for T1+ptm on input line 78.
 
 (/opt/texlive/2015/texmf-dist/tex/latex/psnfss/t1ptm.fd
 File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 )
-\c@lstlisting=\count232
+\c@lstlisting=\count267
 
 (/opt/texlive/2015/texmf-dist/tex/latex/beamer/translator/dicts/translator-basi
 c-dictionary/translator-basic-dictionary-English.dict
@@ -870,12 +881,12 @@ Package caption Info: End \AtBeginDocument code.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-\c__siunitx_mathsf_int=\count233
-LaTeX Font Info:    Try loading font information for U+lasy on input line 77.
+\c__siunitx_mathsf_int=\count268
+LaTeX Font Info:    Try loading font information for U+lasy on input line 78.
 (/opt/texlive/2015/texmf-dist/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
-\c__siunitx_mathtt_int=\count266
+\c__siunitx_mathtt_int=\count269
 File: logos/logo_black.pdf Graphic file (type QTm)
 
 <use  "logos/logo_black.pdf" >
@@ -884,37 +895,37 @@ File: logos/crest_bw.pdf Graphic file (type QTm)
 
 ]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 112.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 113.
  [1]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <24.88> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 118.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 119.
 
 (./MSc-dissertation.toc [1
 
 ])
-\tf@toc=\write5
-\openout5 = `MSc-dissertation.toc'.
+\tf@toc=\write6
+\openout6 = `MSc-dissertation.toc'.
 
  [2] (./MSc-dissertation.lot)
-\tf@lot=\write6
-\openout6 = `MSc-dissertation.lot'.
+\tf@lot=\write7
+\openout7 = `MSc-dissertation.lot'.
 
  [3
 
 ]
 (./MSc-dissertation.lof)
-\tf@lof=\write7
-\openout7 = `MSc-dissertation.lof'.
+\tf@lof=\write8
+\openout8 = `MSc-dissertation.lof'.
 
  [4
 
 ]
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <17.28> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 127.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 128.
  [1]
 Chapter 1.
 
-Overfull \hbox (0.94412pt too wide) in paragraph at lines 140--141
+Overfull \hbox (0.94412pt too wide) in paragraph at lines 141--142
 []\T1/ptm/m/n/12 The key tech-nique cur-rently used for these sim-u-la-tions is
  the finite-difference time-domain
  []
@@ -924,14 +935,14 @@ Overfull \hbox (0.94412pt too wide) in paragraph at lines 140--141
 ]
 Chapter 2.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 152.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 153.
 [2
 
 ] [3] [4]
 File: ../diagrams/memory-bandwidth.png Graphic file (type QTm)
  <use  "../diagrams/memory-bandwidth.png" >
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 288.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 289.
 File: ../diagrams/stencil.pdf Graphic file (type QTm)
 
 <use  "../diagrams/stencil.pdf" > [5] [6] [7] [8] [9] [10]
@@ -946,13 +957,13 @@ File: lstmisc.sty 2014/09/06 1.5e (Carsten Heinz)
 ]
 File: ../diagrams/church.png Graphic file (type QTm)
 
-<use  "../diagrams/church.png" > [12]
+<use  "../diagrams/church.png" > [12] [13]
 Chapter 4.
-[13
+[14
 
 ]
 Chapter 5.
-[14
+[15
 
 ]
 \openout4 = `MSc-dissertation-gnuplottex-fig1.gnuplot'.
@@ -961,23 +972,37 @@ Chapter 5.
 runsystem(gnuplot MSc-dissertation-gnuplottex-fig1.gnuplot)...executed.
 
 Package gnuplottex Info: MSc-dissertation-gnuplottex-fig1.gnuplot converted on 
-input line 477.
+input line 488.
 
 (./MSc-dissertation-gnuplottex-fig1.tex
 File: MSc-dissertation-gnuplottex-fig1.eps Graphic file (type eps)
- <MSc-dissertation-gnuplottex-fig1.eps>) [15]
+ <MSc-dissertation-gnuplottex-fig1.eps>) [16] [17]
 Chapter 6.
-[16
+[18
 
 ]
 Appendix A.
+
+Overfull \hbox (27.89622pt too wide) in paragraph at lines 512--513
+[] 
+ []
+
+
+Overfull \hbox (27.89622pt too wide) in paragraph at lines 514--515
+[] 
+ []
+
+[19
+
+] [20]
+Appendix B.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 544.
-[17
+[21
 
 ]
-Appendix B.
-[18
+Appendix C.
+[22
 
 ]
 LaTeX Font Info:    Try loading font information for T1+pcr on input line 558.
@@ -1019,18 +1044,18 @@ Underfull \hbox (badness 10000) in paragraph at lines 570--571
 T1/ptm/m/n/12 re-trieved
  []
 
-[19
+[23
 
 ]
 Missing character: There is no – in font ptmr8t!
- [20] (./MSc-dissertation.aux) ) 
+ [24] (./MSc-dissertation.aux) ) 
 Here is how much of TeX's memory you used:
- 22013 strings out of 493706
- 422953 string characters out of 6118259
- 579650 words of memory out of 5000000
- 25090 multiletter control sequences out of 15000+600000
+ 22502 strings out of 493706
+ 435656 string characters out of 6118259
+ 590535 words of memory out of 5000000
+ 25566 multiletter control sequences out of 15000+600000
  47273 words of font info for 81 fonts, out of 8000000 for 9000
  1328 hyphenation exceptions out of 8191
- 43i,12n,78p,10468b,1117s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 43i,12n,78p,10468b,1115s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on MSc-dissertation.pdf (27 pages).
+Output written on MSc-dissertation.pdf (31 pages).

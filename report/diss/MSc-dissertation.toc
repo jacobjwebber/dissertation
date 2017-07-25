@@ -16,16 +16,21 @@
 \contentsline {subsection}{\numberline {2.5.2}Spectral Methods}{9}
 \contentsline {chapter}{\numberline {3}The Proposed Data Structure and Method}{11}
 \contentsline {section}{\numberline {3.1}The Data Structure}{12}
-\contentsline {section}{\numberline {3.2}The Algorithm}{12}
-\contentsline {section}{\numberline {3.3}Theoretical Benefits}{12}
-\contentsline {chapter}{\numberline {4}Design and Implementation}{13}
-\contentsline {section}{\numberline {4.1}Design Overview}{13}
-\contentsline {section}{\numberline {4.2}Software Development Process}{13}
-\contentsline {section}{\numberline {4.3}Debugging and Profiling Tools}{13}
-\contentsline {chapter}{\numberline {5}Results and Analysis}{14}
-\contentsline {section}{\numberline {5.1}Memory Usage}{14}
-\contentsline {subsection}{\numberline {5.1.1}More results}{15}
-\contentsline {chapter}{\numberline {6}Conclusions and Further Work}{16}
-\contentsline {section}{\numberline {6.1}Future Work}{16}
-\contentsline {chapter}{\numberline {A}NVIDIA K20 Device Details}{17}
-\contentsline {chapter}{\numberline {B}Kernels}{18}
+\contentsline {section}{\numberline {3.2}The Algorithm}{13}
+\contentsline {section}{\numberline {3.3}Theoretical Benefits}{13}
+\contentsline {chapter}{\numberline {4}Design and Implementation}{14}
+\contentsline {section}{\numberline {4.1}Design Overview}{14}
+\contentsline {section}{\numberline {4.2}Software Development Process}{14}
+\contentsline {section}{\numberline {4.3}Debugging and Profiling Tools}{14}
+\contentsline {chapter}{\numberline {5}Results and Analysis}{15}
+\contentsline {section}{\numberline {5.1}Memory Usage}{15}
+\contentsline {subsection}{\numberline {5.1.1}Sphere}{15}
+\contentsline {subsection}{\numberline {5.1.2}Cube}{16}
+\contentsline {section}{\numberline {5.2}Stencil Performance}{16}
+\contentsline {chapter}{\numberline {6}Conclusions and Further Work}{18}
+\contentsline {section}{\numberline {6.1}Future Work}{18}
+\contentsline {chapter}{\numberline {A}Memory Capacity Experiment Results}{19}
+\contentsline {section}{\numberline {A.1}Sphere}{19}
+\contentsline {section}{\numberline {A.2}Cube}{20}
+\contentsline {chapter}{\numberline {B}NVIDIA K20 Device Details}{21}
+\contentsline {chapter}{\numberline {C}Kernels}{22}

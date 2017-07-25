@@ -15,6 +15,7 @@
 \usepackage{pst-solides3d}
 \usepackage{texdraw}
 \usepackage{gnuplottex}
+\usepackage{csvsimple}
 
 
 \setlength\epigraphwidth{.8\textwidth}
@@ -137,9 +138,9 @@ I would like to extend my sincere thanks to Paul Graham and Dr Brian Hamilton fo
 
 The way we perceive sound depends on the environment in which we hear it as well as how the sound was created. Listening to a sound in a space like a church or a cathedral is very different to listening in a bedroom. Being able to predict how a space will affect a sound has practical use in the design of new spaces, particularly those spaces where acoustic performance is critical. A great deal of effort goes into the design of new concert halls. This would be greatly enhanced by accurate acoustic models of spaces. The aim then, of research in this area, is to provide an accurate prediction of how a space will sound after being given its physical properties.
 
-The key technique currently used for these simulations is the finite-difference time-domain (FDTD) method for finding approximate solutions to the wave equation across a three dimensional space. This forms a simple stencil. This stencil process across a vast number of points in memory is well suited to the use of graphics processing units (GPUs) which have high band width graphics memory and can operate on very many points in a massively parallel fashion.
+The key technique currently used for these simulations is the finite-difference time-domain (FDTD) method for finding approximate solutions to the wave equation across a three dimensional space. This requires that a stencil operation be performed. This stencil process must happen across a vast number of points in memory, an is therefore well suited to the use of graphics processing units (GPUs). These have high band width graphics memory and can operate on very many points at once in a massively parallel fashion.
 
-In the work leading up to this report, currently state of the art GPU acoustics techniques as outlined in \cite{craig} and \cite{brian} were recreated. In addition to this a novel technique was devised and implemented that performs these simulations. This approach was designed to make best use of graphics memory, which is relatively scarce.
+In the work leading up to this report, some currently state of the art GPU acoustics techniques as outlined in \cite{craig} and \cite{brian} were recreated. In addition to this, a novel technique was devised and implemented that performs these simulations. The proposed approach is designed to make best use of graphics memory, which is relatively scarce.
 
 This report includes some background on the theory of acoustics and difference schemes, a brief background in GPUs and an overview of the new techniques that were devised and trialled in the work leading up to this report. This is followed by description of the details of the implementation in CUDA C as well as software development, profiling and debugging strategies and tools. There is then a comparative analysis of existing and novel techniques both in terms of performance in compute time and memory use. The report finishes with some conclusions and ideas for further work.
 
@@ -260,7 +261,7 @@ More than simply being neat, this is now a representation of how to calculate ne
 
 All of the physical properties of the room are encoded in the boundary conditions imposed on the differential equation. Modelling different boundary materials such as room walls is the subject of significant research at present. However, the main purpose of this report is to look at the computational aspects of applying stencil operations. As such a relatively simple boundary scheme is applied.
 
-For the purposes of a Von Neumann stencil most grid points that are inside the room will have 6 neighbours. However, on the edge of the room, there will be points that have less. The amount of these neighbours is stored in a new $K$ grid, with one value for every point. This allows for the first time rooms of irregular shape to be considered, as those points outside the room are encoded with a zero $K$ value.
+For the purposes of a Von Neumann stencil most grid points that are inside the room will have 6 neighbours. However, on the edge of the room, there will be points that have fewer. The amount of these neighbours is stored in a new $K$ grid, with one value for every point. This allows for the first time rooms of irregular shape to be considered, as those points outside the room are encoded with a zero $K$ value.
 
 The boundary scheme used modifies equation \ref{equation:stencil-small} by replacing the \num{6} value with a $K_{l,m,p}$ value. All values of $P_{l,m,p}^{n}$ where $K_{l,m,p} = 0$ are also assumed to be zero.
 
@@ -360,7 +361,7 @@ The bulk of the work in this project went into the design and implementation of 
 The purpose of this technique improve memory usage for irregularly shaped rooms and memory locality in large 3D FDTD acoustics simulations. The proposed method is to replace the large 3D arrays currently used with an array of structs. Each struct will store a smaller sub-array containing points in the simulation, as well as information on the location of neighbouring points to those points of the edge of each sub-array. This will allow blocks where no points are inside the room being simulated to not have to be stored in expensive GPU memory. This technique also improves data locality. The smaller 3D sub-arrays will result in neighbouring points being scattered less far apart in memory.
 
 \section{The Data Structure} 
-
+\label{section:data-structure}
 \lstset{language=C,caption={The Data Struct},label=listing:struct}
 \begin{center}
 \begin{minipage}{0.8\textwidth}
@@ -380,7 +381,7 @@ struct block {
 \end{lstlisting}
 \end{minipage}
 \end{center}
-
+- DESCRIBE RATIO OF NEIGHBOURS INTS TOUSEFUL DATA.
 \section{The Algorithm}
 
 
@@ -440,7 +441,10 @@ RotZ=30,
 \label{figure:sphere-cube}
 \end{figure}
 
-Very high memory usage is currently the biggest inhibiting factor to the performance of FDTD simulations. To determine if the efficiencies as theorised in section \ref{section:benefits} were realised, the example of a spherically shaped room was used, as shown in figure \ref{figure:sphere-cube}. While the existence of such a shaped room seems far-fetched, the example illustrates some of the benefits of the data structure described even in somewhat unfavourable conditions. This configuration tests the performance of the new struct based method when a curved room shape is chosen that will necessarily result in partially empty block arrays being stored within some structs. The arrangement is also not particularly sparse. The volume of the sphere $V_{s}$ is given by: 
+Very high memory usage is currently the biggest inhibiting factor to the performance of FDTD simulations. 
+
+\subsection{Sphere}
+To determine if the efficiencies as theorised in section \ref{section:benefits} were realised, the example of a spherically shaped room was used, as shown in figure \ref{figure:sphere-cube}. While the existence of such a shaped room seems far-fetched, the example illustrates some of the benefits of the data structure described even in somewhat unfavourable conditions. This configuration tests the performance of the new struct based method when a curved room shape is chosen that will necessarily result in partially empty block arrays being stored within some structs. The arrangement is also not particularly sparse. The volume of the sphere $V_{s}$ is given by: 
 
 \begin{equation}
 V_{s} = \frac{\pi d^3}{6}
@@ -452,7 +456,7 @@ meaning that that the fraction of points in the cube that are also inside the ro
 \frac{\pi}{6} \approx 0.5236...
 \end{equation}
 
-Under existing bounding box techniques for modelling non-cuboid whater whaters.
+This means that under the existing bounding box technique for modelling non-cuboid rooms, \num{47.6} \% of points stored in the grid will be stored unnecessary. The amount by which this is reduced depends on ratio of dimensions between the sub-array within each struct (shown as \lstinline|Bx|, \lstinline|By| and \lstinline|Bz| in listing \ref{listing:struct}) and the dimensions of the bounding box array, \lstinline|X|, \lstinline|Y| and \lstinline|Z|. A simple experiment was done with the sphere example to measure this effect. The values of \lstinline|X|, \lstinline|Y| and \lstinline|Z| are set as equal and can be thought of as the diameter of the sphere measured in grid points. A sub-array size of \num{8} by \num{8} by \num{8} was selected for ease of arithmetic. Spherical rooms were then generated with varying diameter sizes and converted to a semi-structured array of structs representation. The size of this array in memory was then compared with that yielded from the bounding box method. The result is shown in figure \ref{figure:cap-sphere}. Full results are included in appendix \ref{appendix:mem-cap}.
 
 %\begin{figure}%
 %\centering%
@@ -460,13 +464,20 @@ Under existing bounding box techniques for modelling non-cuboid whater whaters.
 %\input{../diagrams/mem-cap_sphere}
 %\end{figure}
 
+
+
+When the size of the sub-array is equal to that of the bounding array, the semi-structured and structured approaches can be seen as equivalent. However, as shown in listing \ref{listing:struct}  there is some overhead of storing the neighbouring structs. This means that for a room of size \num{8} by \num{8} by \num{8} and with double precision floating point numbers, the semi-structured approach uses \num{1.002757} times the memory of the structured approach, in line with the worst case scenario presented in section \ref{section:data-structure}. This overhead is marginally higher when single precision numbers are used.
+
+
+
+
 \begin{figure}%
 \centering%
 \begin{gnuplot}[terminal=epslatex, terminaloptions=color dashed]
 set xlabel "Diameter (Grid Points)"
 set autoscale
 set ylabel "$\\frac{S_{ss}}{S_{s}}$"
-set style data linespoints
+#set style data linespoints
 
 plot "../../semi-structured/results/data/memory-cap_graph" \
 with lines lt 1 lc rgb "blue" notitle, \
@@ -475,33 +486,14 @@ lc rgb "blue" notitle, \
 pi/6 lt 2 lc rgb "red" notitle
 
 \end{gnuplot}
-\caption{The fraction of memory used by the semi-structured approach with respect to the structured approach.}%
-\label{pic:epslatex}%
+\caption{The fraction of memory used by the semi-structured approach with respect to the structured approach (double precision). The ideal fraction of $\frac{\pi}{6}$ is shown as a dashed line}%
+\label{figure:cap-sphere}%
 \end{figure}%
 
 
+\subsection{Cube}
 
-
-\subsection{More results}
-When showing results you are likely to use tables and graphs. You can
-create tables easily in Latex.
-
-\begin{table}[h]
-\begin{center}
-\begin{tabular}{||l|c|l||}
-\hline
-{\bf File names} & {\bf Satellite} & {\bf Resolution}\\
-\hline
-  worldr         &  Meteosat     &   5km\\
-  worldg         &  Meteosat     &   5km\\
-  worldb         &  Meteosat     &   5km\\
-\hline
-\end{tabular}
-\end{center}
-\caption{This is a simple table. More complicated tables can have
-headings which pass over more than one column}
-\label{simple_table}
-\end{table}
+\section{Stencil Performance}
 
 \chapter{Conclusions and Further Work}
 \epigraph{\itshape ``It is not incumbent upon you to finish the task. Yet, you are not free to desist from it.''}{Tarphon}
@@ -512,6 +504,14 @@ headings which pass over more than one column}
 
 \appendix
 % the appendix command just changes heading styles for appendices.
+
+\chapter{Memory Capacity Experiment Results}
+\label{appendix:mem-cap}
+The results are for double precision numbers.
+\section{Sphere}
+\csvautotabular{../../semi-structured/results/data/memory-cap_sphere.csv}
+\section{Cube}
+\csvautotabular{../../semi-structured/results/data/memory-cap_cube.csv}
 
 \chapter{NVIDIA K20 Device Details}
 \lstset{basicstyle=\footnotesize,  breaklines=true,label=listing:K20,caption={Output from deviceQuery program}}
