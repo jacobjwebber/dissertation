@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015) (preloaded format=xelatex 2016.3.28)  25 JUL 2017 21:28
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015) (preloaded format=xelatex 2016.3.28)  28 JUL 2017 21:17
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -792,9 +792,9 @@ Package: verbatim 2014/10/28 v1.5q LaTeX2e package for verbatim enhancements
 Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
 )
 \verbatim@out=\write4
-runsystem(touch w18-test-20177251288.tex)...executed.
+runsystem(touch w18-test-20177281277.tex)...executed.
 
-runsystem(rm -f w18-test-20177251288.tex)...executed.
+runsystem(rm -f w18-test-20177281277.tex)...executed.
 
 Package gnuplottex Info: Automatically converting gnuplot files. on input line 
 109.
@@ -939,31 +939,37 @@ LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <14.4> not available
 [2
 
 ] [3] [4]
+File: ../diagrams/gpu-cpu.png Graphic file (type QTm)
+ <use  "../diagrams/gpu-cpu.png" >
+LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10.95> not available
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 288.
+ [5]
+File: ../diagrams/smx.png Graphic file (type QTm)
+
+<use  "../diagrams/smx.png" > [6]
 File: ../diagrams/memory-bandwidth.png Graphic file (type QTm)
  <use  "../diagrams/memory-bandwidth.png" >
-LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 289.
 File: ../diagrams/stencil.pdf Graphic file (type QTm)
 
-<use  "../diagrams/stencil.pdf" > [5] [6] [7] [8] [9] [10]
+<use  "../diagrams/stencil.pdf" > [7] [8] [9] [10] [11]
 Chapter 3.
 (/opt/texlive/2015/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2014/09/06 1.5e listings language file
 )
 (/opt/texlive/2015/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2014/09/06 1.5e (Carsten Heinz)
-) [11
+) [12
 
 ]
 File: ../diagrams/church.png Graphic file (type QTm)
 
-<use  "../diagrams/church.png" > [12] [13]
+<use  "../diagrams/church.png" > [13] [14]
 Chapter 4.
-[14
+[15
 
 ]
 Chapter 5.
-[15
+[16
 
 ]
 \openout4 = `MSc-dissertation-gnuplottex-fig1.gnuplot'.
@@ -972,90 +978,114 @@ Chapter 5.
 runsystem(gnuplot MSc-dissertation-gnuplottex-fig1.gnuplot)...executed.
 
 Package gnuplottex Info: MSc-dissertation-gnuplottex-fig1.gnuplot converted on 
-input line 488.
+input line 518.
 
 (./MSc-dissertation-gnuplottex-fig1.tex
 File: MSc-dissertation-gnuplottex-fig1.eps Graphic file (type eps)
- <MSc-dissertation-gnuplottex-fig1.eps>) [16] [17]
+ <MSc-dissertation-gnuplottex-fig1.eps>) [17] [18]
 Chapter 6.
-[18
+[19
 
 ]
 Appendix A.
 
-Overfull \hbox (27.89622pt too wide) in paragraph at lines 512--513
+Overfull \hbox (27.89622pt too wide) in paragraph at lines 542--543
 [] 
  []
 
 
-Overfull \hbox (27.89622pt too wide) in paragraph at lines 514--515
+Overfull \hbox (27.89622pt too wide) in paragraph at lines 544--545
 [] 
  []
 
-[19
+[20
 
-] [20]
+] [21]
 Appendix B.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 544.
-[21
-
-]
-Appendix C.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 574.
 [22
 
 ]
-LaTeX Font Info:    Try loading font information for T1+pcr on input line 558.
+Appendix C.
+[23
+
+]
+LaTeX Font Info:    Try loading font information for T1+pcr on input line 588.
  (/opt/texlive/2015/texmf-dist/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 )
-Underfull \hbox (badness 2486) in paragraph at lines 557--559
+Underfull \hbox (badness 2486) in paragraph at lines 587--589
 \T1/ptm/m/it/12 phys-i-cal mod-elling syn-the-sis. \T1/ptm/m/n/12 PhD the-sis. 
 Uni-ver-sity of Ed-in-burgh. Avail-
  []
 
 
-Underfull \hbox (badness 5077) in paragraph at lines 561--563
+Underfull \hbox (badness 5077) in paragraph at lines 591--593
 []\T1/ptm/m/n/12 Hamilton, B. (2016) \T1/ptm/m/it/12 Fi-nite Dif-fer-ence and F
 i-nite Vol-ume Meth-ods for
  []
 
 
-Underfull \hbox (badness 1112) in paragraph at lines 561--563
+Underfull \hbox (badness 1112) in paragraph at lines 591--593
 \T1/ptm/m/it/12 Wave-based Mod-elling of Room Acous-tics. \T1/ptm/m/n/12 PhD th
 e-sis. Uni-ver-sity of Ed-in-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 570--571
+Underfull \hbox (badness 10000) in paragraph at lines 600--601
 []\T1/ptm/m/n/12 NVIDIA Cor-po-ra-tion \T1/ptm/m/it/12 What's the Dif-fer-ence 
 Be-tween a CPU and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 570--571
+Underfull \hbox (badness 10000) in paragraph at lines 600--601
 \T1/ptm/m/it/12 a GPU? $\T1/pcr/m/n/12 https : / / blogs . nvidia . com / blog 
 / 2009 / 12 / 16 /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 570--571
+Underfull \hbox (badness 10000) in paragraph at lines 600--601
 \T1/pcr/m/n/12 whats-[]the-[]difference-[]between-[]a-[]cpu-[]and-[]a-[]gpu/$ \
 T1/ptm/m/n/12 re-trieved
  []
 
-[23
+Missing character: There is no ’ in font ptmri8t!
+
+Underfull \hbox (badness 10000) in paragraph at lines 606--607
+[]\T1/ptm/m/n/12 NVIDIA Cor-po-ra-tion \T1/ptm/m/it/12 NVIDIAs Next Gen-er-a-ti
+on CUDA
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 606--607
+\T1/ptm/m/it/12 Com-pute Ar-chi-tec-ture: Ke-pler GK110/210 $\T1/pcr/m/n/12 htt
+p :
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 606--607
+\T1/pcr/m/n/12 / / images . nvidia . com / content / pdf / tesla /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 606--607
+\T1/pcr/m/n/12 NVIDIA-[]Kepler-[]GK110-[]GK210-[]Architecture-[]Whitepaper . pd
+f$
+ []
+
+[24
 
 ]
 Missing character: There is no – in font ptmr8t!
- [24] (./MSc-dissertation.aux) ) 
+ [25] (./MSc-dissertation.aux) ) 
 Here is how much of TeX's memory you used:
- 22502 strings out of 493706
- 435656 string characters out of 6118259
- 590535 words of memory out of 5000000
- 25566 multiletter control sequences out of 15000+600000
+ 22509 strings out of 493706
+ 435760 string characters out of 6118259
+ 590604 words of memory out of 5000000
+ 25571 multiletter control sequences out of 15000+600000
  47273 words of font info for 81 fonts, out of 8000000 for 9000
  1328 hyphenation exceptions out of 8191
  43i,12n,78p,10468b,1115s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on MSc-dissertation.pdf (31 pages).
+Output written on MSc-dissertation.pdf (32 pages).

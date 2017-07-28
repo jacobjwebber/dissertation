@@ -279,11 +279,41 @@ GPUs have a number of technical features which make them particularly suited to 
 
 \subsection{GPUs and parallelism}
 \label{section:gpu-par}
-GPUs primarily achieve their massive performance increases over CPUs by harnessing operating in a massively parallel fashion. This is done principally with a single instruction multiple data (SIMD) approach. This is where the same processor instructions can execute on multiple objects in memory.
+
+GPUs primarily achieve their massive performance increases over CPUs by harnessing operating in a massively parallel fashion. Two principles of parallel computing are used to make this happen. These are the \textit{single instruction, multiple threads} (SIMT) and \textit{simultaneous multi-threading} (SMT) approaches. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{../diagrams/gpu-cpu}
+\caption{GPU and CPU architectures \cite{ref:nvidia-gpu-programming-guide}}
+\label{gpu-cpu}
+\end{figure}
+
+
+\subsubsection{Single Instruction, Multiple Thread}
+
+SIMT computer instructions execute on multiple objects in memory at once. In doing so they reduce the amount of silicone that is required to perform calculations. This is because multiple operations can share so called \textit{control units} (CUs). These determine which instructions should occur, and when branches should be taken. GPUs are organised into \textit{streaming multiprocessors} (SMXs). These contain multiple cores and therefore \textit{floating point units} (FPUs) but share control circuitry. This means a much higher proportion of the silicone is taken up with performing floating point operations than with a conventional CPU, where there is typically one CU per processing core. Figure \ref{gpu-cpu} goes some way to showing the make-up of GPUs in relation to CPUs, without showing the detailed make up of each multiprocessor. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{../diagrams/smx}
+\caption{The SMX architecture as in the K20 GPU \cite{ref:nvidia-gpu-k20-white}}
+\label{fig:smx}
+\end{figure}
+
+More detail on the SMX is given in figure \ref{fig:smx}. This shows each SMX contains \num{192} single-precision CUDA cores, \num{64} double-precision units, \num{32} special function units (SFU), and \num{32} load/store units (LD/ST) \cite{ref:nvidia-gpu-k20-white}. Instructions are scheduled and issued in  groups of \num{32} parallel threads called \textit{warps}. Each SMX can run a maximum of \num{4} warps concurrently. This depends on there not being a \textit{stuctural hazard}. This is when a part of the processor's hardware is needed by two or more instructions at the same time. For example, the fact that there are only \num{64} double precision FPUs per SMX means that not all $4 \cdot 32$ threads from the four warps can conduct floating point calculations simultaneously. 
+
+\subsubsection{Simultaneous Multi-Threading}
+
+
 
 \subsection{GPU Memory Hierarchies}
 \label{section:gpu-mem}
-\begin{figure}
+
+GPUs are tuned for throughput, rather than latency. This colours their approach to data storage as well as processing.
+
+
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{../diagrams/memory-bandwidth}
 \caption{A graph from NVIDIA showing memory bandwidth of GPUs and CPUs through time \cite{ref:nvidia-gpu-programming-guide}.}
@@ -471,7 +501,7 @@ When the size of the sub-array is equal to that of the bounding array, the semi-
 
 
 
-\begin{figure}%
+\begin{figure}[H]
 \centering%
 \begin{gnuplot}[terminal=epslatex, terminaloptions=color dashed]
 set xlabel "Diameter (Grid Points)"
@@ -572,6 +602,8 @@ Addison Publishing Company, Addison
 \bibitem{ref:nvidia-gpu-launch} NVIDIA Corporation {\em NVIDIA Special Event: The GeForce GTX 1080 and Pascal (Part 4)} \url{https://www.youtube.com/watch?v=0xnzwjPyx8A} retrieved \today.
 
 \bibitem{ref:nvidia-gpu-programming-guide} NVIDIA Corporation {\em CUDA C Programming Guide} \url{http://docs.nvidia.com/cuda/cuda-c-programming-guide} retrieved \today.
+
+\bibitem{ref:nvidia-gpu-k20-white} NVIDIA Corporation {\em NVIDIA’s Next Generation CUDA Compute Architecture: Kepler GK110/210} \url{http://images.nvidia.com/content/pdf/tesla/NVIDIA-Kepler-GK110-GK210-Architecture-Whitepaper.pdf} retrieved \today.
 
 \bibitem{ref:mici} P. Micikevicius, \emph{3D finite difference computation on GPUs using CUDA.} Proceedings of 2nd Workshop on General Purpose Processing on Graphics Processing Units - GPGPU-2, New York, New York, USA, 2009, pp. 79-84, ACM Press.
 
