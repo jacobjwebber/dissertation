@@ -4,7 +4,7 @@
 2d_example/square
 deviceQuery/deviceQuery
 */sphere
-*.o
+*/*.o
 cuda_semi-structured/sphere
 
 #Swaps
