@@ -320,6 +320,10 @@ GPUs are tuned for throughput, rather than latency. This colours their approach 
 \label{figure:memory-bandwidth}
 \end{figure}
 
+\subsection{The CUDA Paradigm}
+
+The nature of GPUs means that they need to be programmed carefully to extract performance. Computation done on the GPU is separated into kernels. In this case they were written as special CUDA C functions. These are launched in blocks, and each block can contain multiple threads. When a kernel is called the amount of blocks and threads per block is specified. 
+
 \section{The State of the Art in FDTD Acoustical Modelling}
 \label{chapter:state-of-art}
 Combining the ideas as written about in sections \ref{section:acoustics} and \ref{section:gpus}, it is possible to describe the most successful techniques thus far in running FDTD room acoustics models.
@@ -411,6 +415,8 @@ struct block {
 \end{lstlisting}
 \end{minipage}
 \end{center}
+
+Instead of using a bounding box 3d array to store data, 
 - DESCRIBE RATIO OF NEIGHBOURS INTS TOUSEFUL DATA.
 \section{The Algorithm}
 

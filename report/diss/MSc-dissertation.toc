@@ -9,7 +9,8 @@
 \contentsline {subsubsection}{Single Instruction, Multiple Thread}{6}
 \contentsline {subsubsection}{Simultaneous Multi-Threading}{7}
 \contentsline {subsection}{\numberline {2.3.2}GPU Memory Hierarchies}{7}
-\contentsline {section}{\numberline {2.4}The State of the Art in FDTD Acoustical Modelling}{7}
+\contentsline {subsection}{\numberline {2.3.3}The CUDA Paradigm}{7}
+\contentsline {section}{\numberline {2.4}The State of the Art in FDTD Acoustical Modelling}{8}
 \contentsline {subsection}{\numberline {2.4.1}The Method}{8}
 \contentsline {subsection}{\numberline {2.4.2}Memory Capacity}{8}
 \contentsline {subsection}{\numberline {2.4.3}Memory Bandwidth}{9}
