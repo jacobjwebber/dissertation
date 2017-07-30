@@ -111,7 +111,7 @@
 \newpage
 
 \begin{abstract}
-This is the bit where you summarise what is in your thesis.
+I made a program it took ages
 \end{abstract}
 
 \pagenumbering{roman}
@@ -136,11 +136,11 @@ I would like to extend my sincere thanks to Paul Graham and Dr Brian Hamilton fo
 \chapter{Introduction}
 \epigraph{\itshape ``There is no competition of sounds between a nightingale and a violin.''}{Dejan Stojanovic}
 
-The way we perceive sound depends on the environment in which we hear it as well as how the sound was created. Listening to a sound in a space like a church or a cathedral is very different to listening in a bedroom. Being able to predict how a space will affect a sound has practical use in the design of new spaces, particularly those spaces where acoustic performance is critical. A great deal of effort goes into the design of new concert halls. This would be greatly enhanced by accurate acoustic models of spaces. The aim then, of research in this area, is to provide an accurate prediction of how a space will sound after being given its physical properties.
+The way we perceive sound depends on the environment in which we hear it as well as how the sound was created. Listening to a sound in a space like a church or a cathedral is very different to listening in a bedroom. Being able to predict how a given environment will sound has practical use in the design of new buildings, particularly those where acoustic performance is critical. A great deal of effort goes into the design of new concert halls. This could be greatly enhanced by accurate acoustic models of spaces. The aim then, of research in this area, is to provide an accurate prediction of how a room will sound after being given its physical properties.
 
-The key technique currently used for these simulations is the finite-difference time-domain (FDTD) method for finding approximate solutions to the wave equation across a three dimensional space. This requires that a stencil operation be performed. This stencil process must happen across a vast number of points in memory, an is therefore well suited to the use of graphics processing units (GPUs). These have high band width graphics memory and can operate on very many points at once in a massively parallel fashion.
+The key technique currently used for these simulations is the finite-difference time-domain (FDTD) method. This is used to find approximate solutions to the wave equation across a three dimensional space. The FDTD process requires that a stencil operation be performed. This stencil process must be iterated across a vast number of points in memory. The requirement for high memory bandwidth means that the problem is well suited to the use of graphics processing units (GPUs). These have high band width graphics memory and can operate on very many points at once in a massively parallel fashion.
 
-In the work leading up to this report, some currently state of the art GPU acoustics techniques as outlined in \cite{craig} and \cite{brian} were recreated. In addition to this, a novel technique was devised and implemented that performs these simulations. The proposed approach is designed to make best use of graphics memory, which is relatively scarce.
+In the work leading up to this report, some currently state of the art GPU acoustics techniques as outlined in \cite{craig} and \cite{brian} were recreated. In addition to this, a novel technique was devised and implemented that performs these simulations. The proposed approach is designed to make best use of graphics memory when rooms are irregularly shaped. This is important because graphics memory is relatively scarce.
 
 This report includes some background on the theory of acoustics and difference schemes, a brief background in GPUs and an overview of the new techniques that were devised and trialled in the work leading up to this report. This is followed by description of the details of the implementation in CUDA C as well as software development, profiling and debugging strategies and tools. There is then a comparative analysis of existing and novel techniques both in terms of performance in compute time and memory use. The report finishes with some conclusions and ideas for further work.
 
@@ -255,9 +255,11 @@ gives a somewhat neater version of equation \ref{equation:stencil-big}
 P_{l,m,p}^{n+1} = (2 - 6 \lambda^2)P_{l,m,p}^{n} + \lambda^2 S - P_{l,m,p}^{n-1}
 \end{equation}
 
-More than simply being neat, this is now a representation of how to calculate new values for the three dimensional array from the previous ones using a simple stencil operation. This yields a new propagation relation
+More than simply being neat, this is now a representation of how to calculate new values for the three dimensional array from the previous ones using a simple stencil operation. This yields a new propagation relation.
 
-\section{Boundary Conditions}
+
+
+\subsection{Boundary Conditions}
 
 All of the physical properties of the room are encoded in the boundary conditions imposed on the differential equation. Modelling different boundary materials such as room walls is the subject of significant research at present. However, the main purpose of this report is to look at the computational aspects of applying stencil operations. As such a relatively simple boundary scheme is applied.
 
@@ -269,6 +271,20 @@ The boundary scheme used modifies equation \ref{equation:stencil-small} by repla
 \label{equation:stencil-boundary}
 P_{l,m,p}^{n+1} = (2 - \lambda^2 K_{l,m,p} )P_{l,m,p}^{n} + \lambda^2 S - P_{l,m,p}^{n-1}
 \end{equation}
+
+\section{Stencilling Operations}
+
+WHAT IS A STENCIL
+
+\label{section:method-soa}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.25\textwidth]{../diagrams/stencil}
+\caption{Diagram showing 3 dimensional Von Neumann stencil. Credit: Wikimedia Commons.}
+\label{stencil}
+\end{figure}
+
+Stencilling operations are in their nature memory bound problems. This is because they involve a lot of data accesses per, relatively simple, calculation. This means that GPUs, with their high bandwidth memory, have been shown to be ideally suited to perform these operations \cite{gpu_stencil}. However, while GPUs have the best performance, they also have limited amounts of memory.
 
 \section{Graphics Processing Units (GPUs)}
 \label{section:gpus}
@@ -328,14 +344,7 @@ The nature of GPUs means that they need to be programmed carefully to extract pe
 \label{chapter:state-of-art}
 Combining the ideas as written about in sections \ref{section:acoustics} and \ref{section:gpus}, it is possible to describe the most successful techniques thus far in running FDTD room acoustics models.
 
-\subsection{The Method}
-\label{section:method-soa}
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.25\textwidth]{../diagrams/stencil}
-\caption{Diagram showing 3 dimensional Von Neumann stencil. Credit: Wikimedia Commons.}
-\label{stencil}
-\end{figure}
+\subsection{The Bounding Box Method}
 
 \subsection{Memory Capacity}
 
@@ -388,15 +397,23 @@ Such an approach would remove the synchronisation overhead in the stencil operat
 While these approaches have been applied to stencil techniques in image processing \cite{ref:vision} they are not applicable here. This is because the boundary conditions are the only feature that varies between different rooms and a technique for encoding these well in the frequency space is not known. In addition to model any input signal larger than one sample long it would be necessary to transform the arrays back from the frequency domain after every time step, removing any advantage from applying this method and adding a considerable overhead in the performance of two FFTs for every time step.
 
 \chapter{The Proposed Data Structure and Method}
+\label{chapter:proposition}
+
 \epigraph{\itshape ``Nothing surpasses the beauty and elegance of a bad idea.''}{Craig Bruce}
 
 The bulk of the work in this project went into the design and implementation of a new algorithm for the computation of FDTD simulations. This section details the design of this algorithm and some of its theoretical performance benefits.
 
 The purpose of this technique improve memory usage for irregularly shaped rooms and memory locality in large 3D FDTD acoustics simulations. The proposed method is to replace the large 3D arrays currently used with an array of structs. Each struct will store a smaller sub-array containing points in the simulation, as well as information on the location of neighbouring points to those points of the edge of each sub-array. This will allow blocks where no points are inside the room being simulated to not have to be stored in expensive GPU memory. This technique also improves data locality. The smaller 3D sub-arrays will result in neighbouring points being scattered less far apart in memory.
 
+There is some analogue that can be found here with the field of sparse matrices. Indeed, the stencil operation can be thought of as a sparse matrix multiplication. When matrices are sparse, so-called \textit{unstructured} approaches are used to store the data. With a standard matrix, a particular matrix index's location in memory can be derived easily. However, such an approach can require the storage of a lot of unnecessary data. With unstructured approaches, only non zero matrix elements need be stored. However, this means it is no longer possible to easily derive the memory location of an element in memory - meaning that this data must also be stored. This means that matrices must typically be very sparse indeed before unstructured approaches become practical.
+
+If a bounding box representation can be thought of as a structured approach, and typical sparse representations as unstructured, here a technique is presented which can be thought of, and from here will be described as a \textit{semi-structured} approach. This is where smaller blocks of structured data are stored only if they contain at least one point that is non-zero - or inside the room. These blocks are sized so that they are large enough to dwarf any additional locational data requirements, but small enough so that not too much empty space need be stored.
+
+The nature of the CUDA paradigm can also be taken advantage. The blocks can be designed so that they correspond to a CUDA block of threads. This means that one kernel can operate on one block in a parallel fashion. This relation means that each kernel can load one contiguous block of data from global memory. This makes this approach highly suited to devices that are optimised for memory bandwidth, and therefore have larger memory transaction sizes.
+
 \section{The Data Structure} 
 \label{section:data-structure}
-\lstset{language=C,caption={The Data Struct},label=listing:struct}
+\lstset{language=C,caption={The block Data Struct},label=listing:struct}
 \begin{center}
 \begin{minipage}{0.8\textwidth}
 \begin{lstlisting}[frame=single]
@@ -416,41 +433,83 @@ struct block {
 \end{minipage}
 \end{center}
 
-Instead of using a bounding box 3d array to store data, 
-- DESCRIBE RATIO OF NEIGHBOURS INTS TOUSEFUL DATA.
+Listing \ref{listing:struct} shows the block struct. The \lstinline|K| array is a store of the amount of internal neighbours a point has. It is set to zero if the point in question is external. A block should therefore only be stored in the array of structs if it has at least one point with a $K$ value above zero. This means rooms whose bounding box would contain large amounts of empty space can be stored much more efficiently.
+
+The fact that it is a stencil operation means that each kernel need not know the location of the block it is operating on - only the location of the blocks neighbours. These are therefore stored in the struct as six integers, each of which gives the block index of a neighbouring block in each direction.
+
+These six numbers are an overhead of this method that could lead to it being less efficient in memory than the bounding box technique. However, the size of these in memory compared to the rest of the data is small.
+
+
+Taking, as an example, the dimensions of the sub-arrays to be 8 by 8 by 8, then the total size requirement of a struct would be \num{1.002757} times that of the representation without these neighbour integers stored when the user defined datatype, \lstinline|real|, is set to be a double precision floating point number.
+
+The worst case memory performance can be calculated for single precision as: 
+
+\begin{equation}
+\frac{S_{ss}}{S_{s}} = 1 + \frac{24}{9\cdot\lstinline|Bx|\cdot\lstinline|By|\cdot\lstinline|Bz|}
+\end{equation}
+
+and for double precision as:
+\begin{equation}
+\frac{S_{ss}}{S_{s}} = 1 + \frac{24}{17\cdot\lstinline|Bx|\cdot\lstinline|By|\cdot\lstinline|Bz|}
+\end{equation}
+
+%\begin{center}
+%$S_{ss} = 6 \cdot$ \lstinline|sizeof(int)| $+ 2 \cdot$ \lstinline|%sizeof(real * Bx * By * Bz)| + \lstinline|sizeof(char * Bx * By * Bz)|
+%\end{center}
+
+
 \section{The Algorithm}
 
+\section{Theoretical Benefits}
+\label{section:benefits}
 
-\begin{figure}
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{../diagrams/church}
 \caption{A diagram showing a schematic of a church building. Credit: McCrery Architects.}
 \label{church}
 \end{figure}
 
-\section{Theoretical Benefits}
-\label{section:benefits}
+
 
 \chapter{Design and Implementation}
 
 \epigraph{\itshape ``The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.''}{Tom Cargill}
 
-The software was written in CUDA C. This is a proprietary language developed by NVIDIA and is an extension to ANSI C that allows for GPGPU programming.
+The software was written in CUDA C. This is a proprietary language developed by NVIDIA and is an extension to ANSI C that allows for GPGPU programming. The CUDA C language was selected because the University of Edinburgh Acoustics and Audio Group (AAG) has an NVIDIA K20 GPU server. CUDA is a well supported way to program these devices, although the resulting programs will only run on NVIDIA hardware. Had OpenCL been used, the code would have also been able to run on graphics cards produced by AMD, who are NVIDIA's main competitor \cite{ref:gpu-market}. This paradigm is generally considered more complex than CUDA C, and as the AAG does not own any AMD hardware, was not pursued. Some discussion of how future work might involve OpenCL is given in section \ref{section:future-work}. 
 
-The work stems from a Matlab script that implements the scheme using a bounding box as described in \ref{chapter:state-of-art}. There were also CUDA kernels from \cite{craig} that served as inspiration, but these did not model cases where non-cuboid rooms were used. This meant that they were of limited use. The project was therefore largely one of software development from scratch.
+The work stems from a Matlab script that implements the scheme using a bounding box as described in \ref{chapter:state-of-art}. There were also CUDA kernels from \cite{craig} that served as inspiration, but these did not model cases where non-cuboid rooms were used. This meant that they were of limited use. As no code exists that implements the semi-structured approach proposed here, the project was therefore largely one of software development from scratch.
 
 \section{Design Overview}
-bobobobobobob
+
+The code was designed to be as extensible and reusable as possible. As such each experiment is divided into a separate directory. Each of these contains a CUDA C source file that performs the required experiment. These then call functions from a library that do all the tasks associated with the proposed method. This library is a selection of source files that are in a \verb|lib| directory. They contain functions for forming the data structure as described in chapter \ref{chapter:proposition}, as well as generating room shapes, and performing the FDTD stencil.
+
 \section{Software Development Process}
+
+
 
 \section{Debugging and Profiling Tools}
 
+NVIDIA includes developer tools with its CUDA software. As well as the compiler, NVCC, there is a debugger, an IDE and some profiling tools. 
 
+For debugging, the \verb|cuda-gdb| program functions like gdb, but extended to work on GPU code. The \verb|cuda-memcheck| tool checks for memory errors such as segmentation faults. It will provide the line of code where the memory error is when the the binary is compiled using debugging flags.
+
+For profiling there is the \verb|nvprof| tool for the command line. There is also the NVIDIA \textit{Visual Profiler}, which provides a GUI. This can provide details of the amount of time spent on each part of the computation, the time taken for each kernel, as well as other details such as the theoretical and achieved occupancy (see section \ref{section:gpu-par}). Figure FIGUREFIGURE provides a screenshot of this tool in use.
+
+The \verb|nsight| IDE, based on eclipse, provides access to all of these tools.
+
+It was unfortunately not possible to use the GUI based tools when working on the K20 GPU server that was used to gather results. This is because the server is not configured to run graphical programs. It was possible to run these tools on a home desktop with an NVIDIA GTX 970 graphics card installed. This was useful for debugging is this device is capable of running CUDA code. However, it was of limited use for profiling, as the card achieved very different performance to the K20. The GTX 970 is a commodity card that lacks the double precision floating point units of the K20. It also has fewer register files and less L1 cache.
 
 \chapter{Results and Analysis}
 \label{chapter:results}
 
 \section{Memory Usage}
+
+
+
+Very high memory usage is currently the biggest inhibiting factor to the performance of FDTD simulations. 
+
+\subsection{Sphere}
 
 \begin{figure}[H]
 \centering
@@ -477,10 +536,7 @@ RotZ=30,
 \label{figure:sphere-cube}
 \end{figure}
 
-Very high memory usage is currently the biggest inhibiting factor to the performance of FDTD simulations. 
-
-\subsection{Sphere}
-To determine if the efficiencies as theorised in section \ref{section:benefits} were realised, the example of a spherically shaped room was used, as shown in figure \ref{figure:sphere-cube}. While the existence of such a shaped room seems far-fetched, the example illustrates some of the benefits of the data structure described even in somewhat unfavourable conditions. This configuration tests the performance of the new struct based method when a curved room shape is chosen that will necessarily result in partially empty block arrays being stored within some structs. The arrangement is also not particularly sparse. The volume of the sphere $V_{s}$ is given by: 
+To determine if the efficiencies as theorised in section \ref{section:benefits} were realised, the example of a spherically shaped room was used, as shown in figure \ref{figure:sphere-cube}. While the existence of such a shaped room seems far-fetched, the example illustrates some of the benefits of the data structure described even in somewhat unfavourable conditions. This configuration tests the performance of the new struct based method when a curved room shape is chosen. This curvature will necessarily result in partially empty block arrays being stored within structs at the boundary. The arrangement is also not particularly sparse. The volume of the sphere $V_{s}$ is given by: 
 
 \begin{equation}
 V_{s} = \frac{\pi d^3}{6}
@@ -502,10 +558,7 @@ This means that under the existing bounding box technique for modelling non-cubo
 
 
 
-When the size of the sub-array is equal to that of the bounding array, the semi-structured and structured approaches can be seen as equivalent. However, as shown in listing \ref{listing:struct}  there is some overhead of storing the neighbouring structs. This means that for a room of size \num{8} by \num{8} by \num{8} and with double precision floating point numbers, the semi-structured approach uses \num{1.002757} times the memory of the structured approach, in line with the worst case scenario presented in section \ref{section:data-structure}. This overhead is marginally higher when single precision numbers are used.
-
-
-
+When the size of the sub-array is equal to that of the bounding array, the semi-structured and structured approaches can be seen as equivalent. However, as shown in listing \ref{listing:struct}  there is srepeated ome overhead of storing the array indices of the neighbouring structs. This requires the storage of 6 integers for every struct, meaning that for a room of size \num{8} by \num{8} by \num{8} and with double precision floating point numbers, the semi-structured approach uses \num{1.002757} times the memory of the structured approach, in line with the worst case scenario presented in section \ref{section:data-structure}. This overhead is marginally higher when single precision numbers are used, as the size of the integers is larger relative to the arrays of floating point number which half in size when single precision numbers are used. The storage of these integers is still a very small overhead.
 
 \begin{figure}[H]
 \centering%
@@ -526,9 +579,25 @@ pi/6 lt 2 lc rgb "red" notitle
 \label{figure:cap-sphere}%
 \end{figure}%
 
+The results shown in figure \ref{figure:cap-sphere} show that as the diameter becomes larger, the storage efficiency of the semi-structured method increases. It is easy to see that should the diameter, $d$, become very large with respect to \lstinline|Bx|, \lstinline|By| and \lstinline|Bz|, such that
+
+\begin{equation}
+\lstinline|Bx|, \lstinline|By|, \lstinline|Bz| \ll d
+\end{equation}
+
+then the case is equivalent to the infinite sum of infinitesimals making up a spherical volume integral in Cartesian coordinates. This means that 
+
+\begin{equation}
+\lim_{d\to\infty} \frac{S_{ss}}{S_{s}} = \frac{\pi}{6}\cdot 1.002757
+\end{equation}
+
+Practical gains come long before $d$ approaches infinity. With a diameter of \num{768} points, the semi-structured approach means that \SI{4014}{\mebi\byte} of global memory is required which falls within the 5GiB limit of the K20. The bounding box method for a room of this size would require \SI{7344}{\mebi\byte} - meaning such a simulation could not be run on on a K20 graphics card.
 
 \subsection{Cube}
+The results from the cube shaped room experiment were very simple, as far as memory capacity goes. In all cases $\frac{S_{ss}}{S_{s}}$ was \num{1.002757}. This is because there is no empty space stored with the bounding box method. This represents the worst case performance for the semi-structured method. As such an increase in memory usage of around a quarter of one percent is a fairly tolerable result. Full results are included in appendix \ref{appendix:mem-cap}.
 
+\subsection{L-shape or Cross????????}
+TO BE DONE
 \section{Stencil Performance}
 
 \chapter{Conclusions and Further Work}
@@ -537,7 +606,7 @@ pi/6 lt 2 lc rgb "red" notitle
 
 
 \section{Future Work}
-
+\label{section:future-work}
 \appendix
 % the appendix command just changes heading styles for appendices.
 
@@ -620,6 +689,12 @@ Addison Publishing Company, Addison
 
 \bibitem{ref:harris} Harris, Frederic j. (Aug 2006). \emph{Multirate Signal Processing for Communication Systems}. Upper Saddle River, NJ: Prentice Hall PTR. ISBN 0-13-146511-2
 
+
+\bibitem{gpu_stencil}
+
+Andreas Schäfer, Dietmar Fey, \emph{High Performance Stencil Code Algorithms for GPGPUs}, Procedia Computer Science, Volume 4, 2011, Pages 2027-2036, ISSN 1877-0509, \url{http://dx.doi.org/10.1016/j.procs.2011.04.221.} (Accessed: 5 April 2017)
+
+
 \bibitem{ref:electro}
 D. W. Zingy , H. Lomax , and H. Jurgens , \emph{High-accuracy finite-difference schemes for linear wave propagation}, SIAM J. Sci. Comput. 17, 328346, 1996.
 
@@ -628,6 +703,11 @@ L. Savioja and U. P. Svensson, \emph{Overview of geometrical room acoustic model
 
 \bibitem{ref:vision}
 Shapiro, L. G. and Stockman, G. C: \emph{Computer Vision}, page 137, 150. Prentice Hall, 2001
+
+\bibitem{ref:gpu-market} Tech Power Up {\em Graphics Card Market Up Sequentially in Q3, NVIDIA Gains as AMD Slips} \url{https://www.techpowerup.com/194979/graphics-card-market-up-sequentially-in-q3-nvidia-gains-as-amd-slips} retrieved \today.
+
+
+
 
 \end{thebibliography}
 
