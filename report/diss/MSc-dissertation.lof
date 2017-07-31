@@ -3,13 +3,13 @@
 \contentsline {figure}{\numberline {2.1}{\ignorespaces Diagram showing 3 dimensional Von Neumann stencil. Credit: Wikimedia Commons.\relax }}{5}
 \contentsline {figure}{\numberline {2.2}{\ignorespaces GPU and CPU architectures \cite {ref:nvidia-gpu-programming-guide}\relax }}{6}
 \contentsline {figure}{\numberline {2.3}{\ignorespaces The SMX architecture as in the K20 GPU \cite {ref:nvidia-gpu-k20-white}\relax }}{7}
-\contentsline {figure}{\numberline {2.4}{\ignorespaces A graph from NVIDIA showing memory bandwidth of GPUs and CPUs through time \cite {ref:nvidia-gpu-programming-guide}.\relax }}{8}
+\contentsline {figure}{\numberline {2.4}{\ignorespaces A graph from NVIDIA showing memory bandwidth of GPUs and CPUs through time \cite {ref:nvidia-gpu-programming-guide}.\relax }}{9}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces A diagram showing a schematic of a church building. Credit: McCrery Architects.\relax }}{14}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces A diagram showing a schematic of a church building. Credit: McCrery Architects.\relax }}{15}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces Computer graphic showing a sphere of unit diameter within a cube of unit side.\relax }}{17}
-\contentsline {figure}{\numberline {5.2}{\ignorespaces The fraction of memory used by the semi-structured approach with respect to the structured approach (double precision). The ideal fraction of $\frac {\pi }{6}$ is shown as a dashed line\relax }}{19}
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Computer graphic showing a sphere of unit diameter within a cube of unit side.\relax }}{18}
+\contentsline {figure}{\numberline {5.2}{\ignorespaces The fraction of memory used by the semi-structured approach with respect to the structured approach (double precision). The ideal fraction of $\frac {\pi }{6}$ is shown as a dashed line\relax }}{20}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

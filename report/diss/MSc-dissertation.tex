@@ -321,13 +321,35 @@ More detail on the SMX is given in figure \ref{fig:smx}. This shows each SMX con
 
 \subsubsection{Simultaneous Multi-Threading}
 
+SMT refers to the process of running more logical threads than cores exist in hardware. This means that processes can avoid using up resources while they are idle. In GPUs this happens at the warp level. When a SMX changes which warp is active this is known as \textit{context switching}. GPUs have special hardware adaptations that make them very efficient at doing this. They have a very large amount of registers compared with conventional CPUs. This means that data from all \textit{active} warps - meaning those that have been allocated to an SMX - are kept in registers. This differs from a conventional CPU where this data may have to be written out to at least L1 cache memory. The speed with which GPUs can context switch means that SMT techniques become appropriate to hide shorter latencies such as memory accesses, unlike CPUs, which are more likely to make use of SMT for threads that are idle while waiting for disk or network latencies.
 
+As the efficiency of SMT on the GPU is dependent on large registers, performance can be limited when warps are required to complete tasks that require large amounts of registers. For ideal performance, GPUs need to be carefully programmed to ensure that they make maximal use of SMT. This reduces the amount of time hardware spends idling, and therefore increases throughput.
 
 \subsection{GPU Memory Hierarchies}
 \label{section:gpu-mem}
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{ |c|c|c| } 
+ \hline
+ Memory Type & Scope & Latency (approx. clock cycles) \\ 
+ \hline
+ Register File & CUDA Thread & 0 \\ 
+ Shared Memory/L1 Cache & CUDA Block / N/A & 48 \\
+ L2 Cache &  N/A & 120 \\
+ Global Memory & CUDA Grid & 440 \\
+ \hline
+\end{tabular}
+\caption{Memory hierarchy on NVIDIA GPU.}
+\end{center}
+\end{table}
 
 GPUs are tuned for throughput, rather than latency. This colours their approach to data storage as well as processing.
 
+The previous section discusses the importance of registers for SMT. These form the top tier of the GPUs memory hierarchy. Modern NVIDIA GPUs, such as the K20 used in this project, also have two additional layers of cache memory above the global memory store. The top layer of this cache is also referred to as \textit{shared} memory. This is because data can be explicitly loaded here and will then be shared among a group of threads defined by the programmer as a \textit{block} (see section \ref{subsection:cuda} for details). L2 cache is hardware controlled and functions similarly to CPU caches. Below this there is \textit{global} memory. This is the largest and highest latency form of data storage on the GPU. The K20 used in experiments for this report uses GDDR5 high bandwidth graphics memory for this. This differs from DDR3/4 used in conventional computing . 
+
+GDDR5 is tuned for maximal bandwidth. It does sacrifice some latency performance in exchange for this. This is achieved by loading in larger lines of data at a time. There is much excitement in GPGPU circles about the recent arrival of \textit{high bandwidth memory 2} (HBM2). This has even higher bandwidth than GDDR5 and has even larger access widths.
+
+Figure \ref{figure:memory-bandwidth} shows the advance of memory bandwidth through time on both CPUs and GPUs. The NVIDIA K20 has a peak theoretical bandwidth of \SI{208}{\giga\byte\per\second}, which is less than a third of that of some of the latest HBM2 cards. It is hoped the techniques described later in this report will be well suited to these advancements.
 
 \begin{figure}[H]
 \centering
@@ -337,8 +359,11 @@ GPUs are tuned for throughput, rather than latency. This colours their approach 
 \end{figure}
 
 \subsection{The CUDA Paradigm}
+\label{subsection:cuda}
 
-The nature of GPUs means that they need to be programmed carefully to extract performance. Computation done on the GPU is separated into kernels. In this case they were written as special CUDA C functions. These are launched in blocks, and each block can contain multiple threads. When a kernel is called the amount of blocks and threads per block is specified. 
+The nature of GPUs means that they need to be programmed carefully to extract performance. Computation done on the GPU is separated into kernels. In this case they were written as special CUDA C functions. These are launched in blocks, and each block can contain multiple threads. When a kernel is called, the amount of blocks and threads per block is specified.
+
+MORE PLEASE
 
 \section{The State of the Art in FDTD Acoustical Modelling}
 \label{chapter:state-of-art}
@@ -460,6 +485,11 @@ and for double precision as:
 
 \section{The Algorithm}
 
+The new method requires a new algorithm for converting a room's representation to a semi-structured one, as well as for performing the stencil on the new data structure.
+
+
+MORE PLEASE
+
 \section{Theoretical Benefits}
 \label{section:benefits}
 
@@ -470,13 +500,14 @@ and for double precision as:
 \label{church}
 \end{figure}
 
+MORE PLEASE
 
 
 \chapter{Design and Implementation}
 
 \epigraph{\itshape ``The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.''}{Tom Cargill}
 
-The software was written in CUDA C. This is a proprietary language developed by NVIDIA and is an extension to ANSI C that allows for GPGPU programming. The CUDA C language was selected because the University of Edinburgh Acoustics and Audio Group (AAG) has an NVIDIA K20 GPU server. CUDA is a well supported way to program these devices, although the resulting programs will only run on NVIDIA hardware. Had OpenCL been used, the code would have also been able to run on graphics cards produced by AMD, who are NVIDIA's main competitor \cite{ref:gpu-market}. This paradigm is generally considered more complex than CUDA C, and as the AAG does not own any AMD hardware, was not pursued. Some discussion of how future work might involve OpenCL is given in section \ref{section:future-work}. 
+The software was written in CUDA C. This is a proprietary language developed by NVIDIA and is an extension to ANSI C that allows for GPGPU programming. The CUDA C language was selected because the University of Edinburgh Acoustics and Audio Group (AAG) has an NVIDIA K20 GPU server. CUDA is a well supported way to program these devices, although the resulting programs will only run on NVIDIA hardware. Had OpenCL been used, the code would have also been able to run on graphics cards produced by AMD, who are NVIDIA's main competitor \cite{ref:gpu-market}. This paradigm is generally considered more complex than CUDA C, and, as the AAG does not own any AMD hardware, was not pursued. Some discussion of how future work might involve OpenCL is given in section \ref{section:future-work}. 
 
 The work stems from a Matlab script that implements the scheme using a bounding box as described in \ref{chapter:state-of-art}. There were also CUDA kernels from \cite{craig} that served as inspiration, but these did not model cases where non-cuboid rooms were used. This meant that they were of limited use. As no code exists that implements the semi-structured approach proposed here, the project was therefore largely one of software development from scratch.
 
@@ -484,9 +515,11 @@ The work stems from a Matlab script that implements the scheme using a bounding 
 
 The code was designed to be as extensible and reusable as possible. As such each experiment is divided into a separate directory. Each of these contains a CUDA C source file that performs the required experiment. These then call functions from a library that do all the tasks associated with the proposed method. This library is a selection of source files that are in a \verb|lib| directory. They contain functions for forming the data structure as described in chapter \ref{chapter:proposition}, as well as generating room shapes, and performing the FDTD stencil.
 
+MORE PLEASE
+
 \section{Software Development Process}
 
-
+MORE PLEASE
 
 \section{Debugging and Profiling Tools}
 
