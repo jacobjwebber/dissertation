@@ -16,7 +16,7 @@
 \usepackage{texdraw}
 \usepackage{gnuplottex}
 \usepackage{csvsimple}
-
+\usepackage[lined,boxed]{algorithm2e}
 
 \setlength\epigraphwidth{.8\textwidth}
 \setlength\epigraphrule{0pt}
@@ -119,6 +119,8 @@ I made a program it took ages
 \tableofcontents
 \listoftables
 \listoffigures
+\listofalgorithms
+
 
 \begin{titlepage}
 \vspace*{2in}
@@ -371,6 +373,37 @@ Combining the ideas as written about in sections \ref{section:acoustics} and \re
 
 \subsection{The Bounding Box Method}
 
+SQUARE ROOM ALG
+
+\IncMargin{1em}
+\begin{algorithm}[H]
+ \KwData{Three dimensional array of $\Psi_{l,m,p}^{n}$}
+ \KwResult{Updated array of $\Psi_{l,m,p}^{n+1}$}
+ Get the 3D indices of the current thread from the block and thread IDs\;
+ \If{ not at the boundaries}{
+ 	Compute the linear address from the 3D indices\;
+ 	Update node $\Psi_{l,m,p}^{n+1}$\;
+ }
+ \caption{CUDA kernel for update on the basic 3D scheme.}
+\end{algorithm}
+
+FUNNY SHAPED ROOM ALG
+
+\IncMargin{1em}
+\begin{algorithm}[H]
+ \KwData{Three dimensional arrays of $\Psi_{l,m,p}^{n}$ and $K_{l,m,p}$}
+ \KwResult{Updated array of $\Psi_{l,m,p}^{n+1}$}
+ Get the 3D indices of the current thread from the block and thread IDs\;
+ \If{$K_{l,m,p}$ is not zero}{
+ 	Compute the linear address from the 3D indices\;
+ 	Update node $\Psi_{l,m,p}^{n+1}$\;
+ }
+ \caption{CUDA kernel for update on an irregularly shaped room.}
+\end{algorithm}
+
+
+
+
 \subsection{Memory Capacity}
 
 The performance of FDTD models can be measured using two factors: the computation time and the amount of memory used. Because of their high bandwidth memory and fast floating point performance, GPUs routinely perform very well in the computation time category. However, the graphics memory that they operate on is much more limited in its supply than standard DRAM. By way of example, the high end HPC targeted NVIDIA K20 device primarily used in this project has 5 GiB. This is significantly less than many modern laptops will have as main memory.
@@ -465,7 +498,7 @@ The fact that it is a stencil operation means that each kernel need not know the
 These six numbers are an overhead of this method that could lead to it being less efficient in memory than the bounding box technique. However, the size of these in memory compared to the rest of the data is small.
 
 
-Taking, as an example, the dimensions of the sub-arrays to be 8 by 8 by 8, then the total size requirement of a struct would be \num{1.002757} times that of the representation without these neighbour integers stored when the user defined datatype, \lstinline|real|, is set to be a double precision floating point number.
+Taking, as an example, the dimensions of the sub-arrays to be 8 by 8 by 8, then the total size requirement of a struct would be \num{1.002757} times that of the representation without these neighbour integers stored when the user defined datatype, \verb|real|, is set to be a double precision floating point number.
 
 The worst case memory performance can be calculated for single precision as: 
 
@@ -478,6 +511,8 @@ and for double precision as:
 \frac{S_{ss}}{S_{s}} = 1 + \frac{24}{17\cdot\lstinline|Bx|\cdot\lstinline|By|\cdot\lstinline|Bz|}
 \end{equation}
 
+Where $S_{ss}$ and $S_{s}$ are the sizes of the semi-structured and structured representations in memory respectively.
+
 %\begin{center}
 %$S_{ss} = 6 \cdot$ \lstinline|sizeof(int)| $+ 2 \cdot$ \lstinline|%sizeof(real * Bx * By * Bz)| + \lstinline|sizeof(char * Bx * By * Bz)|
 %\end{center}
@@ -486,6 +521,32 @@ and for double precision as:
 \section{The Algorithm}
 
 The new method requires a new algorithm for converting a room's representation to a semi-structured one, as well as for performing the stencil on the new data structure.
+
+
+\begin{algorithm}[H]
+ \KwData{Three dimensional array of $K_{l,m,p}$ for a given room}
+ \KwResult{Array of blocks (AOB), block locations}
+ Divide $K_{l,m,p}$ into Bx by By by Bz sized blocks\;
+ \While{not at end of blocks}{
+  do nothing\;
+  \eIf{block contains non-zero $K_{l,m,p}$ value}{
+   increment $T_{i}$\;
+   store block's location\;
+   }{
+   	store zero as block location
+   }
+   go to next block\;
+ }
+ allocate memory for $T_{i}$ block structs\;
+ \While{not at end of block locations}{
+ 	\If{block location has non-zero value}{
+ 		copy $K_{l,m,p}$ values to correct block in AOB\;
+ 	}
+ 	go to next block location\;
+ }
+ \caption{Convert bounding box to array of blocks}
+\end{algorithm}
+
 
 
 MORE PLEASE
@@ -591,7 +652,7 @@ This means that under the existing bounding box technique for modelling non-cubo
 
 
 
-When the size of the sub-array is equal to that of the bounding array, the semi-structured and structured approaches can be seen as equivalent. However, as shown in listing \ref{listing:struct}  there is srepeated ome overhead of storing the array indices of the neighbouring structs. This requires the storage of 6 integers for every struct, meaning that for a room of size \num{8} by \num{8} by \num{8} and with double precision floating point numbers, the semi-structured approach uses \num{1.002757} times the memory of the structured approach, in line with the worst case scenario presented in section \ref{section:data-structure}. This overhead is marginally higher when single precision numbers are used, as the size of the integers is larger relative to the arrays of floating point number which half in size when single precision numbers are used. The storage of these integers is still a very small overhead.
+When the size of the sub-array is equal to that of the bounding array, the semi-structured and structured approaches can be seen as equivalent. However, as shown in listing \ref{listing:struct}  there is srepeated ome overhead of storing the array indices of the neighbouring structs. This requires the storage of 6 integers for every struct, meaning that for a room of size \num{8} by \num{8} by \num{8} and with double precision floating point numbers, the semi-structured approach uses \num{1.002757} times the memory of the structured approach, in line with the worst case scenario presented in section \ref{section:data-structure}. This overhead is marginally higher when single precision numbers are used. The storage of these integers is still a very small overhead.
 
 \begin{figure}[H]
 \centering%

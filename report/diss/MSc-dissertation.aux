@@ -7,10 +7,12 @@
 \@writefile{toc}{\contentsline {chapter}{\numberline {1}Introduction}{1}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{loa}{\addvspace {10\p@ }}
 \citation{feynman}
 \@writefile{toc}{\contentsline {chapter}{\numberline {2}Background and Literature Review}{2}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{loa}{\addvspace {10\p@ }}
 \@writefile{toc}{\contentsline {section}{\numberline {2.1}Room Acoustics}{2}}
 \newlabel{section:acoustics}{{2.1}{2}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1.1}Classical Acoustics}{2}}
@@ -64,76 +66,86 @@
 \newlabel{subsection:cuda}{{2.3.3}{9}}
 \@writefile{toc}{\contentsline {section}{\numberline {2.4}The State of the Art in FDTD Acoustical Modelling}{9}}
 \newlabel{chapter:state-of-art}{{2.4}{9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.1}The Bounding Box Method}{9}}
 \citation{ref:strik}
 \citation{ref:harris}
-\citation{ref:electro}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.1}The Bounding Box Method}{10}}
+\@writefile{loa}{\contentsline {algocf}{\numberline {1}{\ignorespaces CUDA kernel for update on the basic 3D scheme.\relax }}{10}}
+\@writefile{loa}{\contentsline {algocf}{\numberline {2}{\ignorespaces CUDA kernel for update on an irregularly shaped room.\relax }}{10}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.4.2}Memory Capacity}{10}}
 \newlabel{equation:stability}{{2.17}{10}}
+\citation{ref:electro}
 \citation{craig}
 \citation{ref:nvidia-gpu-programming-guide}
 \citation{craig}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.3}Memory Bandwidth}{11}}
 \citation{ref:ray-trace}
 \citation{brian}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.3}Memory Bandwidth}{11}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.5}Other Methods}{11}}
 \citation{ref:vision}
+\@writefile{toc}{\contentsline {section}{\numberline {2.5}Other Methods}{12}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.5.1}Ray Tracing}{12}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.5.2}Spectral Methods}{12}}
 \newlabel{equation:convolution}{{2.18}{12}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {3}The Proposed Data Structure and Method}{13}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {3}The Proposed Data Structure and Method}{14}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{chapter:proposition}{{3}{13}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.1}The Data Structure}{14}}
-\newlabel{section:data-structure}{{3.1}{14}}
-\newlabel{listing:struct}{{3.1}{14}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.1}The block Data Struct}{14}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.2}The Algorithm}{15}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.3}Theoretical Benefits}{15}}
-\newlabel{section:benefits}{{3.3}{15}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces A diagram showing a schematic of a church building. Credit: McCrery Architects.\relax }}{15}}
-\newlabel{church}{{3.1}{15}}
+\@writefile{loa}{\addvspace {10\p@ }}
+\newlabel{chapter:proposition}{{3}{14}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.1}The Data Structure}{15}}
+\newlabel{section:data-structure}{{3.1}{15}}
+\newlabel{listing:struct}{{3.1}{15}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.1}The block Data Struct}{15}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.2}The Algorithm}{16}}
+\@writefile{loa}{\contentsline {algocf}{\numberline {3}{\ignorespaces Convert bounding box to array of blocks\relax }}{16}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.3}Theoretical Benefits}{17}}
+\newlabel{section:benefits}{{3.3}{17}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces A diagram showing a schematic of a church building. Credit: McCrery Architects.\relax }}{17}}
+\newlabel{church}{{3.1}{17}}
 \citation{ref:gpu-market}
 \citation{craig}
-\@writefile{toc}{\contentsline {chapter}{\numberline {4}Design and Implementation}{16}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Design and Implementation}{18}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {4.1}Design Overview}{16}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}Software Development Process}{17}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.3}Debugging and Profiling Tools}{17}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {5}Results and Analysis}{18}}
+\@writefile{loa}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Design Overview}{18}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Software Development Process}{19}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Debugging and Profiling Tools}{19}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Results and Analysis}{20}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{chapter:results}{{5}{18}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.1}Memory Usage}{18}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.1}Sphere}{18}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Computer graphic showing a sphere of unit diameter within a cube of unit side.\relax }}{18}}
-\newlabel{figure:sphere-cube}{{5.1}{18}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces The fraction of memory used by the semi-structured approach with respect to the structured approach (double precision). The ideal fraction of $\frac  {\pi }{6}$ is shown as a dashed line\relax }}{20}}
-\newlabel{figure:cap-sphere}{{5.2}{20}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.2}Cube}{20}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.3}L-shape or Cross????????}{21}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.2}Stencil Performance}{21}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {6}Conclusions and Further Work}{22}}
+\@writefile{loa}{\addvspace {10\p@ }}
+\newlabel{chapter:results}{{5}{20}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}Memory Usage}{20}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.1}Sphere}{20}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Computer graphic showing a sphere of unit diameter within a cube of unit side.\relax }}{20}}
+\newlabel{figure:sphere-cube}{{5.1}{20}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces The fraction of memory used by the semi-structured approach with respect to the structured approach (double precision). The ideal fraction of $\frac  {\pi }{6}$ is shown as a dashed line\relax }}{22}}
+\newlabel{figure:cap-sphere}{{5.2}{22}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.2}Cube}{22}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.3}L-shape or Cross????????}{23}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}Stencil Performance}{23}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {6}Conclusions and Further Work}{24}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {6.1}Future Work}{22}}
-\newlabel{section:future-work}{{6.1}{22}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {A}Memory Capacity Experiment Results}{23}}
+\@writefile{loa}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {6.1}Future Work}{24}}
+\newlabel{section:future-work}{{6.1}{24}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {A}Memory Capacity Experiment Results}{25}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{appendix:mem-cap}{{A}{23}}
-\@writefile{toc}{\contentsline {section}{\numberline {A.1}Sphere}{23}}
-\@writefile{toc}{\contentsline {section}{\numberline {A.2}Cube}{24}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {B}NVIDIA K20 Device Details}{25}}
+\@writefile{loa}{\addvspace {10\p@ }}
+\newlabel{appendix:mem-cap}{{A}{25}}
+\@writefile{toc}{\contentsline {section}{\numberline {A.1}Sphere}{25}}
+\@writefile{toc}{\contentsline {section}{\numberline {A.2}Cube}{26}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {B}NVIDIA K20 Device Details}{27}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{listing:K20}{{B.1}{25}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {B.1}Output from deviceQuery program}{25}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {C}Kernels}{26}}
+\@writefile{loa}{\addvspace {10\p@ }}
+\newlabel{listing:K20}{{B.1}{27}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {B.1}Output from deviceQuery program}{27}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {C}Kernels}{28}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{loa}{\addvspace {10\p@ }}
 \bibcite{craig}{1}
 \bibcite{brian}{2}
 \bibcite{feynman}{3}
