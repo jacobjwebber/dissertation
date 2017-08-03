@@ -144,6 +144,8 @@ The key technique currently used for these simulations is the finite-difference 
 
 In the work leading up to this report, some currently state of the art GPU acoustics techniques as outlined in \cite{craig} and \cite{brian} were recreated. In addition to this, a novel technique was devised and implemented that performs these simulations. The proposed approach is designed to make best use of graphics memory when rooms are irregularly shaped. This is important because graphics memory is relatively scarce.
 
+GPUs threads can be controlled in three dimensional blocks. On NVIDIA devices these blocks can contain up to \num{1024} threads. When performing FDTD stencils of irregularly shaped rooms, current methods will result in there being many blocks assigned to regions that are completely outside the room being simulated. The new method proposed here decomposes rooms into blocks in space that correspond to blocks of threads. This means that space and compute is not wasted on empty blocks. These blocks are large enough that they remove some of the typical drawbacks of unstructured data approaches, but small enough that they avoid storing a significant amount of empty space. The fact that data is organised similarly to computation results in less branching logic. Branching can cause performance issues on GPUs.
+
 This report includes some background on the theory of acoustics and difference schemes, a brief background in GPUs and an overview of the new techniques that were devised and trialled in the work leading up to this report. This is followed by description of the details of the implementation in CUDA C as well as software development, profiling and debugging strategies and tools. There is then a comparative analysis of existing and novel techniques both in terms of performance in compute time and memory use. The report finishes with some conclusions and ideas for further work.
 
 \chapter{Background and Literature Review}
@@ -365,6 +367,24 @@ Figure \ref{figure:memory-bandwidth} shows the advance of memory bandwidth throu
 
 The nature of GPUs means that they need to be programmed carefully to extract performance. Computation done on the GPU is separated into kernels. In this case they were written as special CUDA C functions. These are launched in blocks, and each block can contain multiple threads. When a kernel is called, the amount of blocks and threads per block is specified.
 
+The amount of threads per block can be specified using a \verb|dim3| data type. This allows blocks of threads to be three dimensional. Inside a kernel each thread has an x y and z index. This can be used to for each thread to access a different data item without using control logic. For example, listing \ref{listing:cuda-access} shows a standard three dimensional array read in CUDA C - a version of CUDA that is an extension to ANSI C.
+
+\lstset{language=C,caption={CUDA memory accesses},label=listing:cuda-access}
+\begin{center}
+\begin{minipage}{0.9\textwidth}
+\centering
+\begin{lstlisting}[frame=single]
+myData = data[threadIdx.z][threadIdx.y][threadIdx.x]
+\end{lstlisting}
+\end{minipage}
+\end{center}
+
+Such an access is considered idiomatic CUDA code and is well optimised in terms of memory access, particularly when the thread in the x direction corresponds to the fastest moving array index in memory. In C this is the last index specifier. Accessing data where the threads and data accesses follow the same order is known as \textit{data coalescing}. Acessing data that is close together in memory is also important and is referred to as \textit{data locality}.
+
+These thread blocks are assigned to an SMX when resources become available. While they are waiting for global memory access latencies, SMT will be used to make a new warp active. As warps contain \num{32} threads and thread blocks can contain up to \num{1024}, SMT can also be used within these thread blocks when multiple warps are required. The fact that threads are controlled in warps of 32 has a few ramifications for the programmer. Firstly it means that blocks that are smaller than 32 threads will waste compute capacity, as the remaining threads will execute on null data. It also means that branching logic is likely to introduce inefficiencies where it might require branching within a warp. This will result in all accessed branches being executed on all threads with those not activated operating on null data.
+
+Shared memory has thread block scope. Once a thread is executed this memory is no longer available. Shared memory can be allocated statically or dynamically from within a kernel in CUDA C.
+
 MORE PLEASE
 
 \section{The State of the Art in FDTD Acoustical Modelling}
@@ -524,6 +544,7 @@ The new method requires a new algorithm for converting a room's representation t
 
 
 \begin{algorithm}[H]
+\label{alg:bound-ss}
  \KwData{Three dimensional array of $K_{l,m,p}$ for a given room}
  \KwResult{Array of blocks (AOB), block locations}
  Divide $K_{l,m,p}$ into Bx by By by Bz sized blocks\;
@@ -547,7 +568,7 @@ The new method requires a new algorithm for converting a room's representation t
  \caption{Convert bounding box to array of blocks}
 \end{algorithm}
 
-
+A sketch of this is given in algorithm \ref{alg:bound-ss}. It requires two passes over the data as it necessary to know the amount of blocks that have internal points before memory can be allocated and the $K$ sub-arrays can be copied to the new representation.
 
 MORE PLEASE
 
@@ -580,7 +601,8 @@ MORE PLEASE
 
 \section{Software Development Process}
 
-MORE PLEASE
+
+
 
 \section{Debugging and Profiling Tools}
 
@@ -707,10 +729,16 @@ TO BE DONE
 \chapter{Memory Capacity Experiment Results}
 \label{appendix:mem-cap}
 The results are for double precision numbers.
-\section{Sphere}
+
+\begin{table}[H]
 \csvautotabular{../../semi-structured/results/data/memory-cap_sphere.csv}
-\section{Cube}
+\caption{Sphere memory capacity results}
+\end{table}
+
+\begin{table}
 \csvautotabular{../../semi-structured/results/data/memory-cap_cube.csv}
+\caption{Cube memory capacity results}
+\end{table}
 
 \chapter{NVIDIA K20 Device Details}
 \lstset{basicstyle=\footnotesize,  breaklines=true,label=listing:K20,caption={Output from deviceQuery program}}
@@ -798,7 +826,7 @@ L. Savioja and U. P. Svensson, \emph{Overview of geometrical room acoustic model
 \bibitem{ref:vision}
 Shapiro, L. G. and Stockman, G. C: \emph{Computer Vision}, page 137, 150. Prentice Hall, 2001
 
-\bibitem{ref:gpu-market} Tech Power Up {\em Graphics Card Market Up Sequentially in Q3, NVIDIA Gains as AMD Slips} \url{https://www.techpowerup.com/194979/graphics-card-market-up-sequentially-in-q3-nvidia-gains-as-amd-slips} retrieved \today.
+\bibitem{ref:gpu-market} Tech Power Up {\em Graphics Card Market Up Sequentially in Q3, NVIDIA Gains as AMD Slips} \url{https://www.techpowerup.com/194979/graphics-card-market-up-sequentially-in-q3-nvidia/-gains-as-amd-slips} retrieved \today.
 
 
 
