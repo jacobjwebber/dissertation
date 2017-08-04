@@ -67,10 +67,10 @@
 
 % the following 4 lines are the content of the smallmargins.sty file
 % but including them explicitly makes this more portable.
-%AC%\oddsidemargin=0.1in
-%AC%\topmargin=-0.5in
-%AC%\textheight=9in
-%AC%\textwidth=6.25in
+\oddsidemargin=0.1in
+\topmargin=-0.5in
+\textheight=9in
+\textwidth=6.25in
 
 %AC%\parskip 10pt
 %AC%\parindent 0in
@@ -249,6 +249,7 @@ Letting the Courant number be defined as
 and our stencil 
 
 \begin{equation}
+\label{equation:s-define}
 S \equiv P_{l+1,m,p}^{n} + P_{l-1,m,p}^{n} + P_{l,m+1,p}^{n} + P_{l,m-1,p}^{n} + P_{l,m,p+1}^{n} + P_{l,m,p-1}^{n}
 \end{equation}
 
@@ -278,7 +279,7 @@ P_{l,m,p}^{n+1} = (2 - \lambda^2 K_{l,m,p} )P_{l,m,p}^{n} + \lambda^2 S - P_{l,m
 
 \section{Stencilling Operations}
 
-WHAT IS A STENCIL
+A stencilling operation is one that updates array elements by combining its neighbours in some way. What is defined as a neighbour depends on the stencil being used. A Von Neumann stencil, as shown in figure \ref{stencil}, uses only the six elements that are directly next to a point (not diagonals). The $S$ variable defined in equation \ref{equation:s-define} is an example of a Von Neumann stencil.
 
 \label{section:method-soa}
 \begin{figure}[H]
@@ -601,7 +602,7 @@ MORE PLEASE
 
 \section{Software Development Process}
 
-
+MORE PLEASE
 
 
 \section{Debugging and Profiling Tools}
