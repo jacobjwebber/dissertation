@@ -3,9 +3,7 @@
 #Executables
 2d_example/square
 deviceQuery/deviceQuery
-*/sphere
 */*.o
-cuda_semi-structured/sphere
 
 #Swaps
 *.swp
