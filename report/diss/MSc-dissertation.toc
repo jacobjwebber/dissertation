@@ -1,36 +1,39 @@
 \contentsline {chapter}{\numberline {1}Introduction}{1}
-\contentsline {chapter}{\numberline {2}Background and Literature Review}{2}
-\contentsline {section}{\numberline {2.1}Room Acoustics}{2}
-\contentsline {subsection}{\numberline {2.1.1}Classical Acoustics}{2}
-\contentsline {subsection}{\numberline {2.1.2}Finite Difference Schemes}{3}
-\contentsline {section}{\numberline {2.2}Boundary Conditions}{4}
-\contentsline {section}{\numberline {2.3}Graphics Processing Units (GPUs)}{5}
-\contentsline {subsection}{\numberline {2.3.1}GPUs and parallelism}{5}
-\contentsline {subsection}{\numberline {2.3.2}GPU Memory Hierarchies}{5}
-\contentsline {section}{\numberline {2.4}The State of the Art in FDTD Acoustical Modelling}{5}
-\contentsline {subsection}{\numberline {2.4.1}The Method}{7}
-\contentsline {subsection}{\numberline {2.4.2}Memory Capacity}{7}
-\contentsline {subsection}{\numberline {2.4.3}Memory Bandwidth}{8}
-\contentsline {section}{\numberline {2.5}Other Methods}{9}
-\contentsline {subsection}{\numberline {2.5.1}Ray Tracing}{9}
-\contentsline {subsection}{\numberline {2.5.2}Spectral Methods}{9}
-\contentsline {chapter}{\numberline {3}The Proposed Data Structure and Method}{11}
-\contentsline {section}{\numberline {3.1}The Data Structure}{12}
-\contentsline {section}{\numberline {3.2}The Algorithm}{13}
-\contentsline {section}{\numberline {3.3}Theoretical Benefits}{13}
-\contentsline {chapter}{\numberline {4}Design and Implementation}{14}
-\contentsline {section}{\numberline {4.1}Design Overview}{14}
-\contentsline {section}{\numberline {4.2}Software Development Process}{14}
-\contentsline {section}{\numberline {4.3}Debugging and Profiling Tools}{14}
-\contentsline {chapter}{\numberline {5}Results and Analysis}{15}
-\contentsline {section}{\numberline {5.1}Memory Usage}{15}
-\contentsline {subsection}{\numberline {5.1.1}Sphere}{15}
-\contentsline {subsection}{\numberline {5.1.2}Cube}{16}
-\contentsline {section}{\numberline {5.2}Stencil Performance}{16}
-\contentsline {chapter}{\numberline {6}Conclusions and Further Work}{18}
-\contentsline {section}{\numberline {6.1}Future Work}{18}
-\contentsline {chapter}{\numberline {A}Memory Capacity Experiment Results}{19}
-\contentsline {section}{\numberline {A.1}Sphere}{19}
-\contentsline {section}{\numberline {A.2}Cube}{20}
-\contentsline {chapter}{\numberline {B}NVIDIA K20 Device Details}{21}
-\contentsline {chapter}{\numberline {C}Kernels}{22}
+\contentsline {chapter}{\numberline {2}Background and Literature Review}{3}
+\contentsline {section}{\numberline {2.1}Room Acoustics}{3}
+\contentsline {subsection}{\numberline {2.1.1}Classical Acoustics}{3}
+\contentsline {subsection}{\numberline {2.1.2}Finite Difference Schemes}{4}
+\contentsline {subsection}{\numberline {2.1.3}Boundary Conditions}{5}
+\contentsline {section}{\numberline {2.2}Stencilling Operations}{6}
+\contentsline {section}{\numberline {2.3}Graphics Processing Units (GPUs)}{6}
+\contentsline {subsection}{\numberline {2.3.1}GPUs and parallelism}{7}
+\contentsline {subsubsection}{Single Instruction, Multiple Thread}{7}
+\contentsline {subsubsection}{Simultaneous Multi-Threading}{8}
+\contentsline {subsection}{\numberline {2.3.2}GPU Memory Hierarchies}{9}
+\contentsline {subsection}{\numberline {2.3.3}The CUDA Paradigm}{10}
+\contentsline {section}{\numberline {2.4}The State of the Art in FDTD Acoustical Modelling}{11}
+\contentsline {subsection}{\numberline {2.4.1}The Bounding Box Method}{11}
+\contentsline {subsection}{\numberline {2.4.2}Memory Capacity}{12}
+\contentsline {subsection}{\numberline {2.4.3}Memory Bandwidth}{13}
+\contentsline {section}{\numberline {2.5}Other Methods}{14}
+\contentsline {subsection}{\numberline {2.5.1}Ray Tracing}{14}
+\contentsline {subsection}{\numberline {2.5.2}Spectral Methods}{14}
+\contentsline {chapter}{\numberline {3}The Proposed Data Structure and Method}{15}
+\contentsline {section}{\numberline {3.1}The Data Structure}{16}
+\contentsline {section}{\numberline {3.2}The Algorithm}{17}
+\contentsline {section}{\numberline {3.3}Theoretical Benefits}{18}
+\contentsline {chapter}{\numberline {4}Design and Implementation}{19}
+\contentsline {section}{\numberline {4.1}Design Overview}{19}
+\contentsline {section}{\numberline {4.2}Software Development Process}{20}
+\contentsline {section}{\numberline {4.3}Debugging and Profiling Tools}{20}
+\contentsline {chapter}{\numberline {5}Results and Analysis}{21}
+\contentsline {section}{\numberline {5.1}Memory Usage}{21}
+\contentsline {subsection}{\numberline {5.1.1}Sphere}{21}
+\contentsline {subsection}{\numberline {5.1.2}Cube}{23}
+\contentsline {subsection}{\numberline {5.1.3}L-shape or Cross????????}{24}
+\contentsline {section}{\numberline {5.2}Stencil Performance}{24}
+\contentsline {chapter}{\numberline {6}Conclusions and Further Work}{25}
+\contentsline {section}{\numberline {6.1}Future Work}{25}
+\contentsline {chapter}{\numberline {A}Memory Capacity Experiment Results}{26}
+\contentsline {chapter}{\numberline {B}NVIDIA K20 Device Details}{28}
+\contentsline {chapter}{\numberline {C}Kernels}{29}

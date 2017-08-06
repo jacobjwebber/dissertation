@@ -1,127 +1,168 @@
 \relax 
 \citation{ref:nvidia-gpu-programming-guide}
+\citation{ref:nvidia-gpu-k20-white}
+\citation{ref:nvidia-gpu-programming-guide}
 \citation{craig}
 \citation{brian}
 \@writefile{toc}{\contentsline {chapter}{\numberline {1}Introduction}{1}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{loa}{\addvspace {10\p@ }}
 \citation{feynman}
-\@writefile{toc}{\contentsline {chapter}{\numberline {2}Background and Literature Review}{2}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {2}Background and Literature Review}{3}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {2.1}Room Acoustics}{2}}
-\newlabel{section:acoustics}{{2.1}{2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.1}Classical Acoustics}{2}}
-\newlabel{equation:wave}{{2.2}{2}}
-\newlabel{equation:laplace}{{2.3}{2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.2}Finite Difference Schemes}{3}}
-\newlabel{equation:difference}{{2.4}{3}}
-\newlabel{equation:difference-second}{{2.5}{3}}
-\newlabel{equation:wave-expanded}{{2.6}{3}}
-\newlabel{equation:part1}{{2.7}{3}}
-\newlabel{equation:part2}{{2.8}{3}}
-\newlabel{equation:part3}{{2.9}{4}}
-\newlabel{equation:part4}{{2.10}{4}}
-\newlabel{equation:discrete}{{2.11}{4}}
-\newlabel{equation:stencil-big}{{2.12}{4}}
-\newlabel{equation:stencil-small}{{2.15}{4}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.2}Boundary Conditions}{4}}
+\@writefile{loa}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {2.1}Room Acoustics}{3}}
+\newlabel{section:acoustics}{{2.1}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.1}Classical Acoustics}{3}}
+\newlabel{equation:wave}{{2.2}{3}}
+\newlabel{equation:laplace}{{2.3}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.2}Finite Difference Schemes}{4}}
+\newlabel{equation:difference}{{2.4}{4}}
+\newlabel{equation:difference-second}{{2.5}{4}}
+\newlabel{equation:wave-expanded}{{2.6}{4}}
+\newlabel{equation:part1}{{2.7}{4}}
+\newlabel{equation:part2}{{2.8}{4}}
+\newlabel{equation:part3}{{2.9}{5}}
+\newlabel{equation:part4}{{2.10}{5}}
+\newlabel{equation:discrete}{{2.11}{5}}
+\newlabel{equation:stencil-big}{{2.12}{5}}
+\newlabel{equation:s-define}{{2.14}{5}}
+\newlabel{equation:stencil-small}{{2.15}{5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.3}Boundary Conditions}{5}}
+\citation{gpu_stencil}
 \citation{ref:nvidia-gpu-cpu}
 \citation{ref:nvidia-gpu-launch}
+\newlabel{equation:stencil-boundary}{{2.16}{6}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.2}Stencilling Operations}{6}}
+\newlabel{section:method-soa}{{2.2}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.1}{\ignorespaces Diagram showing 3 dimensional Von Neumann stencil. Credit: Wikimedia Commons.\relax }}{6}}
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{stencil}{{2.1}{6}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.3}Graphics Processing Units (GPUs)}{6}}
+\newlabel{section:gpus}{{2.3}{6}}
 \citation{craig}
 \citation{ref:nvidia-gpu-programming-guide}
 \citation{ref:nvidia-gpu-programming-guide}
-\newlabel{equation:stencil-boundary}{{2.16}{5}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.3}Graphics Processing Units (GPUs)}{5}}
-\newlabel{section:gpus}{{2.3}{5}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.1}GPUs and parallelism}{5}}
-\newlabel{section:gpu-par}{{2.3.1}{5}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.2}GPU Memory Hierarchies}{5}}
-\newlabel{section:gpu-mem}{{2.3.2}{5}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.4}The State of the Art in FDTD Acoustical Modelling}{5}}
-\newlabel{chapter:state-of-art}{{2.4}{5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.1}{\ignorespaces A graph from NVIDIA showing memory bandwidth of GPUs and CPUs through time \cite  {ref:nvidia-gpu-programming-guide}.\relax }}{6}}
-\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{figure:memory-bandwidth}{{2.1}{6}}
+\citation{ref:nvidia-gpu-k20-white}
+\citation{ref:nvidia-gpu-k20-white}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.1}GPUs and parallelism}{7}}
+\newlabel{section:gpu-par}{{2.3.1}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.2}{\ignorespaces GPU and CPU architectures \cite  {ref:nvidia-gpu-programming-guide}\relax }}{7}}
+\newlabel{gpu-cpu}{{2.2}{7}}
+\@writefile{toc}{\contentsline {subsubsection}{Single Instruction, Multiple Thread}{7}}
+\citation{ref:nvidia-gpu-k20-white}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.3}{\ignorespaces The SMX architecture as in the K20 GPU \cite  {ref:nvidia-gpu-k20-white}\relax }}{8}}
+\newlabel{fig:smx}{{2.3}{8}}
+\@writefile{toc}{\contentsline {subsubsection}{Simultaneous Multi-Threading}{8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.2}GPU Memory Hierarchies}{9}}
+\newlabel{section:gpu-mem}{{2.3.2}{9}}
+\@writefile{lot}{\contentsline {table}{\numberline {2.1}{\ignorespaces Memory hierarchy on NVIDIA GPU.\relax }}{9}}
+\citation{ref:nvidia-gpu-programming-guide}
+\citation{ref:nvidia-gpu-programming-guide}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.4}{\ignorespaces A graph from NVIDIA showing memory bandwidth of GPUs and CPUs through time \cite  {ref:nvidia-gpu-programming-guide}.\relax }}{10}}
+\newlabel{figure:memory-bandwidth}{{2.4}{10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.3}The CUDA Paradigm}{10}}
+\newlabel{subsection:cuda}{{2.3.3}{10}}
+\newlabel{listing:cuda-access}{{2.1}{11}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2.1}CUDA memory accesses}{11}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.4}The State of the Art in FDTD Acoustical Modelling}{11}}
+\newlabel{chapter:state-of-art}{{2.4}{11}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.1}The Bounding Box Method}{11}}
+\@writefile{loa}{\contentsline {algocf}{\numberline {1}{\ignorespaces CUDA kernel for update on the basic 3D scheme.\relax }}{11}}
 \citation{ref:strik}
 \citation{ref:harris}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.1}The Method}{7}}
-\newlabel{section:method-soa}{{2.4.1}{7}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.2}{\ignorespaces Diagram showing 3 dimensional Von Neumann stencil. Credit: Wikimedia Commons.\relax }}{7}}
-\newlabel{stencil}{{2.2}{7}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.2}Memory Capacity}{7}}
-\newlabel{equation:stability}{{2.17}{7}}
 \citation{ref:electro}
+\@writefile{loa}{\contentsline {algocf}{\numberline {2}{\ignorespaces CUDA kernel for update on an irregularly shaped room.\relax }}{12}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.2}Memory Capacity}{12}}
+\newlabel{equation:stability}{{2.17}{12}}
 \citation{craig}
 \citation{ref:nvidia-gpu-programming-guide}
 \citation{craig}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.3}Memory Bandwidth}{8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.3}Memory Bandwidth}{13}}
 \citation{ref:ray-trace}
 \citation{brian}
 \citation{ref:vision}
-\@writefile{toc}{\contentsline {section}{\numberline {2.5}Other Methods}{9}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.1}Ray Tracing}{9}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.2}Spectral Methods}{9}}
-\newlabel{equation:convolution}{{2.18}{9}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {3}The Proposed Data Structure and Method}{11}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.5}Other Methods}{14}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.1}Ray Tracing}{14}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.2}Spectral Methods}{14}}
+\newlabel{equation:convolution}{{2.18}{14}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {3}The Proposed Data Structure and Method}{15}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces A diagram showing a schematic of a church building. Credit: McCrery Architects.\relax }}{12}}
-\newlabel{church}{{3.1}{12}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.1}The Data Structure}{12}}
-\newlabel{section:data-structure}{{3.1}{12}}
-\newlabel{listing:struct}{{3.1}{12}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.1}The Data Struct}{12}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.2}The Algorithm}{13}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.3}Theoretical Benefits}{13}}
-\newlabel{section:benefits}{{3.3}{13}}
+\@writefile{loa}{\addvspace {10\p@ }}
+\newlabel{chapter:proposition}{{3}{15}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.1}The Data Structure}{16}}
+\newlabel{section:data-structure}{{3.1}{16}}
+\newlabel{listing:struct}{{3.1}{16}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.1}The block Data Struct}{16}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.2}The Algorithm}{17}}
+\newlabel{alg:bound-ss}{{3}{17}}
+\@writefile{loa}{\contentsline {algocf}{\numberline {3}{\ignorespaces Convert bounding box to array of blocks\relax }}{17}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.3}Theoretical Benefits}{18}}
+\newlabel{section:benefits}{{3.3}{18}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces A diagram showing a schematic of a church building. Credit: McCrery Architects.\relax }}{18}}
+\newlabel{church}{{3.1}{18}}
+\citation{ref:gpu-market}
 \citation{craig}
-\@writefile{toc}{\contentsline {chapter}{\numberline {4}Design and Implementation}{14}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Design and Implementation}{19}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {4.1}Design Overview}{14}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}Software Development Process}{14}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.3}Debugging and Profiling Tools}{14}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {5}Results and Analysis}{15}}
+\@writefile{loa}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Design Overview}{19}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Software Development Process}{20}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Debugging and Profiling Tools}{20}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Results and Analysis}{21}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{chapter:results}{{5}{15}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.1}Memory Usage}{15}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Computer graphic showing a sphere of unit diameter within a cube of unit side.\relax }}{15}}
-\newlabel{figure:sphere-cube}{{5.1}{15}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.1}Sphere}{15}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.2}Cube}{16}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.2}Stencil Performance}{16}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces The fraction of memory used by the semi-structured approach with respect to the structured approach (double precision). The ideal fraction of $\frac  {\pi }{6}$ is shown as a dashed line\relax }}{17}}
-\newlabel{figure:cap-sphere}{{5.2}{17}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {6}Conclusions and Further Work}{18}}
+\@writefile{loa}{\addvspace {10\p@ }}
+\newlabel{chapter:results}{{5}{21}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}Memory Usage}{21}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.1}Sphere}{21}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Computer graphic showing a sphere of unit diameter within a cube of unit side.\relax }}{21}}
+\newlabel{figure:sphere-cube}{{5.1}{21}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces The fraction of memory used by the semi-structured approach with respect to the structured approach (double precision). The ideal fraction of $\frac  {\pi }{6}$ is shown as a dashed line\relax }}{23}}
+\newlabel{figure:cap-sphere}{{5.2}{23}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.2}Cube}{23}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.3}L-shape or Cross????????}{24}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}Stencil Performance}{24}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {6}Conclusions and Further Work}{25}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {6.1}Future Work}{18}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {A}Memory Capacity Experiment Results}{19}}
+\@writefile{loa}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {6.1}Future Work}{25}}
+\newlabel{section:future-work}{{6.1}{25}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {A}Memory Capacity Experiment Results}{26}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{appendix:mem-cap}{{A}{19}}
-\@writefile{toc}{\contentsline {section}{\numberline {A.1}Sphere}{19}}
-\@writefile{toc}{\contentsline {section}{\numberline {A.2}Cube}{20}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {B}NVIDIA K20 Device Details}{21}}
+\@writefile{loa}{\addvspace {10\p@ }}
+\newlabel{appendix:mem-cap}{{A}{26}}
+\@writefile{lot}{\contentsline {table}{\numberline {A.1}{\ignorespaces Sphere memory capacity results\relax }}{26}}
+\@writefile{lot}{\contentsline {table}{\numberline {A.2}{\ignorespaces Cube memory capacity results\relax }}{27}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {B}NVIDIA K20 Device Details}{28}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{listing:K20}{{B.1}{21}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {B.1}Output from deviceQuery program}{21}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {C}Kernels}{22}}
+\@writefile{loa}{\addvspace {10\p@ }}
+\newlabel{listing:K20}{{B.1}{28}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {B.1}Output from deviceQuery program}{28}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {C}Kernels}{29}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{loa}{\addvspace {10\p@ }}
 \bibcite{craig}{1}
 \bibcite{brian}{2}
 \bibcite{feynman}{3}
 \bibcite{ref:nvidia-gpu-cpu}{4}
 \bibcite{ref:nvidia-gpu-launch}{5}
 \bibcite{ref:nvidia-gpu-programming-guide}{6}
-\bibcite{ref:mici}{7}
-\bibcite{ref:zhao}{8}
-\bibcite{ref:strik}{9}
-\bibcite{ref:harris}{10}
-\bibcite{ref:electro}{11}
-\bibcite{ref:ray-trace}{12}
-\bibcite{ref:vision}{13}
+\bibcite{ref:nvidia-gpu-k20-white}{7}
+\bibcite{ref:mici}{8}
+\bibcite{ref:zhao}{9}
+\bibcite{ref:strik}{10}
+\bibcite{ref:harris}{11}
+\bibcite{gpu_stencil}{12}
+\bibcite{ref:electro}{13}
+\bibcite{ref:ray-trace}{14}
+\bibcite{ref:vision}{15}
+\bibcite{ref:gpu-market}{16}

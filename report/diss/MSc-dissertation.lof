@@ -1,13 +1,15 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {2.1}{\ignorespaces A graph from NVIDIA showing memory bandwidth of GPUs and CPUs through time \cite {ref:nvidia-gpu-programming-guide}.\relax }}{6}
-\contentsline {figure}{\numberline {2.2}{\ignorespaces Diagram showing 3 dimensional Von Neumann stencil. Credit: Wikimedia Commons.\relax }}{7}
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Diagram showing 3 dimensional Von Neumann stencil. Credit: Wikimedia Commons.\relax }}{6}
+\contentsline {figure}{\numberline {2.2}{\ignorespaces GPU and CPU architectures \cite {ref:nvidia-gpu-programming-guide}\relax }}{7}
+\contentsline {figure}{\numberline {2.3}{\ignorespaces The SMX architecture as in the K20 GPU \cite {ref:nvidia-gpu-k20-white}\relax }}{8}
+\contentsline {figure}{\numberline {2.4}{\ignorespaces A graph from NVIDIA showing memory bandwidth of GPUs and CPUs through time \cite {ref:nvidia-gpu-programming-guide}.\relax }}{10}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces A diagram showing a schematic of a church building. Credit: McCrery Architects.\relax }}{12}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces A diagram showing a schematic of a church building. Credit: McCrery Architects.\relax }}{18}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces Computer graphic showing a sphere of unit diameter within a cube of unit side.\relax }}{15}
-\contentsline {figure}{\numberline {5.2}{\ignorespaces The fraction of memory used by the semi-structured approach with respect to the structured approach (double precision). The ideal fraction of $\frac {\pi }{6}$ is shown as a dashed line\relax }}{17}
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Computer graphic showing a sphere of unit diameter within a cube of unit side.\relax }}{21}
+\contentsline {figure}{\numberline {5.2}{\ignorespaces The fraction of memory used by the semi-structured approach with respect to the structured approach (double precision). The ideal fraction of $\frac {\pi }{6}$ is shown as a dashed line\relax }}{23}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
