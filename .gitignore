@@ -7,3 +7,5 @@ deviceQuery/deviceQuery
 
 #Swaps
 *.swp
+semi-structured/memory-capacity/obj/semi-structured_lib.o
+semi-structured/memory-capacity/obj/memory-capacity.o
