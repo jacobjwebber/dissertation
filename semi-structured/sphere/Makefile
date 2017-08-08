@@ -12,7 +12,7 @@ LIBS=-lm
 _DEPS = semi-structured_lib.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = sphere.o semi-structured_lib.o
+_OBJ = sphere.o semi-structured_lib.o stencils.o make_rooms.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
