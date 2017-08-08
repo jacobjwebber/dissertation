@@ -39,6 +39,7 @@ int free_ss(ss_t data) {
     free(data.aos);
     free(data.k);
     free(data.index_of_struct);
+    return 0;
 }
 
 ss_t create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct block** aos_pp, int** index_of_struct) {
@@ -168,4 +169,16 @@ int get_coords(int coords[3], int X, int Y, int Z, int* index_of_struct, int* io
     arrind[2] = coords[2]%Bz;
 
     return TRUE;
+}
+
+real *hanning_window(int big_n) {
+    real *hanning = (real *) calloc(big_n, sizeof(real));
+    if (hanning == NULL) { return NULL; }
+
+    int i;
+    for (i=0; i<big_n; i++) {
+        hanning[i] = 0.5 * (1.0 - cos( 2 * M_PI * (i/big_n) ) );
+    }
+
+    return hanning;
 }
