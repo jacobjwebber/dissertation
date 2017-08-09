@@ -12,8 +12,10 @@ void structured_version(int X, int Y, int Z, int big_n, char *is_in_sphere,
 
 int main() {
 	struct block *aos;
+	struct block *aos_processed;
 
 	aos = (struct block*) calloc(2, sizeof(struct block));
+	aos_processed = (struct block*) calloc(2, sizeof(struct block));
 	struct block *aos2 = aos++;
 
 	int i, j, k;
@@ -30,18 +32,21 @@ int main() {
 	struct block *aos_d;
 	size_t total_mem = sizeof(struct block) * 2;
 	CUCALL(cudaMalloc((void** ) &aos_d, total_mem));
+	CUCALL(cudaGetLastError());
 	printf("Copying data from host to device\n");
-	struct block *aos_d2 = aos_d++;
 	CUCALL(cudaMemcpy(aos_d, aos, total_mem, cudaMemcpyHostToDevice));
 	CUCALL(cudaGetLastError());
+    printf("done\n");
 
-	perform_stencil<<<2,dim3(Bx,By,Bz)>>>(aos_d, 1.0/3.0, sqrt(1.0/3.0), 0.1/1.9, 1);
+	perform_stencil<<<2,dim3(Bx,By,Bz)>>>(aos_d, 1.0/3.0, sqrt(1.0/3.0), 0.1/1.9, 0);
+	CUCALL(cudaGetLastError());
 	cudaDeviceSynchronize();
 
-	printf("\n");
-	printf("\n");
+	CUCALL(cudaMemcpy(aos_processed, aos_d, total_mem, cudaMemcpyDeviceToHost));
+	CUCALL(cudaGetLastError());
 
-
+    printf("%d", aos_processed[2].u1[4][4][4]);
+    printf("%d", aos_processed[2].u[4][4][4]);
 	return 0;
 	/*
 	 //Coefficients
