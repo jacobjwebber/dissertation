@@ -16,18 +16,20 @@ int main() {
 
 	aos = (struct block*) calloc(2, sizeof(struct block));
 	aos_processed = (struct block*) calloc(2, sizeof(struct block));
-	struct block *aos2 = aos++;
 
 	int i, j, k;
 	for (i = 0; i < Bx; i++) {
 		for (j = 0; j < Bx; j++) {
 			for (k = 0; k < Bx; k++) {
-				aos[2].u[k][j][i] = 1.0;
-				aos[2].u1[k][j][i] = 1.0;
-				aos[2].k[k][j][i] = 6;
+				aos[1].u[k][j][i] = 2.0;
+				aos[1].u1[k][j][i] = 8.0;
+                aos[0].u1[k][j][i] = 4.0;
+				aos[1].k[k][j][i] = 6;
 			}
 		}
 	}
+
+    aos[1].u1[2][2][2] = 1.0;
 
 	struct block *aos_d;
 	size_t total_mem = sizeof(struct block) * 2;
@@ -37,16 +39,26 @@ int main() {
 	CUCALL(cudaMemcpy(aos_d, aos, total_mem, cudaMemcpyHostToDevice));
 	CUCALL(cudaGetLastError());
     printf("done\n");
+    dim3 dims(Bx,By,Bz);
 
-	perform_stencil<<<2,dim3(Bx,By,Bz)>>>(aos_d, 1.0/3.0, sqrt(1.0/3.0), 0.1/1.9, 0);
+
+    int t;
+
+    perform_stencil<<<1,dims>>>(&(aos_d[0]), 1.0/3.0, sqrt(1.0/3.0), 0.1/1.9, 0);
+    cudaDeviceSynchronize();
+    perform_stencil<<<1,dims>>>(&(aos_d[0]), 1.0/3.0, sqrt(1.0/3.0), 0.1/1.9, 0);
+    cudaDeviceSynchronize();
+
 	CUCALL(cudaGetLastError());
 	cudaDeviceSynchronize();
 
 	CUCALL(cudaMemcpy(aos_processed, aos_d, total_mem, cudaMemcpyDeviceToHost));
 	CUCALL(cudaGetLastError());
 
-    printf("%d", aos_processed[2].u1[4][4][4]);
-    printf("%d", aos_processed[2].u[4][4][4]);
+    printf("%f\n", aos_processed[1].u1[2][2][2]);
+    printf("%f\n", aos_processed[1].u[2][2][2]);
+
+
 	return 0;
 	/*
 	 //Coefficients

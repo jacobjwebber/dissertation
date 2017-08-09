@@ -13,9 +13,9 @@ if ( cudaSuccess != result )            \
 }
 
 //Block size
-#define Bz 8
-#define By 8
-#define Bx 8
+#define Bz 1
+#define By 1
+#define Bx 1
 
 //Sphere radius
 #define R 64/2
@@ -23,15 +23,15 @@ if ( cudaSuccess != result )            \
 
 typedef real bl_array[Bz][By][Bx];
 struct block {
+    bl_array u;
+    bl_array u1;
+    char k[Bz][By][Bx];
     int up; //z direction
     int down;
     int left; //x direction
     int right;
     int fore; //y direction.
     int aft;
-    bl_array u;
-    bl_array u1;
-    char k[Bz][By][Bx];
 };
 
 typedef struct {
