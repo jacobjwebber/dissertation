@@ -31,37 +31,6 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
         fore = aos[bl].fore;
         aft = aos[bl].aft;
     }
-
-    //point to arrays in global memory. These should use Cuda broadcast when compiled.
-
-//    bl_array *u1_g, *u_g, *u1_r_g, *u1_l_g, *u1_f_g, *u1_a_g, *u1_u_g, *u1_d_g;
-
-/*   if ( !swap ) {
-        u1_g = &(aos[bl].u1);
-        u_g  = &(aos[bl].u);
-
-        u1_r_g  = &(aos[aos[bl].right].u1);
-        u1_l_g  = &(aos[aos[bl].left ].u1);
-
-        u1_f_g  = &(aos[aos[bl].fore].u1);
-        u1_a_g  = &(aos[aos[bl].aft ].u1);
-
-        u1_u_g  = &(aos[aos[bl].up  ].u1);
-        u1_d_g  = &(aos[aos[bl].down].u1);
-    } else {
-        u1_g = &(aos[bl].u);
-        u_g  = &(aos[bl].u1);
-
-        u1_r_g  = &(aos[aos[bl].right].u);
-        u1_l_g  = &(aos[aos[bl].left ].u);
-
-        u1_f_g  = &(aos[aos[bl].fore].u);
-        u1_a_g  = &(aos[aos[bl].aft ].u);
-
-        u1_u_g  = &(aos[aos[bl].up  ].u);
-        u1_d_g  = &(aos[aos[bl].down].u);
-    }
-*/
     __shared__ real u1_s[Bz+2][By+2][Bx+2]; //u1 in shared (L1 cache) memory.
 
     int i,j,f;
@@ -69,35 +38,37 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
         for (i = 0; i < Bx; i++) {
             for (j = 0; j < By; j++) {
                 for (f = 0; f < Bz; f++) {
-                    u1_s[f][j][i] = 0;
+                    u1_s[f][j][i] = 550;
                 }
             }
         }
     }
+    __syncthreads();
 
     u1_s[z+1][y+1][x+1] = aos[bl].u1[z][y][x];
 
     if ( x == 0 ) {
-        u1_s[z+1][y+1][x+1] = aos[left].u1[Bz-1][y][x];
-    } else if( x == Bz-1 ) {
-        u1_s[z+1][y+1][x+1] = aos[right].u1[0][y][x];
+        u1_s[z+1][y+1][0] = aos[left].u1[z][y][Bx-1];
+    } if( x == Bx-1 ) {
+        u1_s[z+1][y+1][Bx+1] = aos[right].u1[z][y][0];
     }
     if ( y == 0 ) {
-        u1_s[z+1][y+1][x+1] = aos[aft].u1[z][By-1][x];
+        u1_s[z+1][0][x+1] = aos[aft].u1[z][By-1][x];
     } if( y == By-1 ) {
-        u1_s[z+1][y+1][x+1] = aos[fore].u1[z][0][x];
+        u1_s[z+1][By+1][x+1] = aos[fore].u1[z][0][x];
     }
 
     if ( z == 0 ) {
-        u1_s[z+1][y+1][x+1] = aos[down].u1[z][y][Bx-1];
-    } if( z == Bx-1 ) {
-        u1_s[z+1][y+1][x+1] = aos[up].u1[z][y][0];
+        u1_s[0][y+1][x+1] = aos[down].u1[Bz-1][y][x];
+    } if( z == Bz-1 ) {
+        u1_s[Bz+1][y+1][x+1] = aos[up].u1[0][y][x];
     }
 
     __syncthreads();
 
     x++;y++;z++;
 
+    //Replicating matlab stencil code:
     //uzz(IN)=((2-l2*Ki(IN)).*uz(IN) + l2*(uz(iIN+1) + uz(iIN-1) + uz(iIN+Ni) + uz(iIN-Ni) + uz(iIN+Ni*Nj) + uz(iIN-Ni*Nj))+(0.5*l*g*(6-Ki(IN))-1).*uzz(IN))./(1+0.5*l*g*(6-Ki(IN)));
 
     aos[bl].u[z-1][y-1][x-1] = ((2.0 - l2 * (real) k) * u1_s[z][y][x] +
@@ -108,6 +79,7 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
                                           u1_s[z+1][y][x] +
                                           u1_s[z-1][y][x] ) +
                                           (0.5 * l * g * (6.0 - (real) k) - 1.0) * aos[bl].u[z-1][y-1][x-1])/(1 + 0.5 * l * g * (6 - k));
+    __syncthreads();
     if (k == 0) {
         aos[bl].u[z-1][y-1][x-1] = 0.0;
     }

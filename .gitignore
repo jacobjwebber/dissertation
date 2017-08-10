@@ -3,16 +3,7 @@
 #Executables
 2d_example/square
 deviceQuery/deviceQuery
-*/*.o
+*.o
 
 #Swaps
 *.swp
-semi-structured/memory-capacity/obj/semi-structured_lib.o
-semi-structured/memory-capacity/obj/memory-capacity.o
-semi-structured/sphere/obj/semi-structured_lib.o
-semi-structured/sphere/obj/sphere.o
-semi-structured/sphere/sphere
-semi-structured/sphere/obj/make_rooms.o
-semi-structured/sphere/obj/semi-structured_lib.o
-semi-structured/sphere/obj/sphere.o
-*.o

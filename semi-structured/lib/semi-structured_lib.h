@@ -13,9 +13,9 @@ if ( cudaSuccess != result )            \
 }
 
 //Block size
-#define Bz 1
-#define By 1
-#define Bx 1
+#define Bz 4
+#define By 4
+#define Bx 4
 
 //Sphere radius
 #define R 64/2

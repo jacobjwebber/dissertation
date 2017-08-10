@@ -21,15 +21,14 @@ int main() {
 	for (i = 0; i < Bx; i++) {
 		for (j = 0; j < Bx; j++) {
 			for (k = 0; k < Bx; k++) {
-				aos[1].u[k][j][i] = 2.0;
-				aos[1].u1[k][j][i] = 8.0;
-                aos[0].u1[k][j][i] = 4.0;
+				aos[1].u[k][j][i] = 3.0;
+				aos[1].u1[k][j][i] = 2.2;
+                aos[0].u1[k][j][i] = 6.0;
 				aos[1].k[k][j][i] = 6;
 			}
 		}
 	}
 
-    aos[1].u1[2][2][2] = 1.0;
 
 	struct block *aos_d;
 	size_t total_mem = sizeof(struct block) * 2;
@@ -46,7 +45,7 @@ int main() {
 
     perform_stencil<<<1,dims>>>(&(aos_d[0]), 1.0/3.0, sqrt(1.0/3.0), 0.1/1.9, 0);
     cudaDeviceSynchronize();
-    perform_stencil<<<1,dims>>>(&(aos_d[0]), 1.0/3.0, sqrt(1.0/3.0), 0.1/1.9, 0);
+    //perform_stencil<<<1,dims>>>(&(aos_d[0]), 1.0/3.0, sqrt(1.0/3.0), 0.1/1.9, 0);
     cudaDeviceSynchronize();
 
 	CUCALL(cudaGetLastError());
@@ -57,6 +56,10 @@ int main() {
 
     printf("%f\n", aos_processed[1].u1[2][2][2]);
     printf("%f\n", aos_processed[1].u[2][2][2]);
+
+    free(aos_processed);
+    free(aos);
+    cudaFree(aos_d);
 
 
 	return 0;
