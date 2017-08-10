@@ -30,10 +30,10 @@
 \contentsline {section}{\numberline {5.1}Memory Usage}{21}
 \contentsline {subsection}{\numberline {5.1.1}Sphere}{21}
 \contentsline {subsection}{\numberline {5.1.2}Cube}{23}
-\contentsline {subsection}{\numberline {5.1.3}L-shape or Cross????????}{24}
-\contentsline {section}{\numberline {5.2}Stencil Performance}{24}
-\contentsline {chapter}{\numberline {6}Conclusions and Further Work}{25}
-\contentsline {section}{\numberline {6.1}Future Work}{25}
-\contentsline {chapter}{\numberline {A}Memory Capacity Experiment Results}{26}
-\contentsline {chapter}{\numberline {B}NVIDIA K20 Device Details}{28}
-\contentsline {chapter}{\numberline {C}Kernels}{29}
+\contentsline {subsection}{\numberline {5.1.3}Cross}{24}
+\contentsline {section}{\numberline {5.2}Stencil Performance}{25}
+\contentsline {chapter}{\numberline {6}Conclusions and Further Work}{26}
+\contentsline {section}{\numberline {6.1}Future Work}{26}
+\contentsline {chapter}{\numberline {A}Memory Capacity Experiment Results}{27}
+\contentsline {chapter}{\numberline {B}NVIDIA K20 Device Details}{29}
+\contentsline {chapter}{\numberline {C}Kernels}{30}
