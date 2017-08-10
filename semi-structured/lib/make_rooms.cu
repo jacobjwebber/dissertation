@@ -86,3 +86,42 @@ char* make_cube(int diam) {
 
     return cube;
 }
+
+char* make_cross(int diam) {
+    // Generates a cross made of 5 cubes. Each has side diam.
+    int X, Y, Z;
+    Z = diam;
+    X = Y = 3*diam;
+
+    char *cross = (char*) calloc(X*Y*Z, sizeof(char));
+
+    int i,j,k;
+    for (i = 0; i < Z; i++) {
+        for (j = 0; j < Y; j++) {
+            for (k = 0; k < X; k++) {
+                if (k >= diam && k < 2*diam
+                    || j >=diam && j < 2*diam) {
+                    cross[i*Y*X + j*X + k] = 1;
+                }
+            }
+        }
+    }
+
+    for (i = 0; i < Z; i++) {
+        for (j = 0; j < Y; j++) {
+            for (k = 0; k < X; k++) {
+                if (cross[i*Y*X + j*Y + k]) {
+                    cross[i*Y*X + j*Y + k] = 0;
+                    if (i+1 <  Z && cross[(i+1)*Y*X + j*X + k]) { cross[i*Y*X + j*X + k]++; } 
+                    if (i-1 >= 0 && cross[(i-1)*Y*X + j*X + k]) { cross[i*Y*X + j*X + k]++; } 
+                    if (j+1 <  Y && cross[i*Y*X + (j+1)*X + k]) { cross[i*Y*X + j*X + k]++; } 
+                    if (j-1 >= 0 && cross[i*Y*X + (j-1)*X + k]) { cross[i*Y*X + j*X + k]++; } 
+                    if (k+1 <  X && cross[i*Y*X + j*X + (k+1)]) { cross[i*Y*X + j*X + k]++; } 
+                    if (k-1 >= 0 && cross[i*Y*X + j*X + (k-1)]) { cross[i*Y*X + j*X + k]++; } 
+                }
+            }
+        }
+    }
+
+    return cross;
+}
