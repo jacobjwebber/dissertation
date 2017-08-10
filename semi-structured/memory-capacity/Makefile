@@ -12,7 +12,7 @@ LIBS=-lm
 _DEPS = semi-structured_lib.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = memory-capacity.o semi-structured_lib.o
+_OBJ = memory-capacity.o semi-structured_lib.o make_rooms.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
