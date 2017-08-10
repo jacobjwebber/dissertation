@@ -525,11 +525,13 @@ The worst case memory performance can be calculated for single precision as:
 
 \begin{equation}
 \frac{S_{ss}}{S_{s}} = 1 + \frac{24}{9\cdot\lstinline|Bx|\cdot\lstinline|By|\cdot\lstinline|Bz|}
+\label{equation:single-neghbours}
 \end{equation}
 
 and for double precision as:
 \begin{equation}
 \frac{S_{ss}}{S_{s}} = 1 + \frac{24}{17\cdot\lstinline|Bx|\cdot\lstinline|By|\cdot\lstinline|Bz|}
+\label{equation:double-neghbours}
 \end{equation}
 
 Where $S_{ss}$ and $S_{s}$ are the sizes of the semi-structured and structured representations in memory respectively.
@@ -713,8 +715,79 @@ Practical gains come long before $d$ approaches infinity. With a diameter of \nu
 \subsection{Cube}
 The results from the cube shaped room experiment were very simple, as far as memory capacity goes. In all cases $\frac{S_{ss}}{S_{s}}$ was \num{1.002757}. This is because there is no empty space stored with the bounding box method. This represents the worst case performance for the semi-structured method. As such an increase in memory usage of around a quarter of one percent is a fairly tolerable result. Full results are included in appendix \ref{appendix:mem-cap}.
 
-\subsection{L-shape or Cross????????}
-TO BE DONE
+\subsection{Cross}
+
+A very simple cross shape as shown in figure \ref{figure:cross} was modelled in various sizes. Like the cube example all sizes of room yielded the same performance relative to the bounding box method.
+
+\begin{figure}[H]
+\centering
+\begin{pspicture}[shift=*](-4.2,-4.2)(4.2,4.2)
+%
+\psset{lightsrc=10 20 30,viewpoint=30 10 30 rtp2xyz,Decran=40,unit=1}
+
+ %\axesIIID(3,3,3)(6,4,4)
+%\psgrid
+%\psgrid
+\psSolid[
+action=draw**,
+object=cube,
+a=2,
+RotZ=00,
+%show=all,
+](0,-2,0)
+\psSolid[
+action=draw**,
+object=cube,
+a=2,
+RotZ=00,
+%show=all,
+](-2,0,0)
+\psSolid[
+action=draw**,
+object=cube,
+a=2,
+RotZ=00,
+%show=all,
+](0,0,0)
+\psSolid[
+action=draw**,
+object=cube,
+a=2,
+RotZ=00,
+%show=all,
+](2,0,0)
+
+
+
+\psSolid[
+action=draw**,
+object=cube,
+a=2,
+RotZ=00,
+%show=all,
+](0,2,0)
+%show=all,
+%
+
+\end{pspicture}
+\caption{A figure showing simple cross shape. The cross is made up of 5 equal cubes.}
+\label{figure:cross}
+\end{figure}
+
+The diagram in figure \ref{figure:cross} shows that the cross was made of five cubes. To store this in a bounding box the volume of nine cubes would be needed. This means that an ideal representation would have a ratio:
+
+\begin{equation}
+\frac{S_{ss}}{S_{s}} = \frac{5}{9}
+\end{equation}
+
+However, the semi-structured approach necessitates the storage of neighbouring blocks. Using equation \ref{equation:double-neghbours} it can be shown that the expected storage space required on this shape would be
+
+\begin{equation}
+\frac{S_{ss}}{S_{s}} = \frac{5}{9}\cdot\Bigg(1 + \frac{24}{17\cdot\lstinline|Bx|\cdot\lstinline|By|\cdot\lstinline|Bz|}\Bigg)
+\end{equation}
+
+As with the other memory capacity experiments, the \lstinline|Bx|, \lstinline|By| and \lstinline|Bz| values were all set to \num{8}.
+
 \section{Stencil Performance}
 
 \chapter{Conclusions and Further Work}
