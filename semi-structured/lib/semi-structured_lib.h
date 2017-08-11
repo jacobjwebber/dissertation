@@ -1,6 +1,8 @@
 #ifndef SS_LIB_H
 #define SS_LIB_H
 
+#include "block_dims.h"
+
 #define TRUE 1
 #define FALSE 0
 #define real double
@@ -11,11 +13,6 @@ cudaError_t result = call;              \
 if ( cudaSuccess != result )            \
     fprintf(stderr, "CUDA error  %s \n", cudaGetErrorString( result ) ); \
 }
-
-//Block size
-#define Bz 4
-#define By 4
-#define Bx 4
 
 //Sphere radius
 #define R 64/2

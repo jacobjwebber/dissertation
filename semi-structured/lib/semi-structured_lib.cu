@@ -118,14 +118,14 @@ ss_t create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct 
                 if ( index != 0) {
                     bl = &(aos[index]);
 
-                    if (i>0) {bl->left  = index_of_struct_s[(i-1)*num_blocks_y*num_blocks_x + j*num_blocks_x + k];}
-                    if (i<(num_blocks_z-1)) {bl->right = index_of_struct_s[(i+1)*num_blocks_y*num_blocks_x + j*num_blocks_x + k];}
+                    if (i>0) {bl->down  = index_of_struct_s[(i-1)*num_blocks_y*num_blocks_x + j*num_blocks_x + k];}
+                    if (i<(num_blocks_z-1)) {bl->up = index_of_struct_s[(i+1)*num_blocks_y*num_blocks_x + j*num_blocks_x + k];}
                     
                     if (j>0) {bl->aft   = index_of_struct_s[i*num_blocks_y*num_blocks_x + (j-1)*num_blocks_x + k];}
                     if (j>num_blocks_y-1) { bl->fore  = index_of_struct_s[i*num_blocks_y*num_blocks_x + (j+1)*num_blocks_x + k];}
 
-                    if (k>0) { bl->down  = index_of_struct_s[i*num_blocks_y*num_blocks_x + j*num_blocks_x + (k-1)];}
-                    if (k<num_blocks_x) {bl->up    = index_of_struct_s[i*num_blocks_y*num_blocks_x + j*num_blocks_x + (k+1)];}
+                    if (k>0) { bl->left  = index_of_struct_s[i*num_blocks_y*num_blocks_x + j*num_blocks_x + (k-1)];}
+                    if (k<num_blocks_x) {bl->right    = index_of_struct_s[i*num_blocks_y*num_blocks_x + j*num_blocks_x + (k+1)];}
                 }
 
             }

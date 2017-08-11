@@ -9,7 +9,7 @@ LDIR =../lib
 
 LIBS=-lm
 
-_DEPS = semi-structured_lib.h
+_DEPS = semi-structured_lib.h block_dims.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 _OBJ = test.o semi-structured_lib.o stencils.o make_rooms.o
