@@ -786,7 +786,11 @@ However, the semi-structured approach necessitates the storage of neighbouring b
 \frac{S_{ss}}{S_{s}} = \frac{5}{9}\cdot\Bigg(1 + \frac{24}{17\cdot\lstinline|Bx|\cdot\lstinline|By|\cdot\lstinline|Bz|}\Bigg)
 \end{equation}
 
-As with the other memory capacity experiments, the \lstinline|Bx|, \lstinline|By| and \lstinline|Bz| values were all set to \num{8}.
+As with the other memory capacity experiments, the \lstinline|Bx|, \lstinline|By| and \lstinline|Bz| values were all set to \num{8}. This means that the estimated performance would be:
+
+\begin{equation}
+\frac{5}{9}\cdot\Bigg(1 + \frac{24}{17\cdot8\cdot8\cdot8}\Bigg) = 0.5570874183
+\end{equation}
 
 \section{Stencil Performance}
 
