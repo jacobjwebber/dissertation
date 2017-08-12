@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015) (preloaded format=xelatex 2016.3.28)  10 AUG 2017 20:44
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015) (preloaded format=xelatex 2016.3.28)  12 AUG 2017 20:36
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -792,9 +792,9 @@ Package: verbatim 2014/10/28 v1.5q LaTeX2e package for verbatim enhancements
 Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
 )
 \verbatim@out=\write4
-runsystem(touch w18-test-20178101244.tex)...executed.
+runsystem(touch w18-test-20178121236.tex)...executed.
 
-runsystem(rm -f w18-test-20178101244.tex)...executed.
+runsystem(rm -f w18-test-20178121236.tex)...executed.
 
 Package gnuplottex Info: Automatically converting gnuplot files. on input line 
 109.
@@ -1021,19 +1021,19 @@ File: lstlang1.sty 2014/09/06 1.5e listings language file
 (/opt/texlive/2015/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2014/09/06 1.5e (Carsten Heinz)
 ) [10] [11]
-[12] [13] [14]
+[12] [13] [14] [15]
 Chapter 3.
-[15
+[16
 
-] [16]
+] [17]
 File: ../diagrams/church.png Graphic file (type QTm)
- <use  "../diagrams/church.png" > [17] [18]
+ <use  "../diagrams/church.png" > [18] [19]
 Chapter 4.
-[19
+[20
 
-] [20]
+] [21]
 Chapter 5.
-[21
+[22
 
 ]
 \openout4 = `MSc-dissertation-gnuplottex-fig1.gnuplot'.
@@ -1042,135 +1042,135 @@ Chapter 5.
 runsystem(gnuplot MSc-dissertation-gnuplottex-fig1.gnuplot)...executed.
 
 Package gnuplottex Info: MSc-dissertation-gnuplottex-fig1.gnuplot converted on 
-input line 696.
+input line 697.
 
 (./MSc-dissertation-gnuplottex-fig1.tex
 File: MSc-dissertation-gnuplottex-fig1.eps Graphic file (type eps)
- <MSc-dissertation-gnuplottex-fig1.eps>) [22] [23] [24] [25]
+ <MSc-dissertation-gnuplottex-fig1.eps>) [23] [24] [25] [26]
 Chapter 6.
-[26
+[27
 
 ]
 Appendix A.
 
-Overfull \hbox (3.00008pt too wide) in paragraph at lines 812--813
+Overfull \hbox (3.00008pt too wide) in paragraph at lines 813--814
 [][] 
  []
 
 
-Overfull \hbox (3.00008pt too wide) in paragraph at lines 817--818
+Overfull \hbox (3.00008pt too wide) in paragraph at lines 818--819
 [][] 
  []
 
-[27
+[28
 
-] [28]
+] [29]
 Appendix B.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 849.
-[29
-
-]
-Appendix C.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 850.
 [30
 
 ]
-Underfull \hbox (badness 3302) in paragraph at lines 862--864
+Appendix C.
+[31
+
+]
+Underfull \hbox (badness 3302) in paragraph at lines 863--865
 []\T1/ptm/m/n/12 Webb, C.J. (2009) \T1/ptm/m/it/12 Par-al-lel com-pu-ta-tion te
 ch-niques for vir-tual acous-tics and
  []
 
 
-Underfull \hbox (badness 4429) in paragraph at lines 862--864
+Underfull \hbox (badness 4429) in paragraph at lines 863--865
 \T1/ptm/m/it/12 phys-i-cal mod-elling syn-the-sis. \T1/ptm/m/n/12 PhD the-sis. 
 Uni-ver-sity of Ed-in-burgh. Avail-able
  []
 
 
-Underfull \hbox (badness 2503) in paragraph at lines 866--868
+Underfull \hbox (badness 2503) in paragraph at lines 867--869
 []\T1/ptm/m/n/12 Hamilton, B. (2016) \T1/ptm/m/it/12 Fi-nite Dif-fer-ence and F
 i-nite Vol-ume Meth-ods for Wave-
  []
 
 
-Underfull \hbox (badness 6188) in paragraph at lines 866--868
+Underfull \hbox (badness 6188) in paragraph at lines 867--869
 \T1/ptm/m/it/12 based Mod-elling of Room Acous-tics. \T1/ptm/m/n/12 PhD the-sis
 . Uni-ver-sity of Ed-in-burgh.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 866--868
+Underfull \hbox (badness 10000) in paragraph at lines 867--869
 \T1/ptm/m/n/12 Avail-able at: $\T1/pcr/m/n/12 http : / / www2 . ph . ed . ac . 
 uk / ~s1164563 / thesis /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 875--876
+Underfull \hbox (badness 10000) in paragraph at lines 876--877
 []\T1/ptm/m/n/12 NVIDIA Cor-po-ra-tion \T1/ptm/m/it/12 What's the Dif-fer-ence 
 Be-tween a CPU and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 875--876
+Underfull \hbox (badness 10000) in paragraph at lines 876--877
 \T1/ptm/m/it/12 a GPU? $\T1/pcr/m/n/12 https : / / blogs . nvidia . com / blog 
 / 2009 / 12 / 16 /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 875--876
+Underfull \hbox (badness 10000) in paragraph at lines 876--877
 \T1/pcr/m/n/12 whats-[]the-[]difference-[]between-[]a-[]cpu-[]and-[]a-[]gpu/$ \
 T1/ptm/m/n/12 re-trieved Au-
  []
 
 Missing character: There is no ’ in font ptmri8t!
 
-Underfull \hbox (badness 3068) in paragraph at lines 881--882
+Underfull \hbox (badness 3068) in paragraph at lines 882--883
 []\T1/ptm/m/n/12 NVIDIA Cor-po-ra-tion \T1/ptm/m/it/12 NVIDIAs Next Gen-er-a-ti
 on CUDA Com-pute Ar-chi-tec-ture:
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 881--882
+Underfull \hbox (badness 10000) in paragraph at lines 882--883
 \T1/ptm/m/it/12 Ke-pler GK110/210 $\T1/pcr/m/n/12 http : / / images . nvidia . 
 com / content / pdf / tesla /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 881--882
+Underfull \hbox (badness 10000) in paragraph at lines 882--883
 \T1/pcr/m/n/12 NVIDIA-[]Kepler-[]GK110-[]GK210-[]Architecture-[]Whitepaper . pd
 f$ \T1/ptm/m/n/12 re-
  []
 
-[31
+[32
 
 ]
 Missing character: There is no – in font ptmr8t!
 
-Underfull \hbox (badness 7576) in paragraph at lines 907--908
+Underfull \hbox (badness 7576) in paragraph at lines 908--909
 []\T1/ptm/m/n/12 Tech Power Up \T1/ptm/m/it/12 Graph-ics Card Mar-ket Up Se-que
 n-tially in Q3, NVIDIA
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 907--908
+Underfull \hbox (badness 10000) in paragraph at lines 908--909
 \T1/ptm/m/it/12 Gains as AMD Slips $\T1/pcr/m/n/12 https : / / www . techpoweru
 p . com / 194979 /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 907--908
+Underfull \hbox (badness 10000) in paragraph at lines 908--909
 \T1/pcr/m/n/12 graphics-[]card-[]market-[]up-[]sequentially-[]in-[]q3-[]nvidia 
 /
  []
 
-[32] (./MSc-dissertation.aux) ) 
+[33] (./MSc-dissertation.aux) ) 
 Here is how much of TeX's memory you used:
- 23878 strings out of 493706
- 455195 string characters out of 6118259
- 633639 words of memory out of 5000000
- 26928 multiletter control sequences out of 15000+600000
+ 23879 strings out of 493706
+ 455207 string characters out of 6118259
+ 633648 words of memory out of 5000000
+ 26929 multiletter control sequences out of 15000+600000
  47273 words of font info for 81 fonts, out of 8000000 for 9000
  1328 hyphenation exceptions out of 8191
  43i,14n,78p,10468b,1113s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on MSc-dissertation.pdf (40 pages).
+Output written on MSc-dissertation.pdf (41 pages).

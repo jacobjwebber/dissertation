@@ -394,7 +394,7 @@ Combining the ideas as written about in sections \ref{section:acoustics} and \re
 
 \subsection{The Bounding Box Method}
 
-SQUARE ROOM ALG
+Current techniques are optimised for cuboid shaped rooms. It is easy, with such a room, to derive the $K_{l,m,p}$ value by adding a conditional statement to check whether the point is in the boundary of the cuboid. A sketch of this method is shown in algorithm \ref{alg:cuboid}. This was the method used in \cite{craig}. In this sketch the update refers to the stencil scheme outlined in section \ref{section:acoustics}.
 
 \IncMargin{1em}
 \begin{algorithm}[H]
@@ -406,9 +406,10 @@ SQUARE ROOM ALG
  	Update node $\Psi_{l,m,p}^{n+1}$\;
  }
  \caption{CUDA kernel for update on the basic 3D scheme.}
+ \label{alg:cuboid}
 \end{algorithm}
 
-FUNNY SHAPED ROOM ALG
+To support arbitrarily shaped rooms as laid out in \cite{brian} it is necessary to encode the shape of the room in an array of $K_{l,m,p}$ values.
 
 \IncMargin{1em}
 \begin{algorithm}[H]
