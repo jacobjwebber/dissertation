@@ -134,6 +134,7 @@ ss_t create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct 
 
     *index_of_struct = index_of_struct_s;
     *blocks_in = blocks_in_s;
+    *aos_pp = aos;
 
     ss_t data;
 

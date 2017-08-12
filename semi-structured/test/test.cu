@@ -11,15 +11,21 @@ int test1();
 int test2();
 
 int main() {
-    test1();
-    test2();
+    printf("RUNNING TEST 1\n");
+    if( !test1()) {
+        printf("PASSED\n");
+    }
+    printf("RUNNING TEST 2\n");
+    if( !test2()) {
+        printf("PASSED\n");
+    }
 
     return 0;
 }
 
 int test2() {
     int X,Y,Z;
-    int diam = 24;
+    int diam = 21;
     struct block *aos;
     int blocks_in;
     int *index_of_struct;
@@ -29,8 +35,6 @@ int test2() {
     X = Y = Z = diam;
     data = create_aos(X, Y, Z, k_arr, &blocks_in, &aos, &index_of_struct);
     
-    
-    
     int block_ind;
     int arrind[3];
 	int i, j, k;
@@ -38,7 +42,6 @@ int test2() {
 	for (i = 0; i < X; i++) {
 		for (j = 0; j < Y; j++) {
 			for (k = 0; k < Z; k++) {
-                printf("i=%d, j=%d, k=%d\n",i,j,k);
                 coords[0] = i;
                 coords[1] = j;
                 coords[2] = k;
@@ -52,7 +55,6 @@ int test2() {
 		}
 	}
 
-    
     free_ss(data);
      
     return 0;
@@ -161,5 +163,3 @@ int test1() {
 
 	return 0;
 }
-
-
