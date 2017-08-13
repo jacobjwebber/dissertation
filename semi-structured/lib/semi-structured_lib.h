@@ -39,6 +39,7 @@ typedef struct {
     int blocks_in; //total number of internal blocks
     struct block* aos; //the main array
     int* index_of_struct; //Array containing index of struct based on blocks coords.
+    int error;
 } ss_t ;
 
 ss_t create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct block** aos_pp, int** index_of_struct);

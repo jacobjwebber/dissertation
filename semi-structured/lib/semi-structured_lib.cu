@@ -45,6 +45,8 @@ int free_ss(ss_t data) {
 ss_t create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct block** aos_pp, int** index_of_struct) {
     //Creates an array of structs for stencil operation.
 
+    ss_t data;
+
     int num_blocks_z = (Z + Bz - 1)/Bz; //Round up in case end block is half populated.
     int num_blocks_y = (Y + By - 1)/By;
     int num_blocks_x = (X + Bx - 1)/Bx;
@@ -80,13 +82,11 @@ ss_t create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct 
     // aos is short for array of structs.
     struct block *aos = (struct block *) calloc(blocks_in_s, sizeof(struct block));
 
-    int error;
-
     if (aos) {
         //printf("Memory successfully allocated \n");
     } else {
         printf("Memory allocation error.\n");
-        error = -1;
+        data.error = -1;
     }
 
     //Copy is in sphere array to k arrrays within blocks.
@@ -136,7 +136,6 @@ ss_t create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct 
     *blocks_in = blocks_in_s;
     *aos_pp = aos;
 
-    ss_t data;
 
     data.X = X;
     data.Y = Y;
@@ -153,7 +152,7 @@ ss_t create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct 
 int get_coords(int coords[3], int X, int Y, int Z, int* index_of_struct, int* io_block_ind, int arrind[3]) {
     //Translate from structured array index to index of, and within, struct.
 
-    int num_blocks_z = (Z + Bz - 1)/Bz; //Round up in case end block is half populated.
+    //int num_blocks_z = (Z + Bz - 1)/Bz; //Round up in case end block is half populated.
     int num_blocks_y = (Y + By - 1)/By;
     int num_blocks_x = (X + Bx - 1)/Bx;
 
