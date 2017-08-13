@@ -14,12 +14,12 @@ float time_room_s(int X, int Y, int Z, int big_t, char* k_arr);
 
 int main() {
     printf("TIMING SPHERE\n");
-    if( !time_sphere(32,2)) {
+    if( !time_sphere(304,100)) {
         printf("SUCCESS\n");
     }
 
     printf("TIMING CUBE\n");
-    if( !time_cube(32,1)) {
+    if( !time_cube(304,100)) {
         printf("SUCCESS\n");
     }
     return 0;
@@ -32,7 +32,7 @@ int time_sphere(int diam, int big_t) {
     int X,Y,Z;
     X = Y = Z = diam;
 
-    time_room_ss(X,Y,Z, big_t, k_arr);
+    time_room_s(X,Y,Z, big_t, k_arr);
 
     return 0;
 }
@@ -44,8 +44,13 @@ int time_cube(int diam, int big_t) {
     int X,Y,Z;
     X = Y = Z = diam;
 
+    if ((X%Bx) || (Y%By) || (Z%Bz)){
+        printf("room dims must be divisible by block dims\n");
+        return -1;
+    }
+
     //time_room_ss(X,Y,Z, big_t, k_arr);
-    time_room_ss(X,Y,Z, big_t, k_arr);
+    time_room_s(X,Y,Z, big_t, k_arr);
 
     return 0;
 }
@@ -148,6 +153,10 @@ float time_room_s(int X, int Y, int Z, int big_t, char* k_arr) {
 	CUCALL(cudaMalloc((void** ) &u1_d, total_mem));
 	CUCALL(cudaMalloc((void** ) &k_d, total_mem_k));
 	CUCALL(cudaGetLastError());
+    CUCALL(cudaDeviceSynchronize());
+    
+    
+    u[coords[2]*X*Y + coords[1]*X + coords[0]] = 1.0;
 
 	printf("Copying data from host to device\n");
 	CUCALL(cudaMemcpy(u1_d, u1, total_mem, cudaMemcpyHostToDevice));
@@ -180,9 +189,6 @@ float time_room_s(int X, int Y, int Z, int big_t, char* k_arr) {
 	CUCALL(cudaMemcpy(u_processed, u_d, total_mem, cudaMemcpyDeviceToHost));
 	CUCALL(cudaGetLastError());
 
-    printf("%f\n", u_processed[coords[2]*X*Y + coords[1]*X + coords[0]]); 
-    printf("%f\n", u1_processed[coords[2]*X*Y + coords[1]*X + coords[0]]); 
-
     free(u1);
     free(u);
     free(u1_processed);
@@ -192,9 +198,10 @@ float time_room_s(int X, int Y, int Z, int big_t, char* k_arr) {
     cudaFree(k_d);
     
     int n_voxels = X*Y*Z;
+    float mega_vox = (float)n_voxels/1000000.0;
     printf("Elapsed time: %f ms\n", milliseconds);
     printf("%f MiB of data processed %d times in %f seconds\n", ((float) sizeof(real)*X*Y*Z)/( (float) 1024*1024), big_t, milliseconds/1000.0);
-    printf("%f voxels/s achieved\n",((float) n_voxels*big_t)/(milliseconds/1000.0));
+    printf("%f Mvox/s achieved\n",((float) mega_vox*big_t)/(milliseconds/1000));
  
     return milliseconds;
 }

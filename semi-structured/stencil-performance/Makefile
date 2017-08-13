@@ -2,7 +2,7 @@
 
 IDIR =../lib
 CC=nvcc
-CFLAGS=-I$(IDIR) -arch=sm_35 -g -G 
+CFLAGS=-I$(IDIR) -arch=sm_35 -O3
 
 ODIR=obj
 LDIR =../lib
@@ -29,4 +29,4 @@ stencil-performance : $(OBJ)
 .PHONY: clean
 
 clean:
-	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ test
+	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ stencil-performance
