@@ -5,7 +5,7 @@
 #include "stencils.h"
 #include "make_rooms.h"
 
-#define T 2 
+#define T 100 
 
 int time_sphere(int diam, int big_t);
 int time_cube(int diam, int big_t);
@@ -14,20 +14,20 @@ float time_room_ss(int X, int Y, int Z, int big_t, char* k_arr);
 float time_room_s(int X, int Y, int Z, int big_t, char* k_arr);
 
 int main() {
-    printf("TIMING SPHERE\n");
+    printf("\nTIMING SPHERE\n");
     if( !time_sphere(304,T)) {
         printf("SUCCESS\n");
     }
-/*
-    printf("TIMING CUBE\n");
+
+    printf("\nTIMING CUBE\n");
     if( !time_cube(304,T)) {
         printf("SUCCESS\n");
     }
-    printf("TIMING CROSS\n");
+    printf("\nTIMING CROSS\n");
     if( !time_cross(128,T)) {
         printf("SUCCESS\n");
     }
-*/    return 0;
+    return 0;
 }
 
 int time_sphere(int diam, int big_t) {
@@ -38,7 +38,9 @@ int time_sphere(int diam, int big_t) {
     X = Y = Z = diam;
     printf("%d\n",k_arr[X*Y*Z-1]);
 
+    printf("\nSEMI-STRUCTURED\n");
     time_room_ss(X,Y,Z, big_t, k_arr);
+    printf("\nSTRUCTURED\n");
     time_room_s(X,Y,Z, big_t, k_arr);
 
     free(k_arr);
@@ -52,12 +54,9 @@ int time_cube(int diam, int big_t) {
     int X,Y,Z;
     X = Y = Z = diam;
 
-    if ((X%Bx) || (Y%By) || (Z%Bz)){
-        printf("room dims must be divisible by block dims\n");
-        return -1;
-    }
-
-    //time_room_ss(X,Y,Z, big_t, k_arr);
+    printf("SEMI-STRUCTURED\n");
+    time_room_ss(X,Y,Z, big_t, k_arr);
+    printf("STRUCTURED\n");
     time_room_s(X,Y,Z, big_t, k_arr);
 
     free(k_arr);
@@ -78,7 +77,9 @@ int time_cross(int diam, int big_t) {
         return -1;
     }
 
-    //time_room_ss(X,Y,Z, big_t, k_arr);
+    printf("SEMI-STRUCTURED\n");
+    time_room_ss(X,Y,Z, big_t, k_arr);
+    printf("STRUCTURED\n");
     time_room_s(X,Y,Z, big_t, k_arr);
 
     free(k_arr);
@@ -92,8 +93,6 @@ float time_room_ss(int X, int Y, int Z, int big_t, char* k_arr) {
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
 
-
-
     struct block *aos;
 
 	struct block *aos_processed;
@@ -116,18 +115,21 @@ float time_room_ss(int X, int Y, int Z, int big_t, char* k_arr) {
 
 	CUCALL(cudaMalloc((void** ) &aos_d, total_mem));
 	CUCALL(cudaGetLastError());
+    CUCALL(cudaDeviceSynchronize());
 	printf("Copying data from host to device\n");
 	CUCALL(cudaMemcpy(aos_d, aos, total_mem, cudaMemcpyHostToDevice));
+    CUCALL(cudaDeviceSynchronize());
 	CUCALL(cudaGetLastError());
     printf("done\n");
     dim3 dims(Bx,By,Bz);
+    dim3 block_dims(blocks_in-1,1,1);
 
     cudaEventRecord(start);
     int t;
     for (t=0;t<big_t/2;t++) {
-        perform_stencil<<<blocks_in,dims>>>(aos_d, 1.0/3.0, sqrt(1.0/3.0), 0.1/1.9, 0);
+        perform_stencil<<<block_dims,dims>>>(aos_d, 1.0/3.0, sqrt(1.0/3.0), 0.1/1.9, 0);
         cudaDeviceSynchronize();
-        perform_stencil_b<<<blocks_in,dims>>>(aos_d, 1.0/3.0, sqrt(1.0/3.0), 0.1/1.9, 0);
+        perform_stencil_b<<<block_dims,dims>>>(aos_d, 1.0/3.0, sqrt(1.0/3.0), 0.1/1.9, 0);
         cudaDeviceSynchronize();
     }
     cudaEventRecord(stop);
@@ -140,12 +142,11 @@ float time_room_ss(int X, int Y, int Z, int big_t, char* k_arr) {
 
 	aos_processed = (struct block*) calloc(blocks_in, sizeof(struct block));
 	CUCALL(cudaMemcpy(aos_processed, aos_d, total_mem, cudaMemcpyDeviceToHost));
+    CUCALL(cudaDeviceSynchronize());
 	CUCALL(cudaGetLastError());
 
-    printf("%f\n", aos_processed[block_ind].u1[arrind[2]][arrind[1]][arrind[0]]);
-    printf("%f\n", aos_processed[block_ind].u[arrind[2]][arrind[1]][arrind[0]]);
-
     free_ss(data);
+    CUCALL(cudaFree(aos_d));
     
     printf("Elapsed time: %f ms\n", milliseconds);
 
@@ -157,78 +158,12 @@ float time_room_ss(int X, int Y, int Z, int big_t, char* k_arr) {
     printf("Elapsed time: %f ms\n", milliseconds);
     printf("%f MiB of data processed %d times in %f seconds\n", mebi_bytes, big_t, seconds);
     printf("%f Mvox/s achieved\n",mv_per_s);
- 
-/*
-    struct block *aos;
-	struct block *aos_processed;
-    int blocks_in;
-    int *index_of_struct;
-    ss_t data;
-    data = create_aos(X, Y, Z, k_arr, &blocks_in, &aos, &index_of_struct);
 
-    int block_ind;
-    int arrind[3];
-    int coords[3];
-    coords[0] = X/2;
-    coords[1] = Y/2;
-    coords[2] = Z/2;
-    get_coords(coords, X, Y, Z, index_of_struct, &block_ind, arrind);
-    aos[block_ind].u[arrind[2]][arrind[1]][arrind[0]] = 1.0;
-
-	struct block *aos_d;
-	size_t total_mem = sizeof(struct block) * blocks_in;
-
-	CUCALL(cudaMalloc((void** ) &aos_d, total_mem));
-    cudaDeviceSynchronize();
-	CUCALL(cudaGetLastError());
-	printf("Copying data from host to device\n");
-	CUCALL(cudaMemcpy(aos_d, aos, total_mem, cudaMemcpyHostToDevice));
-    cudaDeviceSynchronize();
-	CUCALL(cudaGetLastError());
-    printf("done\n");
-    dim3 dims(Bx,By,Bz);
-
-    cudaEvent_t start, stop;
-    cudaEventCreate(&start);
-    cudaEventCreate(&stop);
-    cudaEventRecord(start);
-    int t;
-    for (t=0;t<(big_t/2);t++) {
-        perform_stencil<<<blocks_in,dims>>>(aos_d, 1.0/3.0, sqrt(1.0/3.0), 0.1/1.9, 0);
-        cudaDeviceSynchronize();
-        perform_stencil_b<<<blocks_in,dims>>>(aos_d, 1.0/3.0, sqrt(1.0/3.0), 0.1/1.9, 0);
-        cudaDeviceSynchronize();
-    }
-    cudaEventRecord(stop);
-
-	CUCALL(cudaGetLastError());
-    
-    cudaEventSynchronize(stop);
-    float milliseconds = 0;
-    cudaEventElapsedTime(&milliseconds, start, stop);
-
-	aos_processed = (struct block*) calloc(blocks_in, sizeof(struct block));
-	CUCALL(cudaMemcpy(aos_processed, aos_d, total_mem, cudaMemcpyDeviceToHost));
-	CUCALL(cudaGetLastError());
-
-    printf("%f\n", aos_processed[block_ind].u1[arrind[2]][arrind[1]][arrind[0]]);
-    printf("%f\n", aos_processed[block_ind].u[arrind[2]][arrind[1]][arrind[0]]);
-
-    free_ss(data);
-    cudaDeviceSynchronize();
-    CUCALL(cudaFree(aos_d));
-    
-    int n_voxels = Bx*By*Bz*blocks_in;
-    printf("Elapsed time: %f ms\n", milliseconds);
-    printf("%f MiB of data processed %d times in %f seconds\n", ((float) sizeof(struct block)*blocks_in)/( (float) 1024*1024), big_t, milliseconds/1000.0);
-    printf("%f voxels/s achieved\n",((float) n_voxels*big_t)/(milliseconds/1000.0));
- */
     return milliseconds;
 }
 
 float time_room_s(int X, int Y, int Z, int big_t, char* k_arr) {
 
-    printf("%d\n",k_arr[X*Y*Z-1]);
 
     real *u1;
     real *u;

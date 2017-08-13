@@ -21,16 +21,16 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
     int bl = blockIdx.x + 1;
 
     char k = aos[bl].k[z][y][x];
-    __shared__ int left, right, fore, aft, up, down;
 
-    if (x == 0 && y == 0 && z == 0) {
-        left = aos[bl].left;
-        right = aos[bl].right;
-        up = aos[bl].up;
-        down = aos[bl].down;
-        fore = aos[bl].fore;
-        aft = aos[bl].aft;
-    }
+    int left, right, fore, aft, up, down;
+
+    left = aos[bl].left;
+    right = aos[bl].right;
+    up = aos[bl].up;
+    down = aos[bl].down;
+    fore = aos[bl].fore;
+    aft = aos[bl].aft;
+
     __shared__ real u1_s[Bz+2][By+2][Bx+2]; //u1 in shared (L1 cache) memory.
 
    __syncthreads();
@@ -86,16 +86,15 @@ __global__ void perform_stencil_b(struct block *aos, real l2, real l, real g, in
     int bl = blockIdx.x + 1;
 
     char k = aos[bl].k[z][y][x];
-    __shared__ int left, right, fore, aft, up, down;
+    int left, right, fore, aft, up, down;
 
-    if (x == 0 && y == 0 && z == 0) {
-        left = aos[bl].left;
-        right = aos[bl].right;
-        up = aos[bl].up;
-        down = aos[bl].down;
-        fore = aos[bl].fore;
-        aft = aos[bl].aft;
-    }
+    left = aos[bl].left;
+    right = aos[bl].right;
+    up = aos[bl].up;
+    down = aos[bl].down;
+    fore = aos[bl].fore;
+    aft = aos[bl].aft;
+
     __shared__ real u1_s[Bz+2][By+2][Bx+2]; //u1 in shared (L1 cache) memory.
 
     __syncthreads();
