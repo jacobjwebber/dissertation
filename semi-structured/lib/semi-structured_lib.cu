@@ -37,7 +37,6 @@ char copy_to_struct(int x, int y, int z, struct block *bl, char *array, int xmax
 int free_ss(ss_t data) {
     //frees all data in ss_t.
     free(data.aos);
-    free(data.k);
     free(data.index_of_struct);
     return 0;
 }
