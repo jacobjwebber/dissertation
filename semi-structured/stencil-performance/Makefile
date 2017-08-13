@@ -2,7 +2,7 @@
 
 IDIR =../lib
 CC=nvcc
-CFLAGS=-I$(IDIR) -arch=sm_35 -O3
+CFLAGS=-I$(IDIR) -arch=sm_35 -g -G
 
 ODIR=obj
 LDIR =../lib
