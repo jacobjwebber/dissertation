@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015) (preloaded format=xelatex 2016.3.28)  13 AUG 2017 18:56
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015) (preloaded format=xelatex 2016.3.28)  13 AUG 2017 20:42
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -792,9 +792,9 @@ Package: verbatim 2014/10/28 v1.5q LaTeX2e package for verbatim enhancements
 Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
 )
 \verbatim@out=\write4
-runsystem(touch w18-test-20178131136.tex)...executed.
+runsystem(touch w18-test-20178131242.tex)...executed.
 
-runsystem(rm -f w18-test-20178131136.tex)...executed.
+runsystem(rm -f w18-test-20178131242.tex)...executed.
 
 Package gnuplottex Info: Automatically converting gnuplot files. on input line 
 109.
@@ -923,7 +923,7 @@ Package caption Info: End \AtBeginDocument code.
 * \paperheight=845.04684pt
 * \textwidth=451.6875pt
 * \textheight=650.43pt
-* \oddsidemargin=7.22743pt
+* \oddsidemargin=3.61371pt
 * \evensidemargin=13.08827pt
 * \topmargin=-36.135pt
 * \headheight=14.5pt
