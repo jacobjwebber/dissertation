@@ -1,3 +1,5 @@
+\contentsline {chapter}{List of Tables}{iii}
+\contentsline {chapter}{List of Figures}{iv}
 \contentsline {chapter}{\numberline {1}Introduction}{1}
 \contentsline {chapter}{\numberline {2}Background and Literature Review}{3}
 \contentsline {section}{\numberline {2.1}Room Acoustics}{3}
@@ -34,6 +36,8 @@
 \contentsline {section}{\numberline {5.2}Stencil Performance}{26}
 \contentsline {chapter}{\numberline {6}Conclusions and Further Work}{27}
 \contentsline {section}{\numberline {6.1}Future Work}{27}
-\contentsline {chapter}{\numberline {A}Memory Capacity Experiment Results}{28}
-\contentsline {chapter}{\numberline {B}NVIDIA K20 Device Details}{30}
-\contentsline {chapter}{\numberline {C}Kernels}{31}
+\contentsline {chapter}{Bibliography}{28}
+\contentsline {chapter}{\numberline {A}Memory Capacity Experiment Results}{30}
+\contentsline {chapter}{\numberline {B}NVIDIA K20 Device Details}{32}
+\contentsline {chapter}{\numberline {C}Kernels}{33}
+\contentsline {chapter}{\numberline {D}Source Directory Structure}{34}

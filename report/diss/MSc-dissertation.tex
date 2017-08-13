@@ -17,6 +17,7 @@
 \usepackage{gnuplottex}
 \usepackage{csvsimple}
 \usepackage[lined,boxed]{algorithm2e}
+\usepackage[nottoc]{tocbibind}
 
 \setlength\epigraphwidth{.8\textwidth}
 \setlength\epigraphrule{0pt}
@@ -599,7 +600,13 @@ The work stems from a Matlab script that implements the scheme using a bounding 
 
 \section{Design Overview}
 
-The code was designed to be as extensible and reusable as possible. As such each experiment is divided into a separate directory. Each of these contains a CUDA C source file that performs the required experiment. These then call functions from a library that do all the tasks associated with the proposed method. This library is a selection of source files that are in a \verb|lib| directory. They contain functions for forming the data structure as described in chapter \ref{chapter:proposition}, as well as generating room shapes, and performing the FDTD stencil.
+The code was designed to be as extensible and reusable as possible. As such each experiment is divided into a separate directory. 
+
+A directory tree (the output of the GNU \verb|tree| utility) is given in listing REF.
+
+
+
+Each of these contains a CUDA C source file that performs the required experiment. These then call functions from a library that do all the tasks associated with the proposed method. This library is a selection of source files that are in a \verb|lib| directory. They contain functions for forming the data structure as described in chapter \ref{chapter:proposition}, as well as generating room shapes, and performing the FDTD stencil.
 
 MORE PLEASE
 
@@ -802,9 +809,63 @@ As with the other memory capacity experiments, the \lstinline|Bx|, \lstinline|By
 
 \section{Future Work}
 \label{section:future-work}
+
+%\cleardoublepage
+%\addcontentsline{toc}{chapter}{Bibliography}
+\begin{thebibliography}{100}
+
+\bibitem{craig}
+Webb, C.J. (2009) \emph{Parallel computation techniques for virtual
+acoustics and physical modelling synthesis.} PhD thesis. University of Edinburgh. Available at: \url{http://www2.ph.ed.ac.uk/~cwebb2/Site/Docs/CJWebb_thesis_FINAL.pdf} (Accessed: 5 April 2017)
+
+\bibitem{brian}
+Hamilton, B. (2016) \emph{Finite Difference and Finite Volume Methods for
+Wave-based Modelling of Room Acoustics.} PhD thesis. University of Edinburgh. Available at: \url{http://www2.ph.ed.ac.uk/~s1164563/thesis/hamilton2016phdthesis.pdf} (Accessed: 5 April 2017)
+
+\bibitem{feynman}
+Richard Feynman,  1969, 
+\textit{Lectures in Physics, Volume 1,}
+Addison Publishing Company, Addison
+
+
+\bibitem{ref:nvidia-gpu-cpu} NVIDIA Corporation {\em What's the Difference Between a CPU and a GPU?} \url{https://blogs.nvidia.com/blog/2009/12/16/whats-the-difference-between-a-cpu-and-a-gpu/} retrieved \today.
+
+\bibitem{ref:nvidia-gpu-launch} NVIDIA Corporation {\em NVIDIA Special Event: The GeForce GTX 1080 and Pascal (Part 4)} \url{https://www.youtube.com/watch?v=0xnzwjPyx8A} retrieved \today.
+
+\bibitem{ref:nvidia-gpu-programming-guide} NVIDIA Corporation {\em CUDA C Programming Guide} \url{http://docs.nvidia.com/cuda/cuda-c-programming-guide} retrieved \today.
+
+\bibitem{ref:nvidia-gpu-k20-white} NVIDIA Corporation {\em NVIDIA’s Next Generation CUDA Compute Architecture: Kepler GK110/210} \url{http://images.nvidia.com/content/pdf/tesla/NVIDIA-Kepler-GK110-GK210-Architecture-Whitepaper.pdf} retrieved \today.
+
+\bibitem{ref:mici} P. Micikevicius, \emph{3D finite difference computation on GPUs using CUDA.} Proceedings of 2nd Workshop on General Purpose Processing on Graphics Processing Units - GPGPU-2, New York, New York, USA, 2009, pp. 79-84, ACM Press.
+
+\bibitem{ref:zhao} K. Hou, Y. Zhao, J. Huang, and L. Zhang, \emph{Performance evaluation of the Three-Dimensional Finite-Difference Time-Domain(FDTD) method on Fermi architecture GPUs in Algorithms and Architectures for Parallel Processing} vol. 7016 of Lecture Notes in Computer Science, pp. 460-469. Springer Berlin
+/ Heidelberg, 2011.
+
+\bibitem{ref:strik} J. Strikwerda, \emph{Finite Difference Schemes and Partial Differential Equations}, Wadsworth and Brooks/Cole Advanced Books and Software, Pacific Grove, California, 1989.
+
+\bibitem{ref:harris} Harris, Frederic j. (Aug 2006). \emph{Multirate Signal Processing for Communication Systems}. Upper Saddle River, NJ: Prentice Hall PTR. ISBN 0-13-146511-2
+
+
+\bibitem{gpu_stencil}
+
+Andreas Schäfer, Dietmar Fey, \emph{High Performance Stencil Code Algorithms for GPGPUs}, Procedia Computer Science, Volume 4, 2011, Pages 2027-2036, ISSN 1877-0509, \url{http://dx.doi.org/10.1016/j.procs.2011.04.221.} (Accessed: 5 April 2017)
+
+
+\bibitem{ref:electro}
+D. W. Zingy , H. Lomax , and H. Jurgens , \emph{High-accuracy finite-difference schemes for linear wave propagation}, SIAM J. Sci. Comput. 17, 328346, 1996.
+
+\bibitem{ref:ray-trace}
+L. Savioja and U. P. Svensson, \emph{Overview of geometrical room acoustic modeling techniques}, Journal of the Acoustical Society of America, vol. 138, no. 2, pp. 708–730, 2015.
+
+\bibitem{ref:vision}
+Shapiro, L. G. and Stockman, G. C: \emph{Computer Vision}, page 137, 150. Prentice Hall, 2001
+
+\bibitem{ref:gpu-market} Tech Power Up {\em Graphics Card Market Up Sequentially in Q3, NVIDIA Gains as AMD Slips} \url{https://www.techpowerup.com/194979/graphics-card-market-up-sequentially-in-q3-nvidia/-gains-as-amd-slips} retrieved \today.
+
+\end{thebibliography}
+
 \appendix
 % the appendix command just changes heading styles for appendices.
-
 \chapter{Memory Capacity Experiment Results}
 \label{appendix:mem-cap}
 The results are for double precision numbers.
@@ -857,60 +918,49 @@ The results are for double precision numbers.
 
 The following kernels where used.
 
-\begin{thebibliography}{100}
+\chapter{Source Directory Structure}
+\lstset{basicstyle=\scriptsize,  breaklines=true,label=listing:K20,caption={Output from the GNU tree program}}
+\begin{lstlisting}
+|-- lib
+|   |-- block_dims.h
+|   |-- make_rooms.cu
+|   |-- make_rooms.h
+|   |-- semi-structured_lib.cu
+|   |-- semi-structured_lib.h
+|   |-- stencils.cu
+|   `-- stencils.h
+|-- memory-capacity
+|   |-- Makefile
+|   |-- memory-capacity
+|   |-- memory-capacity.cu
+|   `-- obj
+|-- results
+|   |-- data
+|   |   |-- memory-cap_cube.csv
+|   |   |-- memory-cap_graph
+|   |   |-- memory-cap_raw
+|   |   `-- memory-cap_sphere.csv
+|   `-- scripts
+|       |-- here.pdf
+|       |-- make_mem-cap_graph.sh
+|       `-- mem-cap_graph.gp
+|-- sphere
+|   |-- Makefile
+|   |-- obj-
+|   |-- sphere
+|   `-- sphere.cu
+|-- stencil-performance
+|   |-- Makefile
+|   |-- stencil-performance
+|   `-- stencil-performance.cu
+`-- test
+    |-- Makefile
+    |-- test
+    `-- test.cu
 
-\bibitem{craig}
-Webb, C.J. (2009) \emph{Parallel computation techniques for virtual
-acoustics and physical modelling synthesis.} PhD thesis. University of Edinburgh. Available at: \url{http://www2.ph.ed.ac.uk/~cwebb2/Site/Docs/CJWebb_thesis_FINAL.pdf} (Accessed: 5 April 2017)
-
-\bibitem{brian}
-Hamilton, B. (2016) \emph{Finite Difference and Finite Volume Methods for
-Wave-based Modelling of Room Acoustics.} PhD thesis. University of Edinburgh. Available at: \url{http://www2.ph.ed.ac.uk/~s1164563/thesis/hamilton2016phdthesis.pdf} (Accessed: 5 April 2017)
-
-\bibitem{feynman}
-Richard Feynman,  1969, 
-\textit{Lectures in Physics, Volume 1,}
-Addison Publishing Company, Addison
-
-
-\bibitem{ref:nvidia-gpu-cpu} NVIDIA Corporation {\em What's the Difference Between a CPU and a GPU?} \url{https://blogs.nvidia.com/blog/2009/12/16/whats-the-difference-between-a-cpu-and-a-gpu/} retrieved \today.
-
-\bibitem{ref:nvidia-gpu-launch} NVIDIA Corporation {\em NVIDIA Special Event: The GeForce GTX 1080 and Pascal (Part 4)} \url{https://www.youtube.com/watch?v=0xnzwjPyx8A} retrieved \today.
-
-\bibitem{ref:nvidia-gpu-programming-guide} NVIDIA Corporation {\em CUDA C Programming Guide} \url{http://docs.nvidia.com/cuda/cuda-c-programming-guide} retrieved \today.
-
-\bibitem{ref:nvidia-gpu-k20-white} NVIDIA Corporation {\em NVIDIA’s Next Generation CUDA Compute Architecture: Kepler GK110/210} \url{http://images.nvidia.com/content/pdf/tesla/NVIDIA-Kepler-GK110-GK210-Architecture-Whitepaper.pdf} retrieved \today.
-
-\bibitem{ref:mici} P. Micikevicius, \emph{3D finite difference computation on GPUs using CUDA.} Proceedings of 2nd Workshop on General Purpose Processing on Graphics Processing Units - GPGPU-2, New York, New York, USA, 2009, pp. 79-84, ACM Press.
-
-\bibitem{ref:zhao} K. Hou, Y. Zhao, J. Huang, and L. Zhang, \emph{Performance evaluation of the Three-Dimensional Finite-Difference Time-Domain(FDTD) method on Fermi architecture GPUs in Algorithms and Architectures for Parallel Processing} vol. 7016 of Lecture Notes in Computer Science, pp. 460-469. Springer Berlin
-/ Heidelberg, 2011.
-
-\bibitem{ref:strik} J. Strikwerda, \emph{Finite Difference Schemes and Partial Differential Equations}, Wadsworth and Brooks/Cole Advanced Books and Software, Pacific Grove, California, 1989.
-
-\bibitem{ref:harris} Harris, Frederic j. (Aug 2006). \emph{Multirate Signal Processing for Communication Systems}. Upper Saddle River, NJ: Prentice Hall PTR. ISBN 0-13-146511-2
-
-
-\bibitem{gpu_stencil}
-
-Andreas Schäfer, Dietmar Fey, \emph{High Performance Stencil Code Algorithms for GPGPUs}, Procedia Computer Science, Volume 4, 2011, Pages 2027-2036, ISSN 1877-0509, \url{http://dx.doi.org/10.1016/j.procs.2011.04.221.} (Accessed: 5 April 2017)
-
-
-\bibitem{ref:electro}
-D. W. Zingy , H. Lomax , and H. Jurgens , \emph{High-accuracy finite-difference schemes for linear wave propagation}, SIAM J. Sci. Comput. 17, 328346, 1996.
-
-\bibitem{ref:ray-trace}
-L. Savioja and U. P. Svensson, \emph{Overview of geometrical room acoustic modeling techniques}, Journal of the Acoustical Society of America, vol. 138, no. 2, pp. 708–730, 2015.
-
-\bibitem{ref:vision}
-Shapiro, L. G. and Stockman, G. C: \emph{Computer Vision}, page 137, 150. Prentice Hall, 2001
-
-\bibitem{ref:gpu-market} Tech Power Up {\em Graphics Card Market Up Sequentially in Q3, NVIDIA Gains as AMD Slips} \url{https://www.techpowerup.com/194979/graphics-card-market-up-sequentially-in-q3-nvidia/-gains-as-amd-slips} retrieved \today.
+\end{lstlisting}
 
 
-
-
-\end{thebibliography}
 
 
 \end{document}

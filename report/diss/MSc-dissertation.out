@@ -1,18 +1,42 @@
-\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 1
-\BOOKMARK [0][-]{chapter.2}{Background and Literature Review}{}% 2
-\BOOKMARK [1][-]{section.2.1}{Room Acoustics}{chapter.2}% 3
-\BOOKMARK [2][-]{subsection.2.1.1}{Classical Acoustics}{section.2.1}% 4
-\BOOKMARK [2][-]{subsection.2.1.2}{Finite Difference Schemes}{section.2.1}% 5
-\BOOKMARK [1][-]{section.2.2}{Graphics Processing Units \(GPUs\)}{chapter.2}% 6
-\BOOKMARK [1][-]{section.2.3}{The Proposed Data Structure and Method}{chapter.2}% 7
-\BOOKMARK [1][-]{section.2.4}{Other Methods}{chapter.2}% 8
-\BOOKMARK [0][-]{chapter.3}{Design and Implementation}{}% 9
-\BOOKMARK [1][-]{section.3.1}{Software Development Process}{chapter.3}% 10
-\BOOKMARK [1][-]{section.3.2}{Debugging and Profiling Tools}{chapter.3}% 11
-\BOOKMARK [0][-]{chapter.4}{Results and Analysis}{}% 12
-\BOOKMARK [1][-]{section.4.1}{Some results}{chapter.4}% 13
-\BOOKMARK [2][-]{subsection.4.1.1}{More results}{section.4.1}% 14
-\BOOKMARK [0][-]{chapter.5}{Conclusions}{}% 15
-\BOOKMARK [1][-]{section.5.1}{Future Work}{chapter.5}% 16
-\BOOKMARK [0][-]{appendix.A}{Stuff which is too detailed}{}% 17
-\BOOKMARK [0][-]{appendix.B}{Stuff which no-one will read}{}% 18
+\BOOKMARK [0][-]{chapter*.2}{List\040of\040Tables}{}% 1
+\BOOKMARK [0][-]{chapter*.3}{List\040of\040Figures}{}% 2
+\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 3
+\BOOKMARK [0][-]{chapter.2}{Background\040and\040Literature\040Review}{}% 4
+\BOOKMARK [1][-]{section.2.1}{Room\040Acoustics}{chapter.2}% 5
+\BOOKMARK [2][-]{subsection.2.1.1}{Classical\040Acoustics}{section.2.1}% 6
+\BOOKMARK [2][-]{subsection.2.1.2}{Finite\040Difference\040Schemes}{section.2.1}% 7
+\BOOKMARK [2][-]{subsection.2.1.3}{Boundary\040Conditions}{section.2.1}% 8
+\BOOKMARK [1][-]{section.2.2}{Stencilling\040Operations}{chapter.2}% 9
+\BOOKMARK [1][-]{section.2.3}{Graphics\040Processing\040Units\040\(GPUs\)}{chapter.2}% 10
+\BOOKMARK [2][-]{subsection.2.3.1}{GPUs\040and\040parallelism}{section.2.3}% 11
+\BOOKMARK [2][-]{subsection.2.3.2}{GPU\040Memory\040Hierarchies}{section.2.3}% 12
+\BOOKMARK [2][-]{subsection.2.3.3}{The\040CUDA\040Paradigm}{section.2.3}% 13
+\BOOKMARK [1][-]{section.2.4}{The\040State\040of\040the\040Art\040in\040FDTD\040Acoustical\040Modelling}{chapter.2}% 14
+\BOOKMARK [2][-]{subsection.2.4.1}{The\040Bounding\040Box\040Method}{section.2.4}% 15
+\BOOKMARK [2][-]{subsection.2.4.2}{Memory\040Capacity}{section.2.4}% 16
+\BOOKMARK [2][-]{subsection.2.4.3}{Memory\040Bandwidth}{section.2.4}% 17
+\BOOKMARK [1][-]{section.2.5}{Other\040Methods}{chapter.2}% 18
+\BOOKMARK [2][-]{subsection.2.5.1}{Ray\040Tracing}{section.2.5}% 19
+\BOOKMARK [2][-]{subsection.2.5.2}{Spectral\040Methods}{section.2.5}% 20
+\BOOKMARK [0][-]{chapter.3}{The\040Proposed\040Data\040Structure\040and\040Method}{}% 21
+\BOOKMARK [1][-]{section.3.1}{The\040Data\040Structure}{chapter.3}% 22
+\BOOKMARK [1][-]{section.3.2}{The\040Algorithm}{chapter.3}% 23
+\BOOKMARK [1][-]{section.3.3}{Theoretical\040Benefits}{chapter.3}% 24
+\BOOKMARK [0][-]{chapter.4}{Design\040and\040Implementation}{}% 25
+\BOOKMARK [1][-]{section.4.1}{Design\040Overview}{chapter.4}% 26
+\BOOKMARK [1][-]{section.4.2}{Software\040Development\040Process}{chapter.4}% 27
+\BOOKMARK [1][-]{section.4.3}{Debugging\040and\040Profiling\040Tools}{chapter.4}% 28
+\BOOKMARK [0][-]{chapter.5}{Results\040and\040Analysis}{}% 29
+\BOOKMARK [1][-]{section.5.1}{Memory\040Usage}{chapter.5}% 30
+\BOOKMARK [2][-]{subsection.5.1.1}{Sphere}{section.5.1}% 31
+\BOOKMARK [2][-]{subsection.5.1.2}{Cube}{section.5.1}% 32
+\BOOKMARK [2][-]{subsection.5.1.3}{Cross}{section.5.1}% 33
+\BOOKMARK [1][-]{section.5.2}{Stencil\040Performance}{chapter.5}% 34
+\BOOKMARK [0][-]{chapter.6}{Conclusions\040and\040Further\040Work}{}% 35
+\BOOKMARK [1][-]{section.6.1}{Future\040Work}{chapter.6}% 36
+\BOOKMARK [0][-]{section*.17}{Bibliography}{}% 37
+\BOOKMARK [0][-]{chapter.7}{Bibliography}{}% 38
+\BOOKMARK [0][-]{appendix.A}{Memory\040Capacity\040Experiment\040Results}{}% 39
+\BOOKMARK [0][-]{appendix.B}{NVIDIA\040K20\040Device\040Details}{}% 40
+\BOOKMARK [0][-]{appendix.C}{Kernels}{}% 41
+\BOOKMARK [0][-]{appendix.D}{Source\040Directory\040Structure}{}% 42
