@@ -33,18 +33,7 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
     }
     __shared__ real u1_s[Bz+2][By+2][Bx+2]; //u1 in shared (L1 cache) memory.
 
-    //very important to delete this loop - just for debugging.
-    int i,j,f;
-    if (x == 0 && y == 0 && z == 0) {
-        for (i = 0; i < Bx; i++) {
-            for (j = 0; j < By; j++) {
-                for (f = 0; f < Bz; f++) {
-                    u1_s[f][j][i] = 550;
-                }
-            }
-        }
-    }
-    __syncthreads();
+   __syncthreads();
 
     u1_s[z+1][y+1][x+1] = aos[bl].u1[z][y][x];
 
@@ -109,17 +98,6 @@ __global__ void perform_stencil_b(struct block *aos, real l2, real l, real g, in
     }
     __shared__ real u1_s[Bz+2][By+2][Bx+2]; //u1 in shared (L1 cache) memory.
 
-    //very important to delete this loop - just for debugging.
-    int i,j,f;
-    if (x == 0 && y == 0 && z == 0) {
-        for (i = 0; i < Bx; i++) {
-            for (j = 0; j < By; j++) {
-                for (f = 0; f < Bz; f++) {
-                    u1_s[f][j][i] = 550;
-                }
-            }
-        }
-    }
     __syncthreads();
 
     u1_s[z+1][y+1][x+1] = aos[bl].u[z][y][x];
