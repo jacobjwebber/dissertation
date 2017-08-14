@@ -27,7 +27,7 @@ int main() {
     int *index_of_struct;
     ss_t data;
     char* k_arr;
-/*    printf("Memory Capacity Experiment\n\n");
+    printf("Memory Capacity Experiment\n\n");
     printf("SPHERE\n");
     printf("Diam \tInternal Blocks\tSize semi-Structured (MiB) \tSize - Structured (MiB) \tRatio\n");
 
@@ -61,7 +61,7 @@ int main() {
         //end data prep
         //Set input and output locations
     }
-*/ 
+ 
     printf("\nCROSS\n");
     printf("Diam \tInternal Blocks\tSize semi-Structured (MiB) \tSize - Structured (MiB) \tRatio\n");
     for (diam = 8; diam <= 500; diam +=40) {
