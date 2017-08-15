@@ -5,7 +5,7 @@
 #include "stencils.h"
 #include "make_rooms.h"
 
-#define T 100 
+#define T 1000
 
 int time_sphere(int diam, int big_t);
 int time_cube(int diam, int big_t);
@@ -15,16 +15,16 @@ float time_room_s(int X, int Y, int Z, int big_t, char* k_arr);
 
 int main() {
     printf("\nTIMING SPHERE\n");
-    if( !time_sphere(304,T)) {
+    if( !time_sphere(608,T)) {
         printf("SUCCESS\n");
     }
 
     printf("\nTIMING CUBE\n");
-    if( !time_cube(304,T)) {
+    if( !time_cube(608,T)) {
         printf("SUCCESS\n");
     }
     printf("\nTIMING CROSS\n");
-    if( !time_cross(128,T)) {
+    if( !time_cross(256,T)) {
         printf("SUCCESS\n");
     }
     return 0;
@@ -36,7 +36,6 @@ int time_sphere(int diam, int big_t) {
     k_arr = make_sphere(diam);
     int X,Y,Z;
     X = Y = Z = diam;
-    printf("%d\n",k_arr[X*Y*Z-1]);
 
     printf("\nSEMI-STRUCTURED\n");
     time_room_ss(X,Y,Z, big_t, k_arr);
