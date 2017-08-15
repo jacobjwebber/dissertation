@@ -147,6 +147,8 @@ In the work leading up to this report, some currently state of the art GPU acous
 
 GPUs threads can be controlled in three dimensional blocks. On NVIDIA devices these blocks can contain up to \num{1024} threads. When performing FDTD stencils of irregularly shaped rooms, current methods will result in there being many blocks assigned to regions that are completely outside the room being simulated. The new method proposed here decomposes rooms into blocks in space that correspond to blocks of threads. This means that space and compute is not wasted on empty blocks. These blocks are large enough that they remove some of the typical drawbacks of unstructured data approaches, but small enough that they avoid storing a significant amount of empty space. The fact that data is organised similarly to computation results in less branching logic. Branching can cause performance issues on GPUs.
 
+In addition, the fact that these blocks are smaller means that neighbouring points in space will be closer together in memory. This means that the method is well suited to devices with high bandwidth memory. Such devices cache large amounts of data every time they access memory.
+
 This report includes some background on the theory of acoustics and difference schemes, a brief background in GPUs and an overview of the new techniques that were devised and trialled in the work leading up to this report. This is followed by description of the details of the implementation in CUDA C as well as software development, profiling and debugging strategies and tools. There is then a comparative analysis of existing and novel techniques both in terms of performance in compute time and memory use. The report finishes with some conclusions and ideas for further work.
 
 \chapter{Background and Literature Review}
@@ -156,7 +158,7 @@ This report includes some background on the theory of acoustics and difference s
 \section{Room Acoustics}
 \label{section:acoustics}
 \subsection{Classical Acoustics}
-Sound is modelled using the wave equation:
+Sound is modelled using the wave equation, which in one dimension is:
 
 \begin{equation}
 \frac{\partial ^2 P}{\partial x^2 } - \frac{1}{{c^2 }}\frac{{\partial ^2 P}}{{\partial t^2 }} = 0
@@ -278,6 +280,8 @@ The boundary scheme used modifies equation \ref{equation:stencil-small} by repla
 P_{l,m,p}^{n+1} = (2 - \lambda^2 K_{l,m,p} )P_{l,m,p}^{n} + \lambda^2 S - P_{l,m,p}^{n-1}
 \end{equation}
 
+In practice a slightly more sophisticated set of boundary conditions are used which model the reflectivity of the walls. The physics of this go beyond the scope of this project and report which were largely focussed on improving the memory capacity performance. The full stencil is shown in both the kernels in appendix \ref{appendix:kernels}. This technique is taken from \cite{brian}. It is slightly more complex than the scheme used in \cite{craig}, which should is noted when comparing performance (see section \ref{section:stencil-perf}).
+
 \section{Stencilling Operations}
 
 A stencilling operation is one that updates array elements by combining its neighbours in some way. What is defined as a neighbour depends on the stencil being used. A Von Neumann stencil, as shown in figure \ref{stencil}, uses only the six elements that are directly next to a point (not diagonals). The $S$ variable defined in equation \ref{equation:s-define} is an example of a Von Neumann stencil.
@@ -351,7 +355,9 @@ As the efficiency of SMT on the GPU is dependent on large registers, performance
 
 GPUs are tuned for throughput, rather than latency. This colours their approach to data storage as well as processing.
 
-The previous section discusses the importance of registers for SMT. These form the top tier of the GPUs memory hierarchy. Modern NVIDIA GPUs, such as the K20 used in this project, also have two additional layers of cache memory above the global memory store. The top layer of this cache is also referred to as \textit{shared} memory. This is because data can be explicitly loaded here and will then be shared among a group of threads defined by the programmer as a \textit{block} (see section \ref{subsection:cuda} for details). L2 cache is hardware controlled and functions similarly to CPU caches. Below this there is \textit{global} memory. This is the largest and highest latency form of data storage on the GPU. The K20 used in experiments for this report uses GDDR5 high bandwidth graphics memory for this. This differs from DDR3/4 used in conventional computing . 
+The previous section discusses the importance of registers for SMT. These form the top tier of the GPUs memory hierarchy. Modern NVIDIA GPUs, such as the K20 used in this project, also have two additional layers of cache memory above the global memory store. The top layer of this cache is also referred to as \textit{shared} memory. This is because data can be explicitly loaded here and will then be shared among a group of threads defined by the programmer as a \textit{block} (see section \ref{subsection:cuda} for details). L2 cache is hardware controlled and functions similarly to CPU caches. Below this there is \textit{global} memory. This is the largest and highest latency form of data storage on the GPU. The K20 used in experiments for this report uses GDDR5 high bandwidth graphics memory for this. This differs from DDR3/4 used in conventional computing.
+
+There is also \textit{texture memory}. This is only useful with two dimensional arrays so is not relevant to this project.
 
 GDDR5 is tuned for maximal bandwidth. It does sacrifice some latency performance in exchange for this. This is achieved by loading in larger lines of data at a time. There is much excitement in GPGPU circles about the recent arrival of \textit{high bandwidth memory 2} (HBM2). This has even higher bandwidth than GDDR5 and has even larger access widths.
 
@@ -381,7 +387,7 @@ myData = data[threadIdx.z][threadIdx.y][threadIdx.x]
 \end{minipage}
 \end{center}
 
-Such an access is considered idiomatic CUDA code and is well optimised in terms of memory access, particularly when the thread in the x direction corresponds to the fastest moving array index in memory. In C this is the last index specifier. Accessing data where the threads and data accesses follow the same order is known as \textit{data coalescing}. Acessing data that is close together in memory is also important and is referred to as \textit{data locality}.
+Such an access is considered idiomatic CUDA code and is well optimised in terms of memory read speed, particularly when the thread in the x direction corresponds to the fastest moving array index in memory. In C this is the last index specifier. Accessing data where the threads and data accesses follow the same order is known as \textit{data coalescing}. Acessing data that is close together in memory is also important and is referred to as \textit{data locality}.
 
 These thread blocks are assigned to an SMX when resources become available. While they are waiting for global memory access latencies, SMT will be used to make a new warp active. As warps contain \num{32} threads and thread blocks can contain up to \num{1024}, SMT can also be used within these thread blocks when multiple warps are required. The fact that threads are controlled in warps of 32 has a few ramifications for the programmer. Firstly it means that blocks that are smaller than 32 threads will waste compute capacity, as the remaining threads will execute on null data. It also means that branching logic is likely to introduce inefficiencies where it might require branching within a warp. This will result in all accessed branches being executed on all threads with those not activated operating on null data.
 
@@ -395,7 +401,7 @@ Combining the ideas as written about in sections \ref{section:acoustics} and \re
 
 \subsection{The Bounding Box Method}
 
-Current techniques are optimised for cuboid shaped rooms. It is easy, with such a room, to derive the $K_{l,m,p}$ value by adding a conditional statement to check whether the point is in the boundary of the cuboid. A sketch of this method is shown in algorithm \ref{alg:cuboid}. This was the method used in \cite{craig}. In this sketch the update refers to the stencil scheme outlined in section \ref{section:acoustics}.
+Current techniques are optimised for cuboid shaped rooms. It is easy, with such a room, to derive the $K_{l,m,p}$ value by adding a conditional statement to check whether the point is in the boundary of the cuboid. A sketch of this method is shown in algorithm \ref{alg:cuboid}. This was the method used in \cite{craig}. In this sketch the update refers to the stencil scheme outlined in section \ref{section:acoustics}. When the stencil is performed, the room is divided into blocks. These are each assigned to a CUDA kernel instance. A kernel derives which points in memory to operate from by its block identities.
 
 \IncMargin{1em}
 \begin{algorithm}[H]
@@ -490,7 +496,7 @@ There is some analogue that can be found here with the field of sparse matrices.
 
 If a bounding box representation can be thought of as a structured approach, and typical sparse representations as unstructured, here a technique is presented which can be thought of, and from here will be described as a \textit{semi-structured} approach. This is where smaller blocks of structured data are stored only if they contain at least one point that is non-zero - or inside the room. These blocks are sized so that they are large enough to dwarf any additional locational data requirements, but small enough so that not too much empty space need be stored.
 
-The nature of the CUDA paradigm can also be taken advantage. The blocks can be designed so that they correspond to a CUDA block of threads. This means that one kernel can operate on one block in a parallel fashion. This relation means that each kernel can load one contiguous block of data from global memory. This makes this approach highly suited to devices that are optimised for memory bandwidth, and therefore have larger memory transaction sizes.
+The nature of the CUDA paradigm can also be taken advantage of. The blocks are designed so that they correspond to a CUDA block of threads. This means that one kernel can operate on one block in a parallel fashion. This relation means that each kernel can load one contiguous block of data from global memory. This makes this approach highly suited to devices that are optimised for memory bandwidth, and therefore have larger memory transaction sizes.
 
 \section{The Data Structure} 
 \label{section:data-structure}
@@ -630,9 +636,16 @@ NVIDIA includes developer tools with its CUDA software. As well as the compiler,
 
 For debugging, the \verb|cuda-gdb| program functions like gdb, but extended to work on GPU code. The \verb|cuda-memcheck| tool checks for memory errors such as segmentation faults. It will provide the line of code where the memory error is when the the binary is compiled using debugging flags.
 
-For profiling there is the \verb|nvprof| tool for the command line. There is also the NVIDIA \textit{Visual Profiler}, which provides a GUI. This can provide details of the amount of time spent on each part of the computation, the time taken for each kernel, as well as other details such as the theoretical and achieved occupancy (see section \ref{section:gpu-par}). Figure FIGUREFIGURE provides a screenshot of this tool in use.
+For profiling there is the \verb|nvprof| tool for the command line. There is also the NVIDIA \textit{Visual Profiler}, which provides a GUI. This can provide details of the amount of time spent on each part of the computation, the time taken for each kernel, as well as other details such as the theoretical and achieved occupancy (see section \ref{section:gpu-par}). Figure \ref{figure:vis-prof} provides a screenshot of this tool in use. The tool provides a time line of kernel executions as well as data on the individual kernel performance such as runtime, theoretical and achieved occupancy, and global read efficiency (see section \ref{section:gpus}). 
 
-The \verb|nsight| IDE, based on eclipse, provides access to all of these tools.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{../diagrams/vis-prof}
+\caption{A screenshot of the visual profiler tool from NVIDIA's own documentation.}
+\label{figure:vis-prof}
+\end{figure}
+
+The \verb|nsight| IDE, based on eclipse, provides access to the visual profiler as well as a GUI based debugger and all the typical features of a modern IDE.
 
 It was unfortunately not possible to use the GUI based tools when working on the K20 GPU server that was used to gather results. This is because the server is not configured to run graphical programs. It was possible to run these tools on a home desktop with an NVIDIA GTX 970 graphics card installed. This was useful for debugging is this device is capable of running CUDA code. However, it was of limited use for profiling, as the card achieved very different performance to the K20. The GTX 970 is a commodity card that lacks the double precision floating point units of the K20. It also has fewer register files and less L1 cache.
 
@@ -695,7 +708,7 @@ This means that under the existing bounding box technique for modelling non-cubo
 
 
 
-When the size of the sub-array is equal to that of the bounding array, the semi-structured and structured approaches can be seen as equivalent. However, as shown in listing \ref{listing:struct}  there is srepeated ome overhead of storing the array indices of the neighbouring structs. This requires the storage of 6 integers for every struct, meaning that for a room of size \num{8} by \num{8} by \num{8} and with double precision floating point numbers, the semi-structured approach uses \num{1.002757} times the memory of the structured approach, in line with the worst case scenario presented in section \ref{section:data-structure}. This overhead is marginally higher when single precision numbers are used. The storage of these integers is still a very small overhead.
+When the size of the sub-array is equal to that of the bounding array, the semi-structured and structured approaches can be seen as equivalent. However, as shown in listing \ref{listing:struct}  there is some overhead of storing the array indices of the neighbouring structs. This requires the storage of 6 integers for every struct, meaning that for a room of size \num{8} by \num{8} by \num{8} and with double precision floating point numbers, the semi-structured approach uses \num{1.002757} times the memory of the structured approach, in line with the worst case scenario presented in section \ref{section:data-structure}. This overhead is marginally higher when single precision numbers are used. The storage of these integers is still a very small overhead.
 
 \begin{figure}[H]
 \centering%
@@ -728,7 +741,7 @@ then the case is equivalent to the infinite sum of infinitesimals making up a sp
 \lim_{d\to\infty} \frac{S_{ss}}{S_{s}} = \frac{\pi}{6}\cdot 1.002757
 \end{equation}
 
-Practical gains come long before $d$ approaches infinity. With a diameter of \num{768} points, the semi-structured approach means that \SI{4014}{\mebi\byte} of global memory is required which falls within the 5GiB limit of the K20. The bounding box method for a room of this size would require \SI{7344}{\mebi\byte} - meaning such a simulation could not be run on on a K20 graphics card.
+Practical gains come long before $d$ approaches infinity. With a diameter of \num{768} points, the semi-structured approach means that \SI{4014}{\mebi\byte} of global memory is required, which falls within the 5GiB limit of the K20. The bounding box method for a room of this size would require \SI{7344}{\mebi\byte} - meaning such a simulation could not be run on on a K20 graphics card.
 
 \subsection{Cube}
 The results from the cube shaped room experiment were very simple, as far as memory capacity goes. In all cases $\frac{S_{ss}}{S_{s}}$ was \num{1.002757}. This is because there is no empty space stored with the bounding box method. This represents the worst case performance for the semi-structured method. As such an increase in memory usage of around a quarter of one percent is a fairly tolerable result. Full results are included in appendix \ref{appendix:mem-cap}.
@@ -813,10 +826,11 @@ As with the other memory capacity experiments, the \lstinline|Bx|, \lstinline|By
 This is exactly the performance that was achieved in all cases when the experiment was run on a variety of sizes of cross shaped rooms. Full results for this experiment are given in appendix \ref{appendix:mem-cap}.
 
 \section{Stencil Performance}
+\label{section:stencil-perf}
 
 Reducing the memory consumption of these models is pleasing, but of little use if stencil performance does not stay at a reasonable level. If performance were significantly worse then it would not be worth using a GPU at all, and CPU based memory is cheap and plentiful enough that these optimizations are unlikely to be worthwhile.
 
-The stencil was run on the three rooms described in section \ref{section:mem-use}. Results in table \ref{table:perf} show the time taken to run 1000 time steps. The \textit{Diam} figure is number of grid points width for the cube and sphere and the width of each of the five cubes in the cross.
+The stencil was run on the three rooms described in section \ref{section:mem-use}. Results in table \ref{table:perf} show the time taken to run \num{1000} time steps. The \textit{Diam} figure is the width in grid points for the cube and sphere and the width of each of the five cubes in the cross.
 
 \begin{table}[h!]
 \centering
@@ -824,13 +838,39 @@ The stencil was run on the three rooms described in section \ref{section:mem-use
  \begin{tabular}{|c|c|c|c|c|c|c|} \hline
  Room Shape & Diam & \multicolumn{2}{c|}{Memory Use (MiB)} & \multicolumn{2}{c|}{Time (s)} & Speed-up \\ \cline{3-6}
   &  & Structured & Semi-structured & Structured & Semi-structured & \\ \hline
-Cross & 304 & 300 & 600 & 10 & 20 & 2X \\   
-Sphere & 304 & 300 & 600 & 10 & 20 & 2X \\ 
-Cube & 304 & 300 & 600 & 10 & 20 & 2X \\ \hline
+   
+Cube & 608 & 3643.84 & 3653.90 & 79.49 & 81.25 & 0.98X \\  
+Sphere & 608 & 3643.84 & 2012.92 &  79.50 & 44.78 & 1.78X \\
+Cross & 256 & 2448.00 & 1363.76 & 53.27 & 30.34 & 1.76X \\  \hline
 \end{tabular}
 \caption{Performance results for the stencilling operation. }
 \label{table:perf}
 \end{table}
+
+The results were obtained by running the experiments multiple times and taking a mean of the time taken for each experiment. The timing results were consistent - with a standard deviation value of less than one percent in all cases.
+
+\begin{table}[H]
+\centering
+\small
+ \begin{tabular}{|c|c|c|} \hline
+ Room Shape & \multicolumn{2}{c|}{Data Rate (\SI{}{\gibi\byte\per\second})} \\ \cline{2-3}
+  & Structured & Semi-structured \\ \hline
+Cube & 44.77 & 43.92 \\ 
+Sphere & 44.76 & 43.90 \\ 
+Cross & 44.88 & 43.90 \\  \hline
+Mean & 44.80 & 43.91 \\ \hline
+\end{tabular}
+\caption{Data processing rates.}
+\label{table:data}
+\end{table}
+
+The performance figures were very similar in the cube example. Performances scaled relative to memory savings for the other two examples. To illustrate this point table \ref{table:data} is included, which shows in \SI{}{\gibi\byte\per\second} the rate at which data is processed. To get this result the memory usage from table \ref{table:perf} was multiplied by the number of time steps (\num{1000}) and then divided by the time taken. These results show that the rate at which data is processed is relatively constant within each method. The structured approach was, on average, \num{2}\% faster than the semi-structured on  a per \SI{}{\gibi\byte} basis. However, this is easily overshadowed by the data savings that are possible if the room is even slightly irregularly shaped.
+
+The data processing rates are well below the \SI{280}{\giga\byte\per\second} maximum memory bandwidth of the K20 GPU. This suggests there is still significant room for improvement - particularly as the maximum theoretical processing rate could be significantly higher than this if cache is well used.
+
+\section{Comparison with results achieved in \cite{craig}}
+
+Results for the structured approach should match those as achieved in \cite{craig} for a cube shaped room. However, because the method allows irregularly shaped rooms, it is necessary to store a $K$ array of the rooms shape. This results in an extra global memory read for each point processed. In addition, slightly more complex boundary conditions are imposed in the work described in this report. In the literature, \textit{voxels} are often used when measuring performance. A voxel is one point in a 3D grid and vox\SI{}{\per\second} is the number of points processed per second. With the 3D tiling method that was replicated here, \cite{craig} achieved \num{4484} Mvox\SI{}{\per\second}. In contrast a rate of \num{2827} Mvox\SI{}{\per\second} was achieved for the cube example here. This is roughly in line with what would be expected, given that there are \num{50}\% more global memory reads per point and significantly more floating point operations. 
 
 \chapter{Conclusions and Further Work}
 \epigraph{\itshape ``It is not incumbent upon you to finish the task. Yet, you are not free to desist from it.''}{Tarphon}
@@ -951,11 +991,11 @@ The results are for double precision numbers.
 \end{lstlisting}
 
 \chapter{Kernels}
-
+\label{appendix:kernels}
 The following kernels where used.
 
 \chapter{Source Directory Structure}
-\lstset{basicstyle=\scriptsize,  breaklines=true,label=listing:K20,caption={Output from the GNU tree program}}
+\lstset{basicstyle=\scriptsize,  breaklines=true,label=listing:structure,caption={Output from the GNU tree program}}
 \begin{lstlisting}
 |-- lib
 |   |-- block_dims.h

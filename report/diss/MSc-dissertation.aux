@@ -1,4 +1,5 @@
 \relax 
+\citation{craig}
 \@writefile{toc}{\contentsline {chapter}{List of Tables}{iii}}
 \citation{ref:nvidia-gpu-programming-guide}
 \citation{ref:nvidia-gpu-k20-white}
@@ -33,6 +34,8 @@
 \newlabel{equation:s-define}{{2.14}{5}}
 \newlabel{equation:stencil-small}{{2.15}{5}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1.3}Boundary Conditions}{5}}
+\citation{brian}
+\citation{craig}
 \citation{gpu_stencil}
 \citation{ref:nvidia-gpu-cpu}
 \citation{ref:nvidia-gpu-launch}
@@ -42,13 +45,13 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {2.1}{\ignorespaces Diagram showing 3 dimensional Von Neumann stencil. Credit: Wikimedia Commons.\relax }}{6}}
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
 \newlabel{stencil}{{2.1}{6}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.3}Graphics Processing Units (GPUs)}{6}}
-\newlabel{section:gpus}{{2.3}{6}}
 \citation{craig}
 \citation{ref:nvidia-gpu-programming-guide}
 \citation{ref:nvidia-gpu-programming-guide}
 \citation{ref:nvidia-gpu-k20-white}
 \citation{ref:nvidia-gpu-k20-white}
+\@writefile{toc}{\contentsline {section}{\numberline {2.3}Graphics Processing Units (GPUs)}{7}}
+\newlabel{section:gpus}{{2.3}{7}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.3.1}GPUs and parallelism}{7}}
 \newlabel{section:gpu-par}{{2.3.1}{7}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2.2}{\ignorespaces GPU and CPU architectures \cite  {ref:nvidia-gpu-programming-guide}\relax }}{7}}
@@ -57,7 +60,7 @@
 \citation{ref:nvidia-gpu-k20-white}
 \@writefile{lof}{\contentsline {figure}{\numberline {2.3}{\ignorespaces The SMX architecture as in the K20 GPU \cite  {ref:nvidia-gpu-k20-white}\relax }}{8}}
 \newlabel{fig:smx}{{2.3}{8}}
-\@writefile{toc}{\contentsline {subsubsection}{Simultaneous Multi-Threading}{8}}
+\@writefile{toc}{\contentsline {subsubsection}{Simultaneous Multi-Threading}{9}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.3.2}GPU Memory Hierarchies}{9}}
 \newlabel{section:gpu-mem}{{2.3.2}{9}}
 \@writefile{lot}{\contentsline {table}{\numberline {2.1}{\ignorespaces Memory hierarchy on NVIDIA GPU.\relax }}{9}}
@@ -122,31 +125,40 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces A screenshot of a GitHub Issue.\relax }}{21}}
 \newlabel{figure:gh-issue}{{4.1}{21}}
 \@writefile{toc}{\contentsline {section}{\numberline {4.3}Debugging and Profiling Tools}{22}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {5}Results and Analysis}{23}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces A screenshot of the visual profiler tool from NVIDIA's own documentation.\relax }}{22}}
+\newlabel{figure:vis-prof}{{4.2}{22}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Results and Analysis}{24}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{loa}{\addvspace {10\p@ }}
-\newlabel{chapter:results}{{5}{23}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.1}Memory Usage}{23}}
-\newlabel{section:mem-use}{{5.1}{23}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.1}Sphere}{23}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Computer graphic showing a sphere of unit diameter within a cube of unit side.\relax }}{23}}
-\newlabel{figure:sphere-cube}{{5.1}{23}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces The fraction of memory used by the semi-structured approach with respect to the structured approach (double precision). The ideal fraction of $\frac  {\pi }{6}$ is shown as a dashed line\relax }}{25}}
-\newlabel{figure:cap-sphere}{{5.2}{25}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.2}Cube}{25}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.3}Cross}{26}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces A figure showing simple cross shape. The cross is made up of 5 equal cubes.\relax }}{26}}
-\newlabel{figure:cross}{{5.3}{26}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.2}Stencil Performance}{27}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces Performance results for the stencilling operation. \relax }}{27}}
-\newlabel{table:perf}{{5.1}{27}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {6}Conclusions and Further Work}{28}}
+\newlabel{chapter:results}{{5}{24}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}Memory Usage}{24}}
+\newlabel{section:mem-use}{{5.1}{24}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.1}Sphere}{24}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Computer graphic showing a sphere of unit diameter within a cube of unit side.\relax }}{24}}
+\newlabel{figure:sphere-cube}{{5.1}{24}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces The fraction of memory used by the semi-structured approach with respect to the structured approach (double precision). The ideal fraction of $\frac  {\pi }{6}$ is shown as a dashed line\relax }}{26}}
+\newlabel{figure:cap-sphere}{{5.2}{26}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.2}Cube}{26}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.3}Cross}{27}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces A figure showing simple cross shape. The cross is made up of 5 equal cubes.\relax }}{27}}
+\newlabel{figure:cross}{{5.3}{27}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}Stencil Performance}{28}}
+\newlabel{section:stencil-perf}{{5.2}{28}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces Performance results for the stencilling operation. \relax }}{28}}
+\newlabel{table:perf}{{5.1}{28}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.2}{\ignorespaces Data processing rates.\relax }}{28}}
+\newlabel{table:data}{{5.2}{28}}
+\citation{craig}
+\citation{craig}
+\citation{craig}
+\@writefile{toc}{\contentsline {section}{\numberline {5.3}Comparison with results achieved in \cite  {craig}}{29}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {6}Conclusions and Further Work}{30}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{loa}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {6.1}Future Work}{28}}
-\newlabel{section:future-work}{{6.1}{28}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.1}Future Work}{30}}
+\newlabel{section:future-work}{{6.1}{30}}
 \bibcite{craig}{1}
 \bibcite{brian}{2}
 \bibcite{feynman}{3}
@@ -157,34 +169,35 @@
 \bibcite{ref:mici}{8}
 \bibcite{ref:zhao}{9}
 \bibcite{ref:strik}{10}
-\@writefile{toc}{\contentsline {chapter}{Bibliography}{29}}
+\@writefile{toc}{\contentsline {chapter}{Bibliography}{31}}
 \bibcite{ref:harris}{11}
 \bibcite{gpu_stencil}{12}
 \bibcite{ref:electro}{13}
 \bibcite{ref:ray-trace}{14}
 \bibcite{ref:vision}{15}
 \bibcite{ref:gpu-market}{16}
-\@writefile{toc}{\contentsline {chapter}{\numberline {A}Memory Capacity Experiment Results}{31}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {A}Memory Capacity Experiment Results}{33}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{loa}{\addvspace {10\p@ }}
-\newlabel{appendix:mem-cap}{{A}{31}}
-\@writefile{lot}{\contentsline {table}{\numberline {A.1}{\ignorespaces Sphere memory capacity results\relax }}{31}}
-\@writefile{lot}{\contentsline {table}{\numberline {A.2}{\ignorespaces Cube memory capacity results\relax }}{32}}
-\@writefile{lot}{\contentsline {table}{\numberline {A.3}{\ignorespaces Cross memory capacity results. Diam here gives the diameter of the five constituent cubes of the cross.\relax }}{32}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {B}NVIDIA K20 Device Details}{33}}
+\newlabel{appendix:mem-cap}{{A}{33}}
+\@writefile{lot}{\contentsline {table}{\numberline {A.1}{\ignorespaces Sphere memory capacity results\relax }}{33}}
+\@writefile{lot}{\contentsline {table}{\numberline {A.2}{\ignorespaces Cube memory capacity results\relax }}{34}}
+\@writefile{lot}{\contentsline {table}{\numberline {A.3}{\ignorespaces Cross memory capacity results. Diam here gives the diameter of the five constituent cubes of the cross.\relax }}{34}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {B}NVIDIA K20 Device Details}{35}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{loa}{\addvspace {10\p@ }}
-\newlabel{listing:K20}{{B.1}{33}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {B.1}Output from deviceQuery program}{33}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {C}Kernels}{34}}
+\newlabel{listing:K20}{{B.1}{35}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {B.1}Output from deviceQuery program}{35}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {C}Kernels}{36}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{loa}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {chapter}{\numberline {D}Source Directory Structure}{35}}
+\newlabel{appendix:kernels}{{C}{36}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {D}Source Directory Structure}{37}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{loa}{\addvspace {10\p@ }}
-\newlabel{listing:K20}{{D.1}{35}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {D.1}Output from the GNU tree program}{35}}
+\newlabel{listing:structure}{{D.1}{37}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {D.1}Output from the GNU tree program}{37}}
