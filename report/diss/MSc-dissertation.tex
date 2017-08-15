@@ -612,7 +612,16 @@ MORE PLEASE
 
 \section{Software Development Process}
 
-MORE PLEASE
+At the root of all development was GitHub and the git tool. These were used to store code and data, and distribute it between machines that were used for development. Accurately tracking changes that were made to this document and to code across multiple computers was made trivial. GitHub also has \textit{Issues}. These can be used to record work that needs to be done and can be marked as complete, as well as linked to specific commits. A screenshot is included in figure \ref{figure:gh-issue}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{../diagrams/issue}
+\caption{A screenshot of a GitHub Issue.}
+\label{figure:gh-issue}
+\end{figure}
+
+The software development was largely done from scratch by one developer. Although this removed the absolute necessity of a rigorous development process, this does not mean that a more thorough process would not have been beneficial. GitHub issues were used occasionally, but development was largely organised on an ad hoc basis. This could be improved upon.
 
 
 \section{Debugging and Profiling Tools}
@@ -627,12 +636,13 @@ The \verb|nsight| IDE, based on eclipse, provides access to all of these tools.
 
 It was unfortunately not possible to use the GUI based tools when working on the K20 GPU server that was used to gather results. This is because the server is not configured to run graphical programs. It was possible to run these tools on a home desktop with an NVIDIA GTX 970 graphics card installed. This was useful for debugging is this device is capable of running CUDA code. However, it was of limited use for profiling, as the card achieved very different performance to the K20. The GTX 970 is a commodity card that lacks the double precision floating point units of the K20. It also has fewer register files and less L1 cache.
 
+Somewhat ironically, the debugger built into the \verb|nsight| tool was itself riddled with bugs - causing it to crash every time it reached the end of a program. More luck was had with the \verb|cuda-gdb| command line utility that NVIDIA also provides. It was also possible to use this on the K20 server through SSH - meaning that the same machine that was used for gathering results could also be used for development, debugging and profiling. 
+
 \chapter{Results and Analysis}
 \label{chapter:results}
 
 \section{Memory Usage}
-
-
+\label{section:mem-use}
 
 Very high memory usage is currently the biggest inhibiting factor to the performance of FDTD simulations. 
 
@@ -800,7 +810,27 @@ As with the other memory capacity experiments, the \lstinline|Bx|, \lstinline|By
 \frac{5}{9}\cdot\Bigg(1 + \frac{24}{17\cdot8\cdot8\cdot8}\Bigg) = 0.5570874183
 \end{equation}
 
+This is exactly the performance that was achieved in all cases when the experiment was run on a variety of sizes of cross shaped rooms. Full results for this experiment are given in appendix \ref{appendix:mem-cap}.
+
 \section{Stencil Performance}
+
+Reducing the memory consumption of these models is pleasing, but of little use if stencil performance does not stay at a reasonable level. If performance were significantly worse then it would not be worth using a GPU at all, and CPU based memory is cheap and plentiful enough that these optimizations are unlikely to be worthwhile.
+
+The stencil was run on the three rooms described in section \ref{section:mem-use}. Results in table \ref{table:perf} show the time taken to run 1000 time steps. The \textit{Diam} figure is number of grid points width for the cube and sphere and the width of each of the five cubes in the cross.
+
+\begin{table}[h!]
+\centering
+\small
+ \begin{tabular}{|c|c|c|c|c|c|c|} \hline
+ Room Shape & Diam & \multicolumn{2}{c|}{Memory Use (MiB)} & \multicolumn{2}{c|}{Time (s)} & Speed-up \\ \cline{3-6}
+  &  & Structured & Semi-structured & Structured & Semi-structured & \\ \hline
+Cross & 304 & 300 & 600 & 10 & 20 & 2X \\   
+Sphere & 304 & 300 & 600 & 10 & 20 & 2X \\ 
+Cube & 304 & 300 & 600 & 10 & 20 & 2X \\ \hline
+\end{tabular}
+\caption{Performance results for the stencilling operation. }
+\label{table:perf}
+\end{table}
 
 \chapter{Conclusions and Further Work}
 \epigraph{\itshape ``It is not incumbent upon you to finish the task. Yet, you are not free to desist from it.''}{Tarphon}
@@ -878,6 +908,12 @@ The results are for double precision numbers.
 \begin{table}
 \csvautotabular{../../semi-structured/results/data/memory-cap_cube.csv}
 \caption{Cube memory capacity results}
+\end{table}
+
+
+\begin{table}
+\csvautotabular{../../semi-structured/results/data/memory-cap_cross.csv}
+\caption{Cross memory capacity results. Diam here gives the diameter of the five constituent cubes of the cross.}
 \end{table}
 
 \chapter{NVIDIA K20 Device Details}
