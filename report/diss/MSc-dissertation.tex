@@ -441,8 +441,7 @@ To support arbitrarily shaped rooms as laid out in \cite{brian} it is necessary 
 The update to $P_{l,m,p}^{n+1}$ is now a function of $K_{l,m,p}$. This results in an extra global memory read for every stencil point.
 
 \subsubsection{Block decomposition and caching.}
-
-
+MORE PLEASE
 
 \subsection{Memory Capacity}
 
@@ -657,11 +656,15 @@ The work stems from a Matlab script that implements the scheme using a bounding 
 
 The code was designed to be as extensible and reusable as possible. As such each experiment is divided into a separate directory. 
 
-A directory tree (the output of the GNU \verb|tree| utility) is given in listing \ref{listing:structure}.
+A directory tree (the output of the GNU \verb|tree| utility) of all the new source files is given in listing \ref{listing:structure}.
 
-Each of these contains a CUDA C source file that performs the required experiment. These then call functions from a library that do all the tasks associated with the proposed method. This library is a selection of source files that are in a \verb|lib| directory. They contain functions for forming the data structure as described in chapter \ref{chapter:proposition}, as well as generating room shapes, and performing the FDTD stencil.
+The \verb|lib| directory contains source files with code that is necessary for the implementation of the semi-structured method. They contain functions for forming the data structure as described in chapter \ref{chapter:proposition}, as well as generating room shapes, and performing the FDTD stencil.
 
-MORE PLEASE
+There is a source directory each for the memory capacity experiments. These contain a CUDA C source file that performs the required experiment as well as a makefile that compiles it and the necessary code from the \verb|lib| dir. These then call functions from the library that do all the tasks associated with the proposed method. 
+
+There is then a \verb|test| directory. This contains functions that test the library functions for correctness.
+
+As well as these source directories there is also a directory for gathering and storing results. This contains a script that measures the memory capacity performance with rooms as described in \ref{section:mem-use}. These results are put into 3 csv files, which can be read by \LaTeX\ to form the three tables in appendix \ref{appendix:mem-cap}. This automation means that this experiment is easily repeatable.
 
 \section{Software Development Process}
 

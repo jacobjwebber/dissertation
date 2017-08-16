@@ -16,7 +16,7 @@
 \contentsline {section}{\numberline {2.4}The State of the Art in FDTD Acoustical Modelling}{11}
 \contentsline {subsection}{\numberline {2.4.1}The Bounding Box Method}{11}
 \contentsline {subsubsection}{Block decomposition and caching.}{12}
-\contentsline {subsection}{\numberline {2.4.2}Memory Capacity}{12}
+\contentsline {subsection}{\numberline {2.4.2}Memory Capacity}{13}
 \contentsline {subsection}{\numberline {2.4.3}Memory Bandwidth}{13}
 \contentsline {section}{\numberline {2.5}Other Methods}{14}
 \contentsline {subsection}{\numberline {2.5.1}Ray Tracing}{14}
