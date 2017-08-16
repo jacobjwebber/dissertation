@@ -139,11 +139,11 @@ I would like to extend my sincere thanks to Paul Graham and Dr Brian Hamilton fo
 \chapter{Introduction}
 \epigraph{\itshape ``There is no competition of sounds between a nightingale and a violin.''}{Dejan Stojanovic}
 
-The way we perceive sound depends on the environment in which we hear it as well as how the sound was created. Listening to a sound in a space like a church or a cathedral is very different to listening in a bedroom. Being able to predict how a given environment will sound has practical use in the design of new buildings, particularly those where acoustic performance is critical. A great deal of effort goes into the design of new concert halls. This could be greatly enhanced by accurate acoustic models of spaces. The aim then, of research in this area, is to provide an accurate prediction of how a room will sound after being given its physical properties.
+The way we perceive sound depends on the environment in which we hear it, as well as how the sound was created. Listening to a sound in a space like a church or a cathedral is very different from listening in a bedroom. Being able to predict how a given environment will sound has practical use in the design of new buildings, particularly those where acoustic performance is critical. A great deal of effort goes into the design of new concert halls. The results could enhanced by accurate acoustic models of spaces. The aim then of research in this area is to provide an accurate prediction of how sound will manifest itself given the physical properties of the space in which it is heard.
 
 The key technique currently used for these simulations is the finite-difference time-domain (FDTD) method. This is used to find approximate solutions to the wave equation across a three dimensional space. The FDTD process requires that a stencil operation be performed. This stencil process must be iterated across a vast number of points in memory. The requirement for high memory bandwidth means that the problem is well suited to the use of graphics processing units (GPUs). These have high band width graphics memory and can operate on very many points at once in a massively parallel fashion.
 
-In the work leading up to this report, some currently state of the art GPU acoustics techniques as outlined in \cite{craig} and \cite{brian} were recreated. In addition to this, a novel technique was devised and implemented that performs these simulations. The proposed approach is designed to make best use of graphics memory when rooms are irregularly shaped. This is important because graphics memory is relatively scarce.
+In the work leading up to this report, some currently state-of-the-art GPU acoustics techniques as outlined in \cite{craig} and \cite{brian} were recreated. In addition to this, a novel technique that performs these simulations was devised and implemented. The proposed approach is designed to make best use of graphics memory when rooms are irregularly shaped. This is important because graphics memory is relatively scarce.
 
 GPUs threads can be controlled in three dimensional blocks. On NVIDIA devices these blocks can contain up to \num{1024} threads. When performing FDTD stencils of irregularly shaped rooms, current methods will result in there being many blocks assigned to regions that are completely outside the room being simulated. The new method proposed here decomposes rooms into blocks in space that correspond to blocks of threads. This means that space and compute is not wasted on empty blocks. These blocks are large enough that they remove some of the typical drawbacks of unstructured data approaches, but small enough that they avoid storing a significant amount of empty space. The fact that data is organised similarly to computation results in less branching logic. Branching can cause performance issues on GPUs.
 
@@ -158,7 +158,7 @@ This report includes some background on the theory of acoustics and difference s
 \section{Room Acoustics}
 \label{section:acoustics}
 \subsection{Classical Acoustics}
-Sound is modelled using the wave equation, which in one dimension is:
+Sound is modelled using the wave equation which in one dimension is:
 
 \begin{equation}
 \frac{\partial ^2 P}{\partial x^2 } - \frac{1}{{c^2 }}\frac{{\partial ^2 P}}{{\partial t^2 }} = 0
@@ -399,7 +399,7 @@ Shared memory has thread block scope. Once a thread is executed this memory is n
 
 CUDA is one of many programming paradigms that are used for GPGPU computing. Others include OpenMP, OpenCL and C++ AMP. Unlike CUDA, these allow many brands of GPU to be programmed.
 
-\section{The State of the Art in FDTD Acoustical Modelling}
+\section{The State-of-the-art in FDTD Acoustical Modelling}
 \label{chapter:state-of-art}
 Combining the ideas as written about in sections \ref{section:acoustics} and \ref{section:gpus}, it is possible to describe the most successful techniques thus far in running FDTD room acoustics models.
 
@@ -935,7 +935,7 @@ Results for the structured approach should match those as achieved in \cite{crai
 \chapter{Conclusions and Further Work}
 \epigraph{\itshape ``It is not incumbent upon you to finish the task. Yet, you are not free to desist from it.''}{Tarphon}
 
-To conclude, very good results were achieved. The currently state of the art method was implemented on GPUs with a slightly more sophisticated set of boundary conditions than had previously been done in \cite{craig}. In addition a new technique was devised and implemented that represents a not insignificant step forwards in its field.
+To conclude, the current state-of-the-art method was implemented on GPUs with a slightly more sophisticated set of boundary conditions than had previously been done in \cite{craig}. In addition a new technique that represents a not insignificant step forwards in its field was both devised and implemented.
 
 In terms of memory capacity, the results from experiment match the theory exactly and gives significant improvement. This was the case even though, to avoid over claiming, particular effort was made to avoid choosing rooms that were overly suited to the new method. In addition, the stencilling time performance was shown to improve almost as much as the memory capacity. It was also suggested that the proposed technique might be better suited to more modern cards that were not available for experiment than the device that was used to generate the results in this report.
 

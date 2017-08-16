@@ -13,7 +13,7 @@
 \contentsline {subsubsection}{Simultaneous Multi-Threading}{9}
 \contentsline {subsection}{\numberline {2.3.2}GPU Memory Hierarchies}{9}
 \contentsline {subsection}{\numberline {2.3.3}The CUDA Paradigm}{10}
-\contentsline {section}{\numberline {2.4}The State of the Art in FDTD Acoustical Modelling}{11}
+\contentsline {section}{\numberline {2.4}The State-of-the-art in FDTD Acoustical Modelling}{11}
 \contentsline {subsection}{\numberline {2.4.1}The Bounding Box Method}{11}
 \contentsline {subsubsection}{Block decomposition and caching.}{12}
 \contentsline {subsection}{\numberline {2.4.2}Memory Capacity}{13}
