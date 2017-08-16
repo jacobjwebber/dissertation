@@ -269,7 +269,7 @@ More than simply being neat, this is now a representation of how to calculate ne
 
 \subsection{Boundary Conditions}
 
-All of the physical properties of the room are encoded in the boundary conditions imposed on the differential equation. Modelling different boundary materials such as room walls is the subject of significant research at present. However, the main purpose of this report is to look at the computational aspects of applying stencil operations. As such a relatively simple boundary scheme is applied.
+All of the physical properties of the room are encoded in the boundary conditions imposed on the differential equation. Modelling different boundary materials such as room walls is the subject of significant research at present. However, the main purpose of this report is to look at the computational aspects of applying stencil operations. As such a relatively concise treatment of the boundary conditions is given here.
 
 For the purposes of a Von Neumann stencil most grid points that are inside the room will have 6 neighbours. However, on the edge of the room, there will be points that have fewer. The amount of these neighbours is stored in a new $K$ grid, with one value for every point. This allows for the first time rooms of irregular shape to be considered, as those points outside the room are encoded with a zero $K$ value.
 
@@ -294,7 +294,7 @@ A stencilling operation is one that updates array elements by combining its neig
 \label{stencil}
 \end{figure}
 
-Stencilling operations are in their nature memory bound problems. This is because they involve a lot of data accesses per, relatively simple, calculation. This means that GPUs, with their high bandwidth memory, have been shown to be ideally suited to perform these operations \cite{gpu_stencil}. However, while GPUs have the best performance, they also have limited amounts of memory.
+Stencilling operations are, by their nature, memory bound problems. This is because they involve a lot of data accesses per, relatively simple, calculation. This means that GPUs, with their high bandwidth memory, have been shown to be ideally suited to perform these operations \cite{gpu_stencil}. However, while GPUs have the best performance, they also have limited amounts of memory.
 
 \section{Graphics Processing Units (GPUs)}
 \label{section:gpus}
@@ -306,7 +306,14 @@ GPUs have a number of technical features which make them particularly suited to 
 \subsection{GPUs and parallelism}
 \label{section:gpu-par}
 
-GPUs primarily achieve their massive performance increases over CPUs by harnessing operating in a massively parallel fashion. Two principles of parallel computing are used to make this happen. These are the \textit{single instruction, multiple threads} (SIMT) and \textit{simultaneous multi-threading} (SMT) approaches. 
+GPUs primarily achieve their massive performance increases over CPUs by operating in a massively parallel fashion. Two principles of parallel computing are used to make this happen. These are the \textit{single instruction, multiple threads} (SIMT) and \textit{simultaneous multi-threading} (SMT) approaches. 
+
+
+
+
+\subsubsection{Single Instruction, Multiple Thread}
+
+SIMT computer instructions execute on multiple objects in memory at once. In doing so they reduce the amount of silicone that is required to perform calculations. This is because multiple operations can share so called \textit{control units} (CUs). These determine which instructions should occur, and when branches should be taken. GPUs are organised into \textit{streaming multiprocessors} (SMXs). These contain multiple cores and therefore \textit{floating point units} (FPUs), but share control circuitry. This means a much higher proportion of the silicone is taken up with performing floating point operations than with a conventional CPU, where there is typically one CU per processing core. 
 
 \begin{figure}[H]
 \centering
@@ -315,10 +322,9 @@ GPUs primarily achieve their massive performance increases over CPUs by harnessi
 \label{gpu-cpu}
 \end{figure}
 
+Figure \ref{gpu-cpu} goes some way to showing the make-up of GPUs in relation to CPUs, without showing a detailed view of each multiprocessor. 
 
-\subsubsection{Single Instruction, Multiple Thread}
-
-SIMT computer instructions execute on multiple objects in memory at once. In doing so they reduce the amount of silicone that is required to perform calculations. This is because multiple operations can share so called \textit{control units} (CUs). These determine which instructions should occur, and when branches should be taken. GPUs are organised into \textit{streaming multiprocessors} (SMXs). These contain multiple cores and therefore \textit{floating point units} (FPUs) but share control circuitry. This means a much higher proportion of the silicone is taken up with performing floating point operations than with a conventional CPU, where there is typically one CU per processing core. Figure \ref{gpu-cpu} goes some way to showing the make-up of GPUs in relation to CPUs, without showing a detailed view of each multiprocessor. 
+More detail on the SMX is given in figure \ref{fig:smx}. This shows each SMX contains \num{192} single-precision CUDA cores, \num{64} double-precision units, \num{32} special function units (SFU), and \num{32} load/store units (LD/ST) \cite{ref:nvidia-gpu-k20-white}. Instructions are scheduled and issued in  groups of \num{32} parallel threads called \textit{warps}. Each SMX can run a maximum of \num{4} warps concurrently. This depends on there not being a \textit{stuctural hazard}. This is when a part of the processor's hardware is needed by two or more instructions at the same time. For example, the fact that there are only \num{64} double precision FPUs per SMX means that not all $4 \cdot 32$ threads from the four warps can conduct floating point calculations simultaneously. 
 
 \begin{figure}[H]
 \centering
@@ -327,11 +333,9 @@ SIMT computer instructions execute on multiple objects in memory at once. In doi
 \label{fig:smx}
 \end{figure}
 
-More detail on the SMX is given in figure \ref{fig:smx}. This shows each SMX contains \num{192} single-precision CUDA cores, \num{64} double-precision units, \num{32} special function units (SFU), and \num{32} load/store units (LD/ST) \cite{ref:nvidia-gpu-k20-white}. Instructions are scheduled and issued in  groups of \num{32} parallel threads called \textit{warps}. Each SMX can run a maximum of \num{4} warps concurrently. This depends on there not being a \textit{stuctural hazard}. This is when a part of the processor's hardware is needed by two or more instructions at the same time. For example, the fact that there are only \num{64} double precision FPUs per SMX means that not all $4 \cdot 32$ threads from the four warps can conduct floating point calculations simultaneously. 
-
 \subsubsection{Simultaneous Multi-Threading}
 
-SMT refers to the process of running more logical threads than cores exist in hardware. This means that processes can avoid using up resources while they are idle. In GPUs this happens at the warp level. When a SMX changes which warp is active this is known as \textit{context switching}. GPUs have special hardware adaptations that make them very efficient at doing this. They have a very large amount of registers compared with conventional CPUs. This means that data from all \textit{active} warps - meaning those that have been allocated to an SMX - are kept in registers. This differs from a conventional CPU where this data may have to be written out to at least L1 cache memory. The speed with which GPUs can context switch means that SMT techniques become appropriate to hide shorter latencies such as memory accesses, unlike CPUs, which are more likely to make use of SMT for threads that are idle while waiting for disk or network latencies.
+SMT refers to the process of running a higher number of logical threads than the number of cores that exist in hardware. This means that processes can avoid using up resources while they are idle. In GPUs this happens at the warp level. When a SMX changes which warp is active this is known as \textit{context switching}. GPUs have special hardware adaptations that make them very efficient at doing this. They have a very large amount of registers compared with conventional CPUs. This means that data from all \textit{active} warps - meaning those that have been allocated to an SMX - are kept in registers. This differs from a conventional CPU where this data may have to be written out to at least L1 cache memory. The speed with which GPUs can context switch means that SMT techniques become appropriate to hide shorter latencies such as memory accesses, unlike CPUs, which are more likely to make use of SMT for threads that are idle while waiting for disk or network latencies.
 
 As the efficiency of SMT on the GPU is dependent on large registers, performance can be limited when warps are required to complete tasks that require large amounts of registers. For ideal performance, GPUs need to be carefully programmed to ensure that they make maximal use of SMT. This reduces the amount of time hardware spends idling, and therefore increases throughput.
 
@@ -401,18 +405,18 @@ Combining the ideas as written about in sections \ref{section:acoustics} and \re
 
 \subsection{The Bounding Box Method}
 
-Current techniques are optimised for cuboid shaped rooms. It is easy, with such a room, to derive the $K_{l,m,p}$ value by adding a conditional statement to check whether the point is in the boundary of the cuboid. A sketch of this method is shown in algorithm \ref{alg:cuboid}. This was the method used in \cite{craig}. In this sketch the update refers to the stencil scheme outlined in section \ref{section:acoustics}. When the stencil is performed, the room is divided into blocks. These are each assigned to a CUDA kernel instance. A kernel derives which points in memory to operate from by its block identities.
+Current techniques are optimised for cuboid shaped rooms. It is easy, with such a room, to derive the $K_{l,m,p}$ value by adding a conditional statement to check whether the point is in the boundary of the cuboid. A sketch of this method is shown in algorithm \ref{alg:cuboid}. This was the method used in \cite{craig}. In this sketch the update refers to the stencil scheme outlined in section \ref{section:acoustics}. When the stencil is performed, the room is divided into blocks. These are each assigned to a CUDA kernel instance. A kernel can derive which points in memory to operate on from its block identities.
 
 To perform the stencil two 3D arrays are allocated in GPU memory. One becomes $P_{l,m,p}^{n}$ and the other $P_{l,m,p}^{n-1}$. From these the next time step can be calculated as in equation \ref{equation:stencil-boundary}. This value overwrites $P_{l,m,p}^{n-1}$. A pointer swap is then used so that this becomes $P_{l,m,p}^{n}$ and $P_{l,m,p}^{n}$ becomes $P_{l,m,p}^{n-1}$.
 
 \IncMargin{1em}
 \begin{algorithm}[H]
- \KwData{Three dimensional array of $\Psi_{l,m,p}^{n}$ and $\Psi_{l,m,p}^{n-1}$}
- \KwResult{Updated array of $\Psi_{l,m,p}^{n+1}$}
+ \KwData{Three dimensional array of $P_{l,m,p}^{n}$ and $P_{l,m,p}^{n-1}$}
+ \KwResult{Updated array of $P_{l,m,p}^{n+1}$}
  Get the 3D indices of the current thread from the block and thread IDs\;
  \If{ not at the boundaries}{
  	Compute the linear address from the 3D indices\;
- 	Overwrite node $\Psi_{l,m,p}^{n-1}$ with $\Psi_{l,m,p}^{n+1}$\;
+ 	Overwrite node $P_{l,m,p}^{n-1}$ with $P_{l,m,p}^{n+1}$\;
  }
  Swap pointers.
  \caption{CUDA kernel for update on the basic 3D scheme.}
@@ -423,18 +427,18 @@ To support arbitrarily shaped rooms as laid out in \cite{brian} it is necessary 
 
 \IncMargin{1em}
 \begin{algorithm}[H]
- \KwData{Three dimensional arrays of $\Psi_{l,m,p}^{n}$, $\Psi_{l,m,p}^{n-1}$ and $K_{l,m,p}$}
- \KwResult{Updated array of $\Psi_{l,m,p}^{n+1}$}
+ \KwData{Three dimensional arrays of $P_{l,m,p}^{n}$, $P_{l,m,p}^{n-1}$ and $K_{l,m,p}$}
+ \KwResult{Updated array of $P_{l,m,p}^{n+1}$}
  Get the 3D indices of the current thread from the block and thread IDs\;
  \If{$K_{l,m,p}$ is not zero}{
  	Compute the linear address from the 3D indices\;
- 	Overwrite node $\Psi_{l,m,p}^{n-1}$ with $\Psi_{l,m,p}^{n+1}$\;
+ 	Overwrite node $P_{l,m,p}^{n-1}$ with $P_{l,m,p}^{n+1}$\;
  }
  Swap pointers.
  \caption{CUDA kernel for update on an irregularly shaped room.}
 \end{algorithm}
 
-The update to $\Psi_{l,m,p}^{n+1}$ is now a function of $K_{l,m,p}$. This results in an extra global memory read for every stencil point.
+The update to $P_{l,m,p}^{n+1}$ is now a function of $K_{l,m,p}$. This results in an extra global memory read for every stencil point.
 
 \subsubsection{Block decomposition and caching.}
 
@@ -605,7 +609,7 @@ The new data structure also requires a new stencilling algorithm. Within each bl
  Copy neighbouring blocks data to the edges of the shared array.
  
  \If{$K_{l,m,p}$ is not zero}{
- 	Overwrite node $\Psi_{l,m,p}^{n-1}$ with $\Psi_{l,m,p}^{n+1}$\;
+ 	Overwrite node $P_{l,m,p}^{n-1}$ with $P_{l,m,p}^{n+1}$\;
  }
  \caption{CUDA kernel for update on an array of blocks.}
  \label{alg:aob}
@@ -613,15 +617,15 @@ The new data structure also requires a new stencilling algorithm. Within each bl
 
 A sketch of this algorithm is shown in algorithm \ref{alg:aob}. More detail can be seen in the kernel itself which is included as an appendix.
 
-It should be noted that unlike the algorithms outlined in section \ref{section:method-soa}, it is not possible to do a pointer swap within the struct between the \lstinline|u| and \lstinline|u1| arrays that represent the  $P_{l,m,p}^{n-1}$ and $\Psi_{l,m,p}^{n}$ grids. This is because they are statically allocated arrays. It is not possible to allocate arrays dynamically within a struct in ANSI C. Therefore, two versions of the kernel were written, one which takes \lstinline|u| to be $P_{l,m,p}^{n-1}$ and \lstinline|u1| to be $P_{l,m,p}^{n}$, and the other vice versa.
+It should be noted that unlike the algorithms outlined in section \ref{section:method-soa}, it is not possible to do a pointer swap within the struct between the \lstinline|u| and \lstinline|u1| arrays that represent the  $P_{l,m,p}^{n-1}$ and $P_{l,m,p}^{n}$ grids. This is because they are statically allocated arrays. It is not possible to allocate arrays dynamically within a struct in ANSI C. Therefore, two versions of the kernel were written, one which takes \lstinline|u| to be $P_{l,m,p}^{n-1}$ and \lstinline|u1| to be $P_{l,m,p}^{n}$, and the other vice versa.
 
 \subsection{Input/Output}
 
 For the models to be useful they need to give some sort of output. They also need to model how a specific signal will be modified by being played in a given room. This is because a room's acoustical performance is a function of the frequency of the input signal. 
 
-A special I/O kernel was written that takes a 1D array of the input signal and outputs a 1D array of the output from the room. This is also given the I/O locations in the room as an argument. This is because how the rooms sounds depends on where the listener, and the sound source is. This kernel is run once after every stencil iteration.
+A special I/O kernel was written that takes a 1D array of the input signal and outputs a 1D array of the output from the room. This is also given the I/O locations in the room as an argument. This is because how the rooms sounds depends on where the listener and the sound source are. This kernel is run once after every stencil iteration.
 
-To find the I/O grid locations it is necessary to use the \textit{block locations} array. From this it is possible to derive the location of every point in the AOB. A function was included that converts a structured grid location to its point in the AOB.
+To find the I/O grid locations it is necessary to use the \textit{block locations} array. From this it is possible to derive the location of every point in the AOB. A function was written that converts a structured grid location to its point in the AOB.
 
 \section{Theoretical Benefits}
 \label{section:benefits}
@@ -918,9 +922,21 @@ Results for the structured approach should match those as achieved in \cite{crai
 \chapter{Conclusions and Further Work}
 \epigraph{\itshape ``It is not incumbent upon you to finish the task. Yet, you are not free to desist from it.''}{Tarphon}
 
+To conclude, very good results were achieved. The currently state of the art method was implemented on GPUs with a slightly more sophisticated set of boundary conditions than had previously been done in \cite{craig}. In addition a new technique was devised and implemented that represents a not insignificant step forwards in its field.
+
+In terms of memory capacity, the results from experiment match the theory exactly and gives significant improvement. This was the case even though, to avoid over claiming, particular effort was made to avoid choosing rooms that were overly suited to the new method. In addition, the stencilling time performance was shown to improve almost as much as the memory capacity. It was also suggested that the proposed technique might be better suited to more modern cards that were not available for experiment than the device that was used to generate the results in this report.
+
+The project was largely one of devising and implementing a complex piece of new software. As such, less time was available than would have been ideal for analysing and optimising the resulting code.
+
+Of particular interest and necessity would be verifying the results in a more thorough fashion. While this is not straightforward, there are ways to do so. One way would be to solve the wave equation analytically for a simple enough case and then compare the output with the FDTD method used here.
+
+Another piece of further work would be to conduct more accurate profiling of the code - collecting data such as theoretical and achieved occupancy, and global read efficiency. This would be useful in further optimising the code, which would also have been good to have more time to do. If the work were ported to OpenCL then it would allow the code to run on AMD devices. These currently have the highest bandwidth memory. This could be used to verify the unproven claim that this new method will outperform the old even more on this hardware.
+
+Because so much time was spent writing the software, less time could be dedicated to this report. As such it was not possible to describe the derivation of the new boundary conditions and some of the finer points of the theoretical acoustics background. However, to do so would take extensive effort - as the subject matter would be that of cutting edge physics. Such efforts were deemed to fall outside the scope of this report - which is meant to be one on high performance computing. Nevertheless, the study of this area would be something that thoroughly deserves many more MSc projects worth of time.
+
+%\section{Future Work}
 
 
-\section{Future Work}
 \label{section:future-work}
 
 %\cleardoublepage
