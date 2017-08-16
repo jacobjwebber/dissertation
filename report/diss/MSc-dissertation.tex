@@ -355,13 +355,13 @@ As the efficiency of SMT on the GPU is dependent on large registers, performance
 
 GPUs are tuned for throughput, rather than latency. This colours their approach to data storage as well as processing.
 
-The previous section discusses the importance of registers for SMT. These form the top tier of the GPUs memory hierarchy. Modern NVIDIA GPUs, such as the K20 used in this project, also have two additional layers of cache memory above the global memory store. The top layer of this cache is also referred to as \textit{shared} memory. This is because data can be explicitly loaded here and will then be shared among a group of threads defined by the programmer as a \textit{block} (see section \ref{subsection:cuda} for details). L2 cache is hardware controlled and functions similarly to CPU caches. Below this there is \textit{global} memory. This is the largest and highest latency form of data storage on the GPU. The K20 used in experiments for this report uses GDDR5 high bandwidth graphics memory for this. This differs from DDR3/4 used in conventional computing.
+The previous section discusses the importance of registers for SMT. These form the top tier of the GPUs memory hierarchy. Modern NVIDIA GPUs, such as the K20 used in this project, also have two additional layers of cache memory above the global memory store. The top layer of this cache is also referred to as \textit{shared} memory. This is because data can be explicitly loaded here and will then be shared among a group of threads defined by the programmer as a \textit{block} (see section \ref{subsection:cuda} for details). L2 cache is hardware controlled and functions similarly to CPU caches. Below this there is \textit{global} memory. This is the largest and highest latency form of data storage on the GPU. There is also \textit{texture memory}. This is only useful with two dimensional arrays so is not relevant to this project.
 
-There is also \textit{texture memory}. This is only useful with two dimensional arrays so is not relevant to this project.
+The K20 used in experiments for this report uses GDDR5 high bandwidth graphics memory for global memory. This differs from DDR3/4 used in conventional computing.
 
 GDDR5 is tuned for maximal bandwidth. It does sacrifice some latency performance in exchange for this. This is achieved by loading in larger lines of data at a time. There is much excitement in GPGPU circles about the recent arrival of \textit{high bandwidth memory 2} (HBM2). This has even higher bandwidth than GDDR5 and has even larger access widths.
 
-Figure \ref{figure:memory-bandwidth} shows the advance of memory bandwidth through time on both CPUs and GPUs. The NVIDIA K20 has a peak theoretical bandwidth of \SI{208}{\giga\byte\per\second}, which is less than a third of that of some of the latest HBM2 cards. It is hoped the techniques described later in this report will be well suited to these advancements.
+Figure \ref{figure:memory-bandwidth} shows the advance of memory bandwidth through time on both CPUs and GPUs. The NVIDIA K20 has a peak theoretical bandwidth of \SI{208}{\giga\byte\per\second}, which is less than a third of that of some of the latest HBM2 cards. AMD - who are NVIDIA's main competitor - have just released a card with HBM2 memory that claims to have a \SI{1}{\tera\byte\per\second} memory bandwidth \cite{ref:amd-gpu}. It is hoped the techniques described later in this report will be well suited to these advancements.
 
 \begin{figure}[H]
 \centering
@@ -375,7 +375,7 @@ Figure \ref{figure:memory-bandwidth} shows the advance of memory bandwidth throu
 
 The nature of GPUs means that they need to be programmed carefully to extract performance. Computation done on the GPU is separated into kernels. In this case they were written as special CUDA C functions. These are launched in blocks, and each block can contain multiple threads. When a kernel is called, the amount of blocks and threads per block is specified.
 
-The amount of threads per block can be specified using a \verb|dim3| data type. This allows blocks of threads to be three dimensional. Inside a kernel each thread has an x y and z index. This can be used to for each thread to access a different data item without using control logic. For example, listing \ref{listing:cuda-access} shows a standard three dimensional array read in CUDA C - a version of CUDA that is an extension to ANSI C.
+The amount of threads per block can be specified using a \verb|dim3| data type. This allows blocks of threads to be three dimensional. Inside a kernel each thread has an x y and z index. These indices can be used in way so that each thread to access a different data item, without using control logic. For example, listing \ref{listing:cuda-access} shows a standard three dimensional array read in CUDA C - a version of CUDA that is an extension to ANSI C.
 
 \lstset{language=C,caption={CUDA memory accesses},label=listing:cuda-access}
 \begin{center}
@@ -393,7 +393,7 @@ These thread blocks are assigned to an SMX when resources become available. Whil
 
 Shared memory has thread block scope. Once a thread is executed this memory is no longer available. Shared memory can be allocated statically or dynamically from within a kernel in CUDA C.
 
-MORE PLEASE
+CUDA is one of many programming paradigms that are used for GPGPU computing. Others include OpenMP, OpenCL and C++ AMP. Unlike CUDA, these allow many brands of GPU to be programmed.
 
 \section{The State of the Art in FDTD Acoustical Modelling}
 \label{chapter:state-of-art}
@@ -403,33 +403,40 @@ Combining the ideas as written about in sections \ref{section:acoustics} and \re
 
 Current techniques are optimised for cuboid shaped rooms. It is easy, with such a room, to derive the $K_{l,m,p}$ value by adding a conditional statement to check whether the point is in the boundary of the cuboid. A sketch of this method is shown in algorithm \ref{alg:cuboid}. This was the method used in \cite{craig}. In this sketch the update refers to the stencil scheme outlined in section \ref{section:acoustics}. When the stencil is performed, the room is divided into blocks. These are each assigned to a CUDA kernel instance. A kernel derives which points in memory to operate from by its block identities.
 
+To perform the stencil two 3D arrays are allocated in GPU memory. One becomes $P_{l,m,p}^{n}$ and the other $P_{l,m,p}^{n-1}$. From these the next time step can be calculated as in equation \ref{equation:stencil-boundary}. This value overwrites $P_{l,m,p}^{n-1}$. A pointer swap is then used so that this becomes $P_{l,m,p}^{n}$ and $P_{l,m,p}^{n}$ becomes $P_{l,m,p}^{n-1}$.
+
 \IncMargin{1em}
 \begin{algorithm}[H]
- \KwData{Three dimensional array of $\Psi_{l,m,p}^{n}$}
+ \KwData{Three dimensional array of $\Psi_{l,m,p}^{n}$ and $\Psi_{l,m,p}^{n-1}$}
  \KwResult{Updated array of $\Psi_{l,m,p}^{n+1}$}
  Get the 3D indices of the current thread from the block and thread IDs\;
  \If{ not at the boundaries}{
  	Compute the linear address from the 3D indices\;
- 	Update node $\Psi_{l,m,p}^{n+1}$\;
+ 	Overwrite node $\Psi_{l,m,p}^{n-1}$ with $\Psi_{l,m,p}^{n+1}$\;
  }
+ Swap pointers.
  \caption{CUDA kernel for update on the basic 3D scheme.}
  \label{alg:cuboid}
 \end{algorithm}
 
-To support arbitrarily shaped rooms as laid out in \cite{brian} it is necessary to encode the shape of the room in an array of $K_{l,m,p}$ values.
+To support arbitrarily shaped rooms as laid out in \cite{brian} it is necessary to encode the shape of the room in an array of $K_{l,m,p}$ values. In this case all blocks in the bounding box will be processed, even those that do not contain any points that are inside the room.
 
 \IncMargin{1em}
 \begin{algorithm}[H]
- \KwData{Three dimensional arrays of $\Psi_{l,m,p}^{n}$ and $K_{l,m,p}$}
+ \KwData{Three dimensional arrays of $\Psi_{l,m,p}^{n}$, $\Psi_{l,m,p}^{n-1}$ and $K_{l,m,p}$}
  \KwResult{Updated array of $\Psi_{l,m,p}^{n+1}$}
  Get the 3D indices of the current thread from the block and thread IDs\;
  \If{$K_{l,m,p}$ is not zero}{
  	Compute the linear address from the 3D indices\;
- 	Update node $\Psi_{l,m,p}^{n+1}$\;
+ 	Overwrite node $\Psi_{l,m,p}^{n-1}$ with $\Psi_{l,m,p}^{n+1}$\;
  }
+ Swap pointers.
  \caption{CUDA kernel for update on an irregularly shaped room.}
 \end{algorithm}
 
+The update to $\Psi_{l,m,p}^{n+1}$ is now a function of $K_{l,m,p}$. This results in an extra global memory read for every stencil point.
+
+\subsubsection{Block decomposition and caching.}
 
 
 
@@ -548,8 +555,11 @@ Where $S_{ss}$ and $S_{s}$ are the sizes of the semi-structured and structured r
 %$S_{ss} = 6 \cdot$ \lstinline|sizeof(int)| $+ 2 \cdot$ \lstinline|%sizeof(real * Bx * By * Bz)| + \lstinline|sizeof(char * Bx * By * Bz)|
 %\end{center}
 
+Some discussion has been given of the analogue between the semi-structured approach and spares matrix representations. This data structure also has some similarities to a \textit{linked list}. Such a structure is a data object where each element stores the location of the next point in the list. The struct in listing \ref{listing:struct} also has some similarities to this. However, instead of storing the next in the list, it stores an index of its neighbours in all six directions.
 
 \section{The Algorithm}
+
+\subsection{Forming the Data Structure}
 
 The new method requires a new algorithm for converting a room's representation to a semi-structured one, as well as for performing the stencil on the new data structure.
 
@@ -581,10 +591,44 @@ The new method requires a new algorithm for converting a room's representation t
 
 A sketch of this is given in algorithm \ref{alg:bound-ss}. It requires two passes over the data as it necessary to know the amount of blocks that have internal points before memory can be allocated and the $K$ sub-arrays can be copied to the new representation.
 
-MORE PLEASE
+\subsection{Stencilling Algorithm}
+
+The new data structure also requires a new stencilling algorithm. Within each block the algorithm can remain the same as with the bounding box method, but it is necessary to read in the edges of the neighbouring blocks to calculate the stencils for those points at the edge of a block. The 6 integers that are stored in the data structure make this easy to do. Unlike with typical sparse methods, no search or look up is required to find a specific block. Shared memory was utilised to cache each block and collect the neighbouring elements to form a \textit{halo} region around the data in the block.
+
+\IncMargin{1em}
+\begin{algorithm}[H]
+ \KwData{Array of blocks (AOB).}
+ \KwResult{Updated AOB}
+ Get the current block from CUDA block ID\;
+ Allocate array in shared memory that is 2 points larger in each dimension than the block.
+ Copy data from block to the centre of the shared array.
+ Copy neighbouring blocks data to the edges of the shared array.
+ 
+ \If{$K_{l,m,p}$ is not zero}{
+ 	Overwrite node $\Psi_{l,m,p}^{n-1}$ with $\Psi_{l,m,p}^{n+1}$\;
+ }
+ \caption{CUDA kernel for update on an array of blocks.}
+ \label{alg:aob}
+\end{algorithm}
+
+A sketch of this algorithm is shown in algorithm \ref{alg:aob}. More detail can be seen in the kernel itself which is included as an appendix.
+
+It should be noted that unlike the algorithms outlined in section \ref{section:method-soa}, it is not possible to do a pointer swap within the struct between the \lstinline|u| and \lstinline|u1| arrays that represent the  $P_{l,m,p}^{n-1}$ and $\Psi_{l,m,p}^{n}$ grids. This is because they are statically allocated arrays. It is not possible to allocate arrays dynamically within a struct in ANSI C. Therefore, two versions of the kernel were written, one which takes \lstinline|u| to be $P_{l,m,p}^{n-1}$ and \lstinline|u1| to be $P_{l,m,p}^{n}$, and the other vice versa.
+
+\subsection{Input/Output}
+
+For the models to be useful they need to give some sort of output. They also need to model how a specific signal will be modified by being played in a given room. This is because a room's acoustical performance is a function of the frequency of the input signal. 
+
+A special I/O kernel was written that takes a 1D array of the input signal and outputs a 1D array of the output from the room. This is also given the I/O locations in the room as an argument. This is because how the rooms sounds depends on where the listener, and the sound source is. This kernel is run once after every stencil iteration.
+
+To find the I/O grid locations it is necessary to use the \textit{block locations} array. From this it is possible to derive the location of every point in the AOB. A function was included that converts a structured grid location to its point in the AOB.
 
 \section{Theoretical Benefits}
 \label{section:benefits}
+
+The proposed semi-structured method's benefits are most obvious on rooms that would occupy a small part of their bounding box. Such rooms can be thought of a \textit{sparsely} populated - to borrow a term from the field of linear algebra.
+
+A typical example is shown in figure \ref{church}. Churches and cathedrals are often used for musical performances, as well as services, so their acoustic performance is important. They are also ill suited to ray-tracing methods because they have pronounced diffraction effects around their sharp corners. 
 
 \begin{figure}[H]
 \centering
@@ -593,8 +637,9 @@ MORE PLEASE
 \label{church}
 \end{figure}
 
-MORE PLEASE
+The proposed method should avoid storing all the empty space that would be in the bounding box. This should save memory. It also saves the computational expense of performing a stencil on this area.
 
+In addition the proposed method also has better data locality. In a conventional 3D array, neighbouring points in space can be far away in memory. This means that to fetch a grid point's six neighbouring elements, it is necessary to perform separate data fetches. The proposed method caches a relatively small contiguous block of around 512 points. This one large read can make use of high bandwidth memory's long fetch lengths. This is particularly important, as there is a trend in GPUs towards higher bandwidth graphics memory.
 
 \chapter{Design and Implementation}
 
@@ -609,8 +654,6 @@ The work stems from a Matlab script that implements the scheme using a bounding 
 The code was designed to be as extensible and reusable as possible. As such each experiment is divided into a separate directory. 
 
 A directory tree (the output of the GNU \verb|tree| utility) is given in listing REF.
-
-
 
 Each of these contains a CUDA C source file that performs the required experiment. These then call functions from a library that do all the tasks associated with the proposed method. This library is a selection of source files that are in a \verb|lib| directory. They contain functions for forming the data structure as described in chapter \ref{chapter:proposition}, as well as generating room shapes, and performing the FDTD stencil.
 
@@ -866,7 +909,7 @@ Mean & 44.80 & 43.91 \\ \hline
 
 The performance figures were very similar in the cube example. Performances scaled relative to memory savings for the other two examples. To illustrate this point table \ref{table:data} is included, which shows in \SI{}{\gibi\byte\per\second} the rate at which data is processed. To get this result the memory usage from table \ref{table:perf} was multiplied by the number of time steps (\num{1000}) and then divided by the time taken. These results show that the rate at which data is processed is relatively constant within each method. The structured approach was, on average, \num{2}\% faster than the semi-structured on  a per \SI{}{\gibi\byte} basis. However, this is easily overshadowed by the data savings that are possible if the room is even slightly irregularly shaped.
 
-The data processing rates are well below the \SI{280}{\giga\byte\per\second} maximum memory bandwidth of the K20 GPU. This suggests there is still significant room for improvement - particularly as the maximum theoretical processing rate could be significantly higher than this if cache is well used.
+The data processing rates are well below the \SI{208}{\giga\byte\per\second} maximum memory bandwidth of the K20 GPU. This suggests there is still significant room for improvement - particularly as the maximum theoretical processing rate could be significantly higher than this if cache is well used.
 
 \section{Comparison with results achieved in \cite{craig}}
 
@@ -905,6 +948,8 @@ Addison Publishing Company, Addison
 \bibitem{ref:nvidia-gpu-programming-guide} NVIDIA Corporation {\em CUDA C Programming Guide} \url{http://docs.nvidia.com/cuda/cuda-c-programming-guide} retrieved \today.
 
 \bibitem{ref:nvidia-gpu-k20-white} NVIDIA Corporation {\em NVIDIA’s Next Generation CUDA Compute Architecture: Kepler GK110/210} \url{http://images.nvidia.com/content/pdf/tesla/NVIDIA-Kepler-GK110-GK210-Architecture-Whitepaper.pdf} retrieved \today.
+
+\bibitem{ref:amd-gpu} AMD {\em FirePro S9300 x2 Server GPU} \url{http://www.amd.com/en-us/products/graphics/server/s9300-x2} retrieved \today.
 
 \bibitem{ref:mici} P. Micikevicius, \emph{3D finite difference computation on GPUs using CUDA.} Proceedings of 2nd Workshop on General Purpose Processing on Graphics Processing Units - GPGPU-2, New York, New York, USA, 2009, pp. 79-84, ACM Press.
 

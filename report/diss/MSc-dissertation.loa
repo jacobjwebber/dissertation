@@ -4,6 +4,7 @@
 \contentsline {algocf}{\numberline {2}{\ignorespaces CUDA kernel for update on an irregularly shaped room.\relax }}{12}
 \addvspace {10\p@ }
 \contentsline {algocf}{\numberline {3}{\ignorespaces Convert bounding box to array of blocks\relax }}{18}
+\contentsline {algocf}{\numberline {4}{\ignorespaces CUDA kernel for update on an array of blocks.\relax }}{19}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
