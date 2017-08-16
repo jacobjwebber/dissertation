@@ -657,7 +657,7 @@ The work stems from a Matlab script that implements the scheme using a bounding 
 
 The code was designed to be as extensible and reusable as possible. As such each experiment is divided into a separate directory. 
 
-A directory tree (the output of the GNU \verb|tree| utility) is given in listing REF.
+A directory tree (the output of the GNU \verb|tree| utility) is given in listing \ref{listing:structure}.
 
 Each of these contains a CUDA C source file that performs the required experiment. These then call functions from a library that do all the tasks associated with the proposed method. This library is a selection of source files that are in a \verb|lib| directory. They contain functions for forming the data structure as described in chapter \ref{chapter:proposition}, as well as generating room shapes, and performing the FDTD stencil.
 
@@ -700,6 +700,14 @@ Somewhat ironically, the debugger built into the \verb|nsight| tool was itself r
 
 \chapter{Results and Analysis}
 \label{chapter:results}
+
+\section{Correctness}
+
+The correctness was largely tested by a collection of functions in the \verb|test.cu| source file. One of these checks the translation from a bounded box representation to a semi-structured one. It does this by looping through every point in the grid, checking where it is translated to in an AOB representation, then checking the $K_{l,m,p}$ is correct. As this checks every point the fact that it passes shows the method is correct and therefore that the memory usage results are valid.
+
+Confirming the stencil was more complex. In the end the Matlab script that was used as a starting point was run for a very simple example and this was compared to the output from the examples run here. This was found to give correct results.
+
+Another possible way to check the correctness would be to find analytical solutions to the wave equation inside of a simple cube example. This could then be compared with the output. Unfortunately there was not time to implement this so it is left as further work. A thorough analysis on the accuracy of FDTD approaches to acoustics generally and the results achieved here would be very worthwhile.
 
 \section{Memory Usage}
 \label{section:mem-use}
@@ -876,6 +884,8 @@ This is exactly the performance that was achieved in all cases when the experime
 \label{section:stencil-perf}
 
 Reducing the memory consumption of these models is pleasing, but of little use if stencil performance does not stay at a reasonable level. If performance were significantly worse then it would not be worth using a GPU at all, and CPU based memory is cheap and plentiful enough that these optimizations are unlikely to be worthwhile.
+
+Initial experiments were run to find the ideal block dimensions (shown as \lstinline|Bx|, \lstinline|By| and \lstinline|Bz| in listing \ref{listing:struct}). Best performance was achieved when all were set to 8. 
 
 The stencil was run on the three rooms described in section \ref{section:mem-use}. Results in table \ref{table:perf} show the time taken to run \num{1000} time steps. The \textit{Diam} figure is the width in grid points for the cube and sphere and the width of each of the five cubes in the cross.
 
