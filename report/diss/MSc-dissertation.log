@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015) (preloaded format=xelatex 2016.3.28)  17 AUG 2017 14:16
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015) (preloaded format=xelatex 2016.3.28)  17 AUG 2017 16:32
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -792,9 +792,9 @@ Package: verbatim 2014/10/28 v1.5q LaTeX2e package for verbatim enhancements
 Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
 )
 \verbatim@out=\write4
-runsystem(touch w18-test-2017817856.tex)...executed.
+runsystem(touch w18-test-2017817992.tex)...executed.
 
-runsystem(rm -f w18-test-2017817856.tex)...executed.
+runsystem(rm -f w18-test-2017817992.tex)...executed.
 
 Package gnuplottex Info: Automatically converting gnuplot files. on input line 
 109.
@@ -1063,74 +1063,74 @@ Chapter 6.
 [33
 
 ] [34]
-Underfull \hbox (badness 3302) in paragraph at lines 1004--1006
+Underfull \hbox (badness 3302) in paragraph at lines 1003--1005
 []\T1/ptm/m/n/12 Webb, C.J. (2009) \T1/ptm/m/it/12 Par-al-lel com-pu-ta-tion te
 ch-niques for vir-tual acous-tics and
  []
 
 
-Underfull \hbox (badness 4429) in paragraph at lines 1004--1006
+Underfull \hbox (badness 4429) in paragraph at lines 1003--1005
 \T1/ptm/m/it/12 phys-i-cal mod-elling syn-the-sis. \T1/ptm/m/n/12 PhD the-sis. 
 Uni-ver-sity of Ed-in-burgh. Avail-able
  []
 
 
-Underfull \hbox (badness 2503) in paragraph at lines 1008--1010
+Underfull \hbox (badness 2503) in paragraph at lines 1007--1009
 []\T1/ptm/m/n/12 Hamilton, B. (2016) \T1/ptm/m/it/12 Fi-nite Dif-fer-ence and F
 i-nite Vol-ume Meth-ods for Wave-
  []
 
 
-Underfull \hbox (badness 6188) in paragraph at lines 1008--1010
+Underfull \hbox (badness 6188) in paragraph at lines 1007--1009
 \T1/ptm/m/it/12 based Mod-elling of Room Acous-tics. \T1/ptm/m/n/12 PhD the-sis
 . Uni-ver-sity of Ed-in-burgh.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1008--1010
+Underfull \hbox (badness 10000) in paragraph at lines 1007--1009
 \T1/ptm/m/n/12 Avail-able at: $\T1/pcr/m/n/12 http : / / www2 . ph . ed . ac . 
 uk / ~s1164563 / thesis /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1017--1018
+Underfull \hbox (badness 10000) in paragraph at lines 1016--1017
 []\T1/ptm/m/n/12 NVIDIA Cor-po-ra-tion \T1/ptm/m/it/12 What's the Dif-fer-ence 
 Be-tween a CPU and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1017--1018
+Underfull \hbox (badness 10000) in paragraph at lines 1016--1017
 \T1/ptm/m/it/12 a GPU? $\T1/pcr/m/n/12 https : / / blogs . nvidia . com / blog 
 / 2009 / 12 / 16 /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1017--1018
+Underfull \hbox (badness 10000) in paragraph at lines 1016--1017
 \T1/pcr/m/n/12 whats-[]the-[]difference-[]between-[]a-[]cpu-[]and-[]a-[]gpu/$ \
 T1/ptm/m/n/12 re-trieved Au-
  []
 
 Missing character: There is no ’ in font ptmri8t!
 
-Underfull \hbox (badness 3068) in paragraph at lines 1023--1024
+Underfull \hbox (badness 3068) in paragraph at lines 1022--1023
 []\T1/ptm/m/n/12 NVIDIA Cor-po-ra-tion \T1/ptm/m/it/12 NVIDIAs Next Gen-er-a-ti
 on CUDA Com-pute Ar-chi-tec-ture:
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1023--1024
+Underfull \hbox (badness 10000) in paragraph at lines 1022--1023
 \T1/ptm/m/it/12 Ke-pler GK110/210 $\T1/pcr/m/n/12 http : / / images . nvidia . 
 com / content / pdf / tesla /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1023--1024
+Underfull \hbox (badness 10000) in paragraph at lines 1022--1023
 \T1/pcr/m/n/12 NVIDIA-[]Kepler-[]GK110-[]GK210-[]Architecture-[]Whitepaper . pd
 f$ \T1/ptm/m/n/12 re-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1025--1026
+Underfull \hbox (badness 10000) in paragraph at lines 1024--1025
 []\T1/ptm/m/n/12 AMD \T1/ptm/m/it/12 Fire-Pro S9300 x2 Server GPU $\T1/pcr/m/n/
 12 http : / / www . amd . com / en-[]us /
  []
@@ -1140,19 +1140,19 @@ Underfull \hbox (badness 10000) in paragraph at lines 1025--1026
 ]
 Missing character: There is no – in font ptmr8t!
 
-Underfull \hbox (badness 7576) in paragraph at lines 1051--1052
+Underfull \hbox (badness 7576) in paragraph at lines 1050--1051
 []\T1/ptm/m/n/12 Tech Power Up \T1/ptm/m/it/12 Graph-ics Card Mar-ket Up Se-que
 n-tially in Q3, NVIDIA
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1051--1052
+Underfull \hbox (badness 10000) in paragraph at lines 1050--1051
 \T1/ptm/m/it/12 Gains as AMD Slips $\T1/pcr/m/n/12 https : / / www . techpoweru
 p . com / 194979 /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1051--1052
+Underfull \hbox (badness 10000) in paragraph at lines 1050--1051
 \T1/pcr/m/n/12 graphics-[]card-[]market-[]up-[]sequentially-[]in-[]q3-[]nvidia 
 /
  []
@@ -1160,17 +1160,17 @@ Underfull \hbox (badness 10000) in paragraph at lines 1051--1052
 [36]
 Appendix A.
 
-Overfull \hbox (3.00008pt too wide) in paragraph at lines 1062--1063
+Overfull \hbox (3.00008pt too wide) in paragraph at lines 1061--1062
 [][] 
  []
 
 
-Overfull \hbox (3.00008pt too wide) in paragraph at lines 1067--1068
+Overfull \hbox (3.00008pt too wide) in paragraph at lines 1066--1067
 [][] 
  []
 
 
-Overfull \hbox (3.00008pt too wide) in paragraph at lines 1073--1074
+Overfull \hbox (3.00008pt too wide) in paragraph at lines 1072--1073
 [][] 
  []
 
@@ -1179,25 +1179,35 @@ Overfull \hbox (3.00008pt too wide) in paragraph at lines 1073--1074
 ] [38]
 Appendix B.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 1105.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 1104.
 [39
 
 ]
 Appendix C.
-[40
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 1116
+.
+(/opt/texlive/2015/texmf-dist/tex/latex/psnfss/omsptm.fd
+File: omsptm.fd 
+)
+LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 1116.
+
+ [40
 
 ]
+Missing character: There is no ’ in font ptmr8t!
+ [41] [42]
 Appendix D.
-[41
+[43
 
 ] (./MSc-dissertation.aux) ) 
 Here is how much of TeX's memory you used:
- 24029 strings out of 493706
- 457231 string characters out of 6118259
- 633557 words of memory out of 5000000
- 27072 multiletter control sequences out of 15000+600000
- 47273 words of font info for 81 fonts, out of 8000000 for 9000
+ 24078 strings out of 493706
+ 457923 string characters out of 6118259
+ 666579 words of memory out of 5000000
+ 27118 multiletter control sequences out of 15000+600000
+ 48985 words of font info for 82 fonts, out of 8000000 for 9000
  1328 hyphenation exceptions out of 8191
- 43i,18n,78p,10468b,1113s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 43i,18n,78p,10468b,1586s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on MSc-dissertation.pdf (49 pages).
+Output written on MSc-dissertation.pdf (51 pages).

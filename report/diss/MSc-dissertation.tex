@@ -113,9 +113,9 @@
 
 \begin{abstract}
 
-Room acoustics modelling is useful to determine how an environment will affect sound. These models can be done computationally by solving the wave equation in three dimensions with finite-difference time-domain techniques (FDTD).
+The modelling of room acoustics is useful to determine how an environment will affect sound. These models can be done computationally by solving the wave equation in three dimensions with finite-difference time-domain techniques (FDTD).
 
-This work replicates the work done in \cite{craig} with a slightly more complex set of boundary conditions as set out in \cite{brian} applied. In addition, a new technique and data structure were proposed and implemented that improved performance.
+This work replicates the work done in \cite{craig} with a slightly more complex set of boundary conditions applied as set out in \cite{brian}. In addition, a new technique and data structure were proposed and implemented that improved performance.
 
 The nature of FDTD models and their application to room acoustics requires that a stencilling operation is performed on a very large grid representation of the room being modelled. With irregularly shaped rooms, at present, a \textit{bounding box} method is used. This requires grid points that are outside the room to be stored, even though their values are not relevant. When GPUs are used for acoustic models, this grid is decomposed into small 3D blocks that are each processed by compute kernel. In the new method outlined here, only those blocks that contain any points that are internal to the room are stored. These are stored in an array of structs, each struct of which contains the grid points for the block, as well as the locations of the neighbouring blocks.
 
@@ -573,7 +573,7 @@ Where $S_{ss}$ and $S_{s}$ are the sizes of the semi-structured and structured r
 %$S_{ss} = 6 \cdot$ \lstinline|sizeof(int)| $+ 2 \cdot$ \lstinline|%sizeof(real * Bx * By * Bz)| + \lstinline|sizeof(char * Bx * By * Bz)|
 %\end{center}
 
-Some discussion has been given of the analogue between the semi-structured approach and spares matrix representations. This data structure also has some similarities to a \textit{linked list}. Such a structure is a data object where each element stores the location of the next point in the list. The struct in listing \ref{listing:struct} also has some similarities to this. However, instead of storing the next in the list, it stores an index of its neighbours in all six directions.
+Some discussion has been given of the analogue between the semi-structured approach and sparse matrix representations. This data structure also has some similarities to a \textit{linked list}. Such a structure is a data object where each element stores the location of the next point in the list. The struct in listing \ref{listing:struct} also has some similarities to this. However, instead of storing the next in the list, it stores an index of its neighbours in all six directions.
 
 \section{The Algorithm}
 
@@ -903,7 +903,7 @@ This is exactly the performance that was achieved in all cases when the experime
 
 To quantify the improvement, ideal performance is taken to be when no points that are outside the room are stored. This is found by multiplying the number of points that are inside the room by the size of two double precision floating point numbers and one char (the char is used to store a $K$ value).
 
-With the 768 point diameter sphere example this would mean that ideal performance would be \SI{3845}{\mebi\byte} of memory usage. This means that \SI{168.7}{\mebi\byte} more data than ideal performance is used with the semi-structured  approach and \SI{3499}{\mebi\byte} for the structured. This shows a reduction in unnecessary data storage by a factor of 21.
+With the 768 point diameter sphere example this would mean that ideal performance would be \SI{3845}{\mebi\byte} of memory usage. This means that \SI{168.7}{\mebi\byte} more data than ideal performance is used with the semi-structured  approach and \SI{3499}{\mebi\byte} for the structured. This shows a reduction in unnecessary data storage by a factor of 20.7.
 
 \begin{table}[h!]
 \centering
@@ -921,7 +921,7 @@ Cross & 488 & 9221 & 7736 & 226.4 & 34.2X \\  \hline
 \end{table}
 
 
-The cross example shows even greater reductions as its shape is well suited to cubic decompositions. Taking example made from 488 point diameter cubes, ideal performance was theorised as taking \SI{9221}{\mebi\byte}. This means \SI{7736}{\mebi\byte} of extra data was stored with the structured approach compared with \SI{226.4}{\mebi\byte} for the semi-structured. This is a reduction in additional data storage by a factor of 34.
+The cross example shows even greater reductions as its shape is well suited to cubic decompositions. Taking example made from 488 point diameter cubes, ideal performance was theorised as taking \SI{9221}{\mebi\byte}. This means \SI{7736}{\mebi\byte} of extra data was stored with the structured approach compared with \SI{226.4}{\mebi\byte} for the semi-structured. This is a reduction in additional data storage by a factor of 34.2.
 
 These performances would be even more improved with rooms that populated a bounding box more sparsely - for example a cross with longer limbs. Such a shape was not trialled for fear of being unrealistic and therefore over claiming this method's effectiveness.
 
@@ -972,29 +972,28 @@ Mean & 44.80 & 43.91 \\ \hline
 
 The data processing rates are well below the \SI{208}{\giga\byte\per\second} maximum memory bandwidth of the K20 GPU. This suggests there is still significant room for improvement - particularly as the maximum theoretical processing rate could be significantly higher than this if cache is well used.
 
-\section{Comparison with results achieved in \cite{craig}}
+\section{Comparison with Results Achieved in \cite{craig}}
 
 Results for the structured approach should match those as achieved in \cite{craig} for a cube shaped room. However, because the method allows irregularly shaped rooms, it is necessary to store a $K$ array of the rooms shape. This results in an extra global memory read for each point processed. In addition, slightly more complex boundary conditions are imposed in the work described in this report. In the literature, \textit{voxels} are often used when measuring performance. A voxel is one point in a 3D grid and vox\SI{}{\per\second} is the number of points processed per second. With the 3D tiling method that was replicated here, \cite{craig} achieved \num{4484} Mvox\SI{}{\per\second}. In contrast a rate of \num{2827} Mvox\SI{}{\per\second} was achieved for the cube example here. This is roughly in line with what would be expected, given that there are \num{50}\% more global memory reads per point and significantly more floating point operations. 
 
 \chapter{Conclusions and Further Work}
+\label{section:future-work}
+
 \epigraph{\itshape ``It is not incumbent upon you to finish the task. Yet, you are not free to desist from it.''}{Tarphon}
 
 To conclude, the current state-of-the-art method was implemented on GPUs with a slightly more sophisticated set of boundary conditions than had previously been done in \cite{craig}. In addition a new technique that represents a not insignificant step forwards in its field was both devised and implemented.
 
-In terms of memory capacity, the results from experiment match the theory exactly and gives significant improvement. This was the case even though, to avoid over claiming, particular effort was made to avoid choosing rooms that were overly suited to the new method. In addition, the stencilling time performance was shown to improve almost as much as the memory capacity. It was also suggested that the proposed technique might be better suited to more modern cards that were not available for experiment than the device that was used to generate the results in this report.
+In terms of memory capacity, the results from experiment match the theory exactly and give significant improvement. This was the case even though, to avoid over claiming, particular effort was made to avoid choosing rooms that were overly suited to the new method. In addition, the stencilling time performance was shown to improve almost as much as the memory capacity. It was also suggested that the proposed technique might be better suited to more modern cards than the device that was used to generate the results in this report. Unfortunately such cards were not available for these experiments.
 
 The project was largely one of devising and implementing a complex piece of new software. As such, less time was available than would have been ideal for analysing and optimising the resulting code.
 
 Of particular interest and necessity would be verifying the results in a more thorough fashion. While this is not straightforward, there are ways to do so. One way would be to solve the wave equation analytically for a simple enough case and then compare the answer with the results of the FDTD method used here.
 
-Another piece of further work would be to conduct more accurate profiling of the code - collecting data such as theoretical and achieved occupancy, and global read efficiency. This would be useful in further optimising the code, which would also have been good to have more time to do. If the work were ported to OpenCL then it would allow the code to run on AMD devices. These currently have the highest bandwidth memory. This could be used to verify the unproven claim that this new method will outperform the old even more on this hardware.
+Another piece of further work would be to conduct more accurate profiling of the code - collecting data such as theoretical and achieved occupancy, and global read efficiency. This would be useful in further optimising the code. Little to no time was spent on this, so such efforts could yield big increases. If the work were ported to OpenCL then it would allow the code to run on AMD devices. These currently have the highest bandwidth memory. This could be used to verify the unproven claim that this new method will outperform the old to a larger extent on this hardware.
 
-Because so much time was spent writing the software, less time could be dedicated to this report. As such it was not possible to describe the derivation of the new boundary conditions and some of the finer points of the theoretical acoustics background. However, to do so would take extensive effort - as the subject matter would be that of cutting edge physics. Such efforts were deemed to fall outside the scope of this report - which is meant to be one on high performance computing. Nevertheless, the study of this area would be something that thoroughly deserves many more MSc projects worth of time.
+A more acoustics orientated further project might describe the derivation of the new boundary conditions and some of the finer points of the theoretical acoustics background. However, to do so would take extensive effort - as the subject matter would be that of cutting edge physics. Such efforts were deemed to fall outside the scope of this report - which is meant to be one on high performance computing.
 
 %\section{Future Work}
-
-
-\label{section:future-work}
 
 %\cleardoublepage
 %\addcontentsline{toc}{chapter}{Bibliography}
@@ -1036,7 +1035,7 @@ Addison Publishing Company, Addison
 
 \bibitem{gpu_stencil}
 
-Andreas Schäfer, Dietmar Fey, \emph{High Performance Stencil Code Algorithms for GPGPUs}, Procedia Computer Science, Volume 4, 2011, Pages 2027-2036, ISSN 1877-0509, \url{http://dx.doi.org/10.1016/j.procs.2011.04.221.} (Accessed: 5 April 2017)
+Andreas Schäfer, Dietmar Fey, \emph{High Performance Stencil Code Algorithms for GPGPUs}, Procedia Computer Science, Volume 4, 2011, Pages 2027-2036, ISSN 1877-0509, \url{http://dx.doi.org/10.1016/j.procs.2011.04.221.} retrieved \today
 
 
 \bibitem{ref:electro}
@@ -1108,9 +1107,109 @@ The results are for double precision numbers.
   Device PCI Domain ID / Bus ID / location ID:   0 / 2 / 0
 \end{lstlisting}
 
+
+
 \chapter{Kernels}
 \label{appendix:kernels}
-The following kernels where used.
+\lstset{basicstyle=\footnotesize,  breaklines=true,label=listing:kern,caption={The semi-structured stencil CUDA kernel.}}
+\begin{lstlisting}
+__global__ void perform_stencil(struct block *aos, real l2, real l, real g){
+    //Launch with blocksize threads in each dimension.
+    //l is courant number. l2 is this squared. g is wall permittivity.
+
+    int x = threadIdx.x;
+    int y = threadIdx.y;
+    int z = threadIdx.z;
+
+    int bl = blockIdx.x + 1;
+
+    char k = aos[bl].k[z][y][x];
+
+    int left, right, fore, aft, up, down;
+
+    left = aos[bl].left;
+    right = aos[bl].right;
+    up = aos[bl].up;
+    down = aos[bl].down;
+    fore = aos[bl].fore;
+    aft = aos[bl].aft;
+
+    __shared__ real u1_s[Bz+2][By+2][Bx+2]; //u1 in shared memory.
+
+   __syncthreads();
+
+    //Read in working block
+    u1_s[z+1][y+1][x+1] = aos[bl].u1[z][y][x];
+
+    //Read in neighbours.
+    if ( x == 0 ) {
+        u1_s[z+1][y+1][0] = aos[left].u1[z][y][Bx-1];
+    } if( x == Bx-1 ) {
+        u1_s[z+1][y+1][Bx+1] = aos[right].u1[z][y][0];
+    }
+    if ( y == 0 ) {
+        u1_s[z+1][0][x+1] = aos[aft].u1[z][By-1][x];
+    } if( y == By-1 ) {
+        u1_s[z+1][By+1][x+1] = aos[fore].u1[z][0][x];
+    }
+
+    if ( z == 0 ) {
+        u1_s[0][y+1][x+1] = aos[down].u1[Bz-1][y][x];
+    } if( z == Bz-1 ) {
+        u1_s[Bz+1][y+1][x+1] = aos[up].u1[0][y][x];
+    }
+
+    __syncthreads();
+
+    x++;y++;z++;
+
+    //Main stencil
+    aos[bl].u[z-1][y-1][x-1] = ((2.0 - l2 * (real) k) * u1_s[z][y][x] +
+                                               l2 * ( u1_s[z][y][x+1] +
+                                                      u1_s[z][y][x-1] +
+                                                      u1_s[z][y+1][x] +
+                                                      u1_s[z][y-1][x] +
+                                                      u1_s[z+1][y][x] +
+                                                      u1_s[z-1][y][x])+
+                               (0.5 * l * g * (6.0 - (real) k) - 1.0) * 
+                 aos[bl].u[z-1][y-1][x-1])/(1 + 0.5 * l * g * (6 - k));
+              
+    __syncthreads();
+    if (k == 0) {
+        aos[bl].u[z-1][y-1][x-1] = 0.0;
+    }
+
+}
+\end{lstlisting}
+
+\lstset{basicstyle=\footnotesize,  breaklines=true,label=listing:kern-s,caption={The structured stencil CUDA kernel.}}
+\begin{minipage}{\linewidth}
+\begin{lstlisting}
+__global__ void perform_stencil_structured(real* u, real* u1, 
+                                  char* k_d, real l2, real l, 
+                                real g, int X, int Y, int Z) {
+
+    // get x,y,z from thread and block Id’s
+    int x = blockIdx.x * Bz + threadIdx.x;
+    int y = blockIdx.y * By + threadIdx.y;
+    int z = blockIdx.z * Bx + threadIdx.z;
+
+    // Test that not at boundary
+    if( (x>0) && (x<(X-1))
+            && (y>0) && (y<(Y-1))
+            && (z>0) && (z<(Z-1)))
+    {
+        // get linear position
+        int cp = z*X*Y+y*X+x;
+        char k = k_d[cp];
+        u[cp] = ((2 - l2 * k) * u1[cp] + 
+            l2*(u1[cp-1]+u1[cp+1]+u1[cp-X]+u1[cp+X]+u1[cp-Y*X]+u1[cp+Y*X])+
+            (0.5*l*g*(6-k)-1)*u[cp])/(1+0.5*l*g*(6-k));
+    }
+}
+
+\end{lstlisting}
+\end{minipage}
 
 \chapter{Source Directory Structure}
 \lstset{basicstyle=\scriptsize,  breaklines=true,label=listing:structure,caption={Output from the GNU tree program}}
