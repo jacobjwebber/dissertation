@@ -88,6 +88,8 @@ int time_cross(int diam, int big_t) {
 
 
 float time_room_ss(int X, int Y, int Z, int big_t, char* k_arr) {
+    //get semi-structured performance
+
     cudaEvent_t start, stop;
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
@@ -126,9 +128,9 @@ float time_room_ss(int X, int Y, int Z, int big_t, char* k_arr) {
     cudaEventRecord(start);
     int t;
     for (t=0;t<big_t/2;t++) {
-        perform_stencil<<<block_dims,dims>>>(aos_d, 1.0/3.0, sqrt(1.0/3.0), 0.1/1.9, 0);
+        perform_stencil<<<block_dims,dims>>>(aos_d, 1.0/3.0, sqrt(1.0/3.0), 0.1/1.9);
         cudaDeviceSynchronize();
-        perform_stencil_b<<<block_dims,dims>>>(aos_d, 1.0/3.0, sqrt(1.0/3.0), 0.1/1.9, 0);
+        perform_stencil_b<<<block_dims,dims>>>(aos_d, 1.0/3.0, sqrt(1.0/3.0), 0.1/1.9);
         cudaDeviceSynchronize();
     }
     cudaEventRecord(stop);
@@ -162,7 +164,7 @@ float time_room_ss(int X, int Y, int Z, int big_t, char* k_arr) {
 }
 
 float time_room_s(int X, int Y, int Z, int big_t, char* k_arr) {
-
+//get structured performance
 
     real *u1;
     real *u;

@@ -11,7 +11,7 @@ __global__ void perform_IO(real *input_d, real *output_d, real* out_d, real ins,
     //*/
 }
 
-__global__ void perform_stencil(struct block *aos, real l2, real l, real g, int swap) {
+__global__ void perform_stencil(struct block *aos, real l2, real l, real g) {
     //Launch with blocksize threads in each dimension.
 
     int x = threadIdx.x;
@@ -76,7 +76,7 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g, int 
 
 }
 
-__global__ void perform_stencil_b(struct block *aos, real l2, real l, real g, int swap) {
+__global__ void perform_stencil_b(struct block *aos, real l2, real l, real g) {
     //Launch with blocksize threads in each dimension.
 
     int x = threadIdx.x;

@@ -1,3 +1,4 @@
+/*Generates K arrays for the room shapes used in the experiments. Function names are self explanatory.*/
 #include "make_rooms.h"
 #include <stdio.h>
 

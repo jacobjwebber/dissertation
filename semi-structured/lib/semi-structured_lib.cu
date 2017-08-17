@@ -72,11 +72,6 @@ ss_t create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct 
         }
     }
 
-
-    //printf("%i blocks are internal out of %i blocks in total\n", blocks_in_s, total_blocks);
-
-    //printf("Allocating host memory for %i blocks\n", blocks_in_s);
-
     //Assign a block for all volumes containing points
     // aos is short for array of structs.
     struct block *aos = (struct block *) calloc(blocks_in_s, sizeof(struct block));
@@ -89,7 +84,6 @@ ss_t create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct 
     }
 
     //Copy is in sphere array to k arrrays within blocks.
-    //printf("Copying data to blocks\n");
     int index;
     for (i = 0; i < num_blocks_z; i++) {
         for (j = 0; j < num_blocks_y; j++) {
@@ -104,9 +98,7 @@ ss_t create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct 
         }
     }
 
-    // SET LEFT AND RIGHT WITHIN STRUCTS.
- 
-    //printf("Assigning block neighbours\n");
+    // SET NEIGHBOURS WITHIN STRUCTS.
     struct block *bl;
     //idea - let null neighbour = 0 . Leave 0th block empty.
     for (i = 0; i < num_blocks_z; i++) {
@@ -135,7 +127,6 @@ ss_t create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct 
     *blocks_in = blocks_in_s;
     *aos_pp = aos;
 
-
     data.X = X;
     data.Y = Y;
     data.Z = Z;
@@ -150,6 +141,7 @@ ss_t create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct 
 
 int get_coords(int coords[3], int X, int Y, int Z, int* index_of_struct, int* io_block_ind, int arrind[3]) {
     //Translate from structured array index to index of, and within, struct.
+    //coords array is input, io_block_ind and arrind array are outputs.
 
     //int num_blocks_z = (Z + Bz - 1)/Bz; //Round up in case end block is half populated.
     int num_blocks_y = (Y + By - 1)/By;
@@ -171,6 +163,7 @@ int get_coords(int coords[3], int X, int Y, int Z, int* index_of_struct, int* io
 }
 
 real *hanning_window(int big_n) {
+    //Creates a hanning window for use as an input signal.
     real *hanning = (real *) calloc(big_n, sizeof(real));
     if (hanning == NULL) { return NULL; }
 
