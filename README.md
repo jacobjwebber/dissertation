@@ -2,6 +2,10 @@
 
 This contains the following directories.
 
+## 2d_example
+This contains a very early prototype that was used for project preparation
+to sho viability. 
+
 ## matlab_scripts
 This contains the script written by Brian Hamilton which implements the 
 new boundary conditions with the bounding box method.
