@@ -112,7 +112,15 @@
 \newpage
 
 \begin{abstract}
-I made a program it took ages
+
+Room acoustics modelling is useful to determine how an environment will affect sound. These models can be done computationally by solving the wave equation in three dimensions with finite-difference time-domain techniques (FDTD).
+
+This work replicates the work done in \cite{craig} with a slightly more complex set of boundary conditions as set out in \cite{brian} applied. In addition, a new technique and data structure were proposed and implemented that improved performance.
+
+The nature of FDTD models and their application to room acoustics requires that a stencilling operation is performed on a very large grid representation of the room being modelled. With irregularly shaped rooms, at present, a \textit{bounding box} method is used. This requires grid points that are outside the room to be stored, even though their values are not relevant. When GPUs are used for acoustic models, this grid is decomposed into small 3D blocks that are each processed by compute kernel. In the new method outlined here, only those blocks that contain any points that are internal to the room are stored. These are stored in an array of structs, each struct of which contains the grid points for the block, as well as the locations of the neighbouring blocks.
+
+This method significantly reduced the amount of unnecessary data storage compared with the bounding box technique - in some cases by more than a factor of 30. In addition, the stencilling performance was improved by an amount equivalent to the data savings, as the rate at which data was processed remained relatively constant.
+
 \end{abstract}
 
 \pagenumbering{roman}
@@ -441,7 +449,14 @@ To support arbitrarily shaped rooms as laid out in \cite{brian} it is necessary 
 The update to $P_{l,m,p}^{n+1}$ is now a function of $K_{l,m,p}$. This results in an extra global memory read for every stencil point.
 
 \subsubsection{Block decomposition and caching.}
-MORE PLEASE
+
+The work up until here assumes that the grid is decomposed into three dimensional blocks. In \cite{craig} other decompositions were tried in addition to this.
+
+The decomposition refers to how the data is shared between kernels. In addition to the 3D block decomposition, a 2D slicing decomposition was tried. Experiments were also done where data was chached into shared memory before the stencil was applied.
+
+The 3D block decomposition without shared memory was in fact found to be the second fastest approach. A minor improvement of \num{6}\% to stencil running time performance was found when 2d slicing with shared memory caching was used.
+
+Given the added complexity for a relatively small gain, the 2D slicing/shared memory approach was not replicated here. Instead the 3D block decomposition was used to provide a benchmark for the new method as outlined in chapter \ref{chapter:proposition}.
 
 \subsection{Memory Capacity}
 
@@ -648,7 +663,7 @@ In addition the proposed method also has better data locality. In a conventional
 
 \epigraph{\itshape ``The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.''}{Tom Cargill}
 
-The software was written in CUDA C. This is a proprietary language developed by NVIDIA and is an extension to ANSI C that allows for GPGPU programming. The CUDA C language was selected because the University of Edinburgh Acoustics and Audio Group (AAG) has an NVIDIA K20 GPU server. CUDA is a well supported way to program these devices, although the resulting programs will only run on NVIDIA hardware. Had OpenCL been used, the code would have also been able to run on graphics cards produced by AMD, who are NVIDIA's main competitor \cite{ref:gpu-market}. This paradigm is generally considered more complex than CUDA C, and, as the AAG does not own any AMD hardware, was not pursued. Some discussion of how future work might involve OpenCL is given in section \ref{section:future-work}. 
+The software was written in CUDA C. This is a proprietary language developed by NVIDIA and is an extension to ANSI C that allows for GPGPU programming. The CUDA C language was selected because the University of Edinburgh Acoustics and Audio Group (AAG) has an NVIDIA K20 GPU server. CUDA is a well supported way to program these devices, although the resulting programs will only run on NVIDIA hardware. Had OpenCL been used, the code would have also been able to run on graphics cards produced by AMD, who are NVIDIA's main competitor \cite{ref:gpu-market}. This paradigm is generally considered more complex than CUDA C, and, as the AAG does not own any AMD hardware, was not pursued. Some discussion of how future work might involve OpenCL is given in chapter \ref{section:future-work}. 
 
 The work stems from a Matlab script that implements the scheme using a bounding box as described in \ref{chapter:state-of-art}. There were also CUDA kernels from \cite{craig} that served as inspiration, but these did not model cases where non-cuboid rooms were used. This meant that they were of limited use. As no code exists that implements the semi-structured approach proposed here, the project was therefore largely one of software development from scratch. Altogether the source base extends to over 1500 lines of code. With hindsight the project was probably too ambitious in terms of software development, meaning that not enough time was left for experimentation and analysis.
 
@@ -660,15 +675,13 @@ A directory tree (the output of the GNU \verb|tree| utility) of all the new sour
 
 The \verb|lib| directory contains source files with code that is necessary for the implementation of the semi-structured method. They contain functions for forming the data structure as described in chapter \ref{chapter:proposition}, as well as generating room shapes, and performing the FDTD stencil.
 
-There is a source directory each for the memory capacity experiments. These contain a CUDA C source file that performs the required experiment as well as a makefile that compiles it and the necessary code from the \verb|lib| dir. These then call functions from the library that do all the tasks associated with the proposed method. 
+There are source directories for the memory capacity experiment and the stencilling experiment. These each contain a CUDA C source file that performs the required experiment as well as a makefile that compiles it and the necessary code from the \verb|lib| dir. These then call functions from the library that do all the tasks associated with the proposed method. 
 
 There is then a \verb|test| directory. This contains functions that test the library functions for correctness.
 
-As well as these source directories there is also a directory for gathering and storing results. This contains a script that measures the memory capacity performance with rooms as described in \ref{section:mem-use}. These results are put into 3 csv files, which can be read by \LaTeX\ to form the three tables in appendix \ref{appendix:mem-cap}. This automation means that this experiment is easily repeatable.
+As well as these source directories there is also a directory for gathering and storing results. This contains a script that measures the memory capacity performance with rooms as described in \ref{section:mem-use}. These results are automatically written to 3 csv files, which can be read by \LaTeX\ to form the three tables in appendix \ref{appendix:mem-cap}. This automation means that this experiment is easily repeatable.
 
 \section{Software Development Process}
-
-At the root of all development was GitHub and the git tool. These were used to store code and data, and distribute it between machines that were used for development. Accurately tracking changes that were made to this document and to code across multiple computers was made trivial. GitHub also has \textit{Issues}. These can be used to record work that needs to be done and can be marked as complete, as well as linked to specific commits. A screenshot is included in figure \ref{figure:gh-issue}.
 
 \begin{figure}[H]
 \centering
@@ -676,6 +689,8 @@ At the root of all development was GitHub and the git tool. These were used to s
 \caption{A screenshot of a GitHub Issue.}
 \label{figure:gh-issue}
 \end{figure}
+
+At the root of all development was GitHub and the git tool. These were used to store code and data, and distribute it between the machines that were used for development. Accurately tracking changes that were made to this document and to code across multiple computers was made trivial. GitHub also has \textit{Issues}. These can be used to record work that needs to be done and can be marked as complete, as well as linked to specific commits. A screenshot is included in figure \ref{figure:gh-issue}.
 
 The software development was largely done from scratch by one developer. Although this removed the absolute necessity of a rigorous development process, this does not mean that a more thorough process would not have been beneficial. GitHub issues were used occasionally, but development was largely organised on an ad hoc basis. This could be improved upon.
 
@@ -686,14 +701,14 @@ NVIDIA includes developer tools with its CUDA software. As well as the compiler,
 
 For debugging, the \verb|cuda-gdb| program functions like gdb, but extended to work on GPU code. The \verb|cuda-memcheck| tool checks for memory errors such as segmentation faults. It will provide the line of code where the memory error is when the the binary is compiled using debugging flags.
 
-For profiling there is the \verb|nvprof| tool for the command line. There is also the NVIDIA \textit{Visual Profiler}, which provides a GUI. This can provide details of the amount of time spent on each part of the computation, the time taken for each kernel, as well as other details such as the theoretical and achieved occupancy (see section \ref{section:gpu-par}). Figure \ref{figure:vis-prof} provides a screenshot of this tool in use. The tool provides a time line of kernel executions as well as data on the individual kernel performance such as runtime, theoretical and achieved occupancy, and global read efficiency (see section \ref{section:gpus}). 
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.8\textwidth]{../diagrams/vis-prof}
 \caption{A screenshot of the visual profiler tool from NVIDIA's own documentation.}
 \label{figure:vis-prof}
 \end{figure}
+
+For profiling there is the \verb|nvprof| tool for the command line. There is also the NVIDIA \textit{Visual Profiler}, which provides a GUI. This can provide details of the amount of time spent on each part of the computation, the time taken for each kernel, as well as other details such as the theoretical and achieved occupancy (see section \ref{section:gpu-par}). Figure \ref{figure:vis-prof} provides a screenshot of this tool in use. The tool provides a time line of kernel executions as well as data on the individual kernel performance such as runtime, theoretical and achieved occupancy, and global read efficiency (see section \ref{section:gpus}). 
 
 The \verb|nsight| IDE, based on eclipse, provides access to the visual profiler as well as a GUI based debugger and all the typical features of a modern IDE.
 
@@ -801,6 +816,7 @@ then the case is equivalent to the infinite sum of infinitesimals making up a sp
 
 Practical gains come long before $d$ approaches infinity. With a diameter of \num{768} points, the semi-structured approach means that \SI{4014}{\mebi\byte} of global memory is required, which falls within the 5GiB limit of the K20. The bounding box method for a room of this size would require \SI{7344}{\mebi\byte} - meaning such a simulation could not be run on on a K20 graphics card.
 
+
 \subsection{Cube}
 The results from the cube shaped room experiment were very simple, as far as memory capacity goes. In all cases $\frac{S_{ss}}{S_{s}}$ was \num{1.002757}. This is because there is no empty space stored with the bounding box method. This represents the worst case performance for the semi-structured method. As such an increase in memory usage of around a quarter of one percent is a fairly tolerable result. Full results are included in appendix \ref{appendix:mem-cap}.
 
@@ -883,6 +899,34 @@ As with the other memory capacity experiments, the \lstinline|Bx|, \lstinline|By
 
 This is exactly the performance that was achieved in all cases when the experiment was run on a variety of sizes of cross shaped rooms. Full results for this experiment are given in appendix \ref{appendix:mem-cap}.
 
+\subsection{Quantifying Improvements}
+
+To quantify the improvement, ideal performance is taken to be when no points that are outside the room are stored. This is found by multiplying the number of points that are inside the room by the size of two double precision floating point numbers and one char (the char is used to store a $K$ value).
+
+With the 768 point diameter sphere example this would mean that ideal performance would be \SI{3845}{\mebi\byte} of memory usage. This means that \SI{168.7}{\mebi\byte} more data than ideal performance is used with the semi-structured  approach and \SI{3499}{\mebi\byte} for the structured. This shows a reduction in unnecessary data storage by a factor of 21.
+
+\begin{table}[h!]
+\centering
+\small
+ \begin{tabular}{|c|c|c|c|c|c|} \hline
+ Room Shape & Diam & Ideal (\SI{}{\mebi\byte}) & \multicolumn{2}{c|}{Achieved minus Ideal (\SI{}{\mebi\byte})} & Improvement \\ \cline{4-5}
+  &  &  & Structured & Semi-structured & \\ \hline
+
+Cube & 768 & 7344 & 0 &  20.25 & N/A \\
+Sphere & 768 & 3845 & 3499 & 168.7 & 20.7X \\  
+Cross & 488 & 9221 & 7736 & 226.4 & 34.2X \\  \hline
+\end{tabular}
+\caption{Quantifying the memory capacity improvements by comparing unecessary data stored between both methods.}
+\label{table:cap-quant}
+\end{table}
+
+
+The cross example shows even greater reductions as its shape is well suited to cubic decompositions. Taking example made from 488 point diameter cubes, ideal performance was theorised as taking \SI{9221}{\mebi\byte}. This means \SI{7736}{\mebi\byte} of extra data was stored with the structured approach compared with \SI{226.4}{\mebi\byte} for the semi-structured. This is a reduction in additional data storage by a factor of 34.
+
+These performances would be even more improved with rooms that populated a bounding box more sparsely - for example a cross with longer limbs. Such a shape was not trialled for fear of being unrealistic and therefore over claiming this method's effectiveness.
+
+Table \ref{table:cap-quant} shows the full results of surplus data storage. Note that with the structured method no excess data is stored in the cube example.
+
 \section{Stencil Performance}
 \label{section:stencil-perf}
 
@@ -909,6 +953,8 @@ Cross & 256 & 2448.00 & 1363.76 & 53.27 & 30.34 & 1.76X \\  \hline
 
 The results were obtained by running the experiments multiple times and taking a mean of the time taken for each experiment. The timing results were consistent - with a standard deviation value of less than one percent in all cases.
 
+The performance figures were very similar in the cube example. Performances scaled relative to memory savings for the other two examples. To illustrate this point table \ref{table:data} is included, which shows in \SI{}{\gibi\byte\per\second} the rate at which data is processed. To get this result the memory usage from table \ref{table:perf} was multiplied by the number of time steps (\num{1000}) and then divided by the time taken. These results show that the rate at which data is processed is relatively constant within each method. The structured approach was, on average, \num{2}\% faster than the semi-structured on  a per \SI{}{\gibi\byte} basis. However, this is easily overshadowed by the data savings that are possible if the room is even slightly irregularly shaped.
+
 \begin{table}[H]
 \centering
 \small
@@ -923,8 +969,6 @@ Mean & 44.80 & 43.91 \\ \hline
 \caption{Data processing rates.}
 \label{table:data}
 \end{table}
-
-The performance figures were very similar in the cube example. Performances scaled relative to memory savings for the other two examples. To illustrate this point table \ref{table:data} is included, which shows in \SI{}{\gibi\byte\per\second} the rate at which data is processed. To get this result the memory usage from table \ref{table:perf} was multiplied by the number of time steps (\num{1000}) and then divided by the time taken. These results show that the rate at which data is processed is relatively constant within each method. The structured approach was, on average, \num{2}\% faster than the semi-structured on  a per \SI{}{\gibi\byte} basis. However, this is easily overshadowed by the data savings that are possible if the room is even slightly irregularly shaped.
 
 The data processing rates are well below the \SI{208}{\giga\byte\per\second} maximum memory bandwidth of the K20 GPU. This suggests there is still significant room for improvement - particularly as the maximum theoretical processing rate could be significantly higher than this if cache is well used.
 
@@ -941,7 +985,7 @@ In terms of memory capacity, the results from experiment match the theory exactl
 
 The project was largely one of devising and implementing a complex piece of new software. As such, less time was available than would have been ideal for analysing and optimising the resulting code.
 
-Of particular interest and necessity would be verifying the results in a more thorough fashion. While this is not straightforward, there are ways to do so. One way would be to solve the wave equation analytically for a simple enough case and then compare the output with the FDTD method used here.
+Of particular interest and necessity would be verifying the results in a more thorough fashion. While this is not straightforward, there are ways to do so. One way would be to solve the wave equation analytically for a simple enough case and then compare the answer with the results of the FDTD method used here.
 
 Another piece of further work would be to conduct more accurate profiling of the code - collecting data such as theoretical and achieved occupancy, and global read efficiency. This would be useful in further optimising the code, which would also have been good to have more time to do. If the work were ported to OpenCL then it would allow the code to run on AMD devices. These currently have the highest bandwidth memory. This could be used to verify the unproven claim that this new method will outperform the old even more on this hardware.
 
@@ -1083,7 +1127,7 @@ The following kernels where used.
 |   |-- Makefile
 |   |-- memory-capacity
 |   |-- memory-capacity.cu
-|   `-- obj
+|   `-- obj-
 |-- results
 |   |-- data
 |   |   |-- memory-cap_cube.csv
@@ -1091,7 +1135,6 @@ The following kernels where used.
 |   |   |-- memory-cap_raw
 |   |   `-- memory-cap_sphere.csv
 |   `-- scripts
-|       |-- here.pdf
 |       |-- make_mem-cap_graph.sh
 |       `-- mem-cap_graph.gp
 |-- sphere
@@ -1101,10 +1144,12 @@ The following kernels where used.
 |   `-- sphere.cu
 |-- stencil-performance
 |   |-- Makefile
+|   |-- obj-
 |   |-- stencil-performance
 |   `-- stencil-performance.cu
 `-- test
     |-- Makefile
+    |-- obj-
     |-- test
     `-- test.cu
 

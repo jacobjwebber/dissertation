@@ -4,13 +4,14 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {5.1}{\ignorespaces Performance results for the stencilling operation. \relax }}{31}
-\contentsline {table}{\numberline {5.2}{\ignorespaces Data processing rates.\relax }}{31}
+\contentsline {table}{\numberline {5.1}{\ignorespaces Quantifying the memory capacity improvements by comparing unecessary data stored between both methods.\relax }}{30}
+\contentsline {table}{\numberline {5.2}{\ignorespaces Performance results for the stencilling operation. \relax }}{31}
+\contentsline {table}{\numberline {5.3}{\ignorespaces Data processing rates.\relax }}{32}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {A.1}{\ignorespaces Sphere memory capacity results\relax }}{36}
-\contentsline {table}{\numberline {A.2}{\ignorespaces Cube memory capacity results\relax }}{37}
-\contentsline {table}{\numberline {A.3}{\ignorespaces Cross memory capacity results. Diam here gives the diameter of the five constituent cubes of the cross.\relax }}{37}
+\contentsline {table}{\numberline {A.1}{\ignorespaces Sphere memory capacity results\relax }}{37}
+\contentsline {table}{\numberline {A.2}{\ignorespaces Cube memory capacity results\relax }}{38}
+\contentsline {table}{\numberline {A.3}{\ignorespaces Cross memory capacity results. Diam here gives the diameter of the five constituent cubes of the cross.\relax }}{38}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
