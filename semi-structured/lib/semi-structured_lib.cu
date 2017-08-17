@@ -10,7 +10,7 @@ char is_block_internal(int x, int y, int z, char *array, int xmax, int ymax, int
             for (k = z; k < z+Bx; k++) {
                 if (  i<zmax && j<ymax && k<xmax && array[i*ymax*xmax + j*xmax + k]) {
                     return TRUE;
-                 }
+                }
             }
         }
     }
@@ -89,7 +89,7 @@ ss_t create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct 
         for (j = 0; j < num_blocks_y; j++) {
             for (k = 0; k < num_blocks_x; k++) {
                 index = index_of_struct_s[i*num_blocks_y*num_blocks_x + j*num_blocks_x + k];
-                
+
                 if (index != 0) {
                     copy_to_struct(i * Bz, j * By, k * Bx, &(aos[index]), &(is_in_sphere[0]), X, Y, Z);
                 }
@@ -104,14 +104,14 @@ ss_t create_aos(int X, int Y, int Z, char* is_in_sphere, int* blocks_in, struct 
     for (i = 0; i < num_blocks_z; i++) {
         for (j = 0; j < num_blocks_y; j++) {
             for (k = 0; k < num_blocks_x; k++) {
-                
+
                 index = index_of_struct_s[i*num_blocks_y*num_blocks_x + j*num_blocks_x + k];
                 if ( index != 0) {
                     bl = &(aos[index]);
 
                     if (i>0) {bl->down  = index_of_struct_s[(i-1)*num_blocks_y*num_blocks_x + j*num_blocks_x + k];}
                     if (i<(num_blocks_z-1)) {bl->up = index_of_struct_s[(i+1)*num_blocks_y*num_blocks_x + j*num_blocks_x + k];}
-                    
+
                     if (j>0) {bl->aft   = index_of_struct_s[i*num_blocks_y*num_blocks_x + (j-1)*num_blocks_x + k];}
                     if (j>num_blocks_y-1) { bl->fore  = index_of_struct_s[i*num_blocks_y*num_blocks_x + (j+1)*num_blocks_x + k];}
 

@@ -50,7 +50,7 @@ char* make_cube(int diam) {
     int X, Y, Z;
 
     X = Y = Z = diam;
-   
+
     char *cube = (char*) calloc(X*Y*Z, sizeof(char));
 
     if(!cube) {
@@ -101,7 +101,7 @@ char* make_cross(int diam) {
         for (j = 0; j < Y; j++) {
             for (k = 0; k < X; k++) {
                 if (k >= diam && k < 2*diam
-                    || j >=diam && j < 2*diam) {
+                        || j >=diam && j < 2*diam) {
                     cross[i*Y*X + j*X + k] = 1;
                 }
             }

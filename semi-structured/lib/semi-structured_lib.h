@@ -8,8 +8,8 @@
 
 #define CUCALL( call )               \
 {                                       \
-cudaError_t result = call;              \
-if ( cudaSuccess != result )            \
+    cudaError_t result = call;              \
+    if ( cudaSuccess != result )            \
     fprintf(stderr, "CUDA error  %s \n", cudaGetErrorString( result ) ); \
 }
 

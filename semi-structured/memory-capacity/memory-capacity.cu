@@ -21,7 +21,7 @@ int main() {
     int X, Y, Z;
 
     diam = 8;
-   
+
     // BEGIN DATA PREP SECTION
     struct block *aos;
     int blocks_in;
@@ -42,7 +42,7 @@ int main() {
         printf("%i \t%i \t%f \t%f \t%f \n", diam, blocks_in-1, (float) bl_siz/(float)(1024*1024),(float) s_siz/ (float)(1024*1024), ratio);
         free_ss(data);
     }
- 
+
     printf("\nCUBE\n");
     printf("Diam \tInternal Blocks \tSize semi-Structured (MiB) \tSize - Structured (MiB) \tRatio\n");
 
@@ -56,7 +56,7 @@ int main() {
         printf("%i \t%i \t%f \t%f \t%f \n", diam, blocks_in-1, (float) bl_siz/(float)(1024*1024),(float) s_siz/ (float)(1024*1024), ratio);
         free_ss(data);
     }
- 
+
     printf("\nCROSS\n");
     printf("Diam \tInternal Blocks\tSize semi-Structured (MiB) \tSize - Structured (MiB) \tRatio\n");
     for (diam = 8; diam <= 500; diam +=40) {
@@ -70,7 +70,7 @@ int main() {
         printf("%i \t%i \t%f \t%f \t%f \n", diam, blocks_in-1, (float) bl_siz/(float)(1024*1024),(float) s_siz/ (float)(1024*1024), ratio);
         free_ss(data);
     }
-  
+
     return 0;
 }
 

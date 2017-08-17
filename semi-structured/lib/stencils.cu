@@ -33,7 +33,7 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g) {
 
     __shared__ real u1_s[Bz+2][By+2][Bx+2]; //u1 in shared (L1 cache) memory.
 
-   __syncthreads();
+    __syncthreads();
 
     u1_s[z+1][y+1][x+1] = aos[bl].u1[z][y][x];
 
@@ -62,13 +62,13 @@ __global__ void perform_stencil(struct block *aos, real l2, real l, real g) {
     //uzz(IN)=((2-l2*Ki(IN)).*uz(IN) + l2*(uz(iIN+1) + uz(iIN-1) + uz(iIN+Ni) + uz(iIN-Ni) + uz(iIN+Ni*Nj) + uz(iIN-Ni*Nj))+(0.5*l*g*(6-Ki(IN))-1).*uzz(IN))./(1+0.5*l*g*(6-Ki(IN)));
 
     aos[bl].u[z-1][y-1][x-1] = ((2.0 - l2 * (real) k) * u1_s[z][y][x] +
-                                   l2 * ( u1_s[z][y][x+1] +
-                                          u1_s[z][y][x-1] +
-                                          u1_s[z][y+1][x] +
-                                          u1_s[z][y-1][x] +
-                                          u1_s[z+1][y][x] +
-                                          u1_s[z-1][y][x] ) +
-                                          (0.5 * l * g * (6.0 - (real) k) - 1.0) * aos[bl].u[z-1][y-1][x-1])/(1 + 0.5 * l * g * (6 - k));
+            l2 * ( u1_s[z][y][x+1] +
+                u1_s[z][y][x-1] +
+                u1_s[z][y+1][x] +
+                u1_s[z][y-1][x] +
+                u1_s[z+1][y][x] +
+                u1_s[z-1][y][x] ) +
+            (0.5 * l * g * (6.0 - (real) k) - 1.0) * aos[bl].u[z-1][y-1][x-1])/(1 + 0.5 * l * g * (6 - k));
     __syncthreads();
     if (k == 0) {
         aos[bl].u[z-1][y-1][x-1] = 0.0;
@@ -126,13 +126,13 @@ __global__ void perform_stencil_b(struct block *aos, real l2, real l, real g) {
     //uzz(IN)=((2-l2*Ki(IN)).*uz(IN) + l2*(uz(iIN+1) + uz(iIN-1) + uz(iIN+Ni) + uz(iIN-Ni) + uz(iIN+Ni*Nj) + uz(iIN-Ni*Nj))+(0.5*l*g*(6-Ki(IN))-1).*uzz(IN))./(1+0.5*l*g*(6-Ki(IN)));
 
     aos[bl].u1[z-1][y-1][x-1] = ((2.0 - l2 * (real) k) * u1_s[z][y][x] +
-                                   l2 * ( u1_s[z][y][x+1] +
-                                          u1_s[z][y][x-1] +
-                                          u1_s[z][y+1][x] +
-                                          u1_s[z][y-1][x] +
-                                          u1_s[z+1][y][x] +
-                                          u1_s[z-1][y][x] ) +
-                                          (0.5 * l * g * (6.0 - (real) k) - 1.0) * aos[bl].u1[z-1][y-1][x-1])/(1 + 0.5 * l * g * (6 - k));
+            l2 * ( u1_s[z][y][x+1] +
+                u1_s[z][y][x-1] +
+                u1_s[z][y+1][x] +
+                u1_s[z][y-1][x] +
+                u1_s[z+1][y][x] +
+                u1_s[z-1][y][x] ) +
+            (0.5 * l * g * (6.0 - (real) k) - 1.0) * aos[bl].u1[z-1][y-1][x-1])/(1 + 0.5 * l * g * (6 - k));
     __syncthreads();
     if (k == 0) {
         aos[bl].u1[z-1][y-1][x-1] = 0.0;
