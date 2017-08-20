@@ -1,0 +1,16 @@
+\frametitle{The Struct}
+
+\begin{lstlisting}[caption=The block struct]
+typedef real bl_array[Bz][By][Bx];
+struct block {
+    int up;
+    int down;
+    int left;
+    int right;
+    int fore;
+    int aft;
+    bl_array u;
+    bl_array u1;
+    char k[Bz][By][Bx];
+};
+\end{lstlisting}
