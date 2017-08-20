@@ -1,6 +1,6 @@
 \frametitle{The Struct}
 
-\begin{lstlisting}[caption=The block struct]
+^^I\begin{lstlisting}[caption=The block struct]
 typedef real bl_array[Bz][By][Bx];
 struct block {
     int up;
@@ -13,4 +13,4 @@ struct block {
     bl_array u1;
     char k[Bz][By][Bx];
 };
-\end{lstlisting}
+^^I\end{lstlisting}

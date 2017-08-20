@@ -1,6 +1,7 @@
 \documentclass{beamer}
 %\usefonttheme{serif}
 \usepackage{listings}
+\usepackage{pst-solides3d}
 
 \setbeamertemplate{bibliography item}{}
 
@@ -19,187 +20,187 @@
 \begin{document}
 \frame{\titlepage}
 
-  \begin{frame}
-     \frametitle{Introduction}
-     This talk aims to answer the following questions:
-     \begin{itemize}
-     \item Modelling acoustics: what and why?
-     \item What is the current state-of-the-art?
-     \item What is the new method proposed here?
-     \item What were the results when this method was used?
-     \item How could these be improved?
-     \end{itemize}
-  \end{frame}
+\begin{frame}
+	\frametitle{Introduction}
+	This talk aims to answer the following questions:
+	\begin{itemize}
+		\item Modelling acoustics: what and why?
+		\item What is the current state-of-the-art?
+		\item What is the new method proposed here?
+		\item What were the results when this method was used?
+		\item How could these be improved?
+	\end{itemize}
+\end{frame}
 
 
 
-  \begin{frame}
-    \frametitle{Sound}
-    \framesubtitle{What is it?}
-    \begin{block}{From Wikipedia}
-    ``In physics, sound is a vibration that propagates as a typically audible mechanical wave of pressure and displacement, through a transmission medium such as air or water.''
-    \end{block}
-    \begin{block}{From my undergraduate degree}
-    \begin{equation}
-    \nabla^{2} P - \frac{1}{{c^2 }}\frac{{\partial ^2 P}}{{\partial t^2 }} = 0
-    \end{equation}
-    \end{block}
-  \end{frame}
-  
-  
-  \begin{frame}
-  \frametitle{Room acoustics}
-  \begin{itemize}
-  \item The physical properties of rooms affects how we hear sound.
-  \item Sound reverberates off walls/objects.
-  \item Waves diffract around corners.
-  \item Some rooms echo, some sound dry.
-  \item Backwards: If we know physical properties can we derive the sound?
-  \end{itemize}
-  \end{frame}
+\begin{frame}
+	\frametitle{Sound}
+	\framesubtitle{What is it?}
+	\begin{block}{From Wikipedia}
+		``In physics, sound is a vibration that propagates as a typically audible mechanical wave of pressure and displacement, through a transmission medium such as air or water.''
+	\end{block}
+	\begin{block}{From my undergraduate degree}
+		\begin{equation}
+			\nabla^{2} P - \frac{1}{{c^2 }}\frac{{\partial ^2 P}}{{\partial t^2 }} = 0
+		\end{equation}
+	\end{block}
+\end{frame}
   
   
 \begin{frame}
-\frametitle{The wave equation}
-$$\frac{\partial ^2 P}{\partial x^2 } - \frac{1}{{c^2 }}\frac{{\partial ^2 P}}{{\partial t^2 }} = 0$$
-where $P$ is pressure deviation and $c$ is speed of sound in medium.
-\linebreak
-\begin{itemize}
-\item Very familiar to those who have studied physics
-\item It, and its application to acoustics, are derivable from first principles.
-\item Solving for $P$ gives us acoustic properties of a system (boundary conditions are very important!).
-\item Solving this analytically for complex systems is not possible.
-\end{itemize}    
+	\frametitle{Room acoustics}
+	\begin{itemize}
+		\item The physical properties of rooms affects how we hear sound.
+		\item Sound reverberates off walls/objects.
+		\item Waves diffract around corners.
+		\item Some rooms echo, some sound dry.
+		\item Backwards: If we know physical properties can we derive the sound?
+	\end{itemize}
+\end{frame}
+  
+  
+\begin{frame}
+	\frametitle{The wave equation}
+	$$\frac{\partial ^2 P}{\partial x^2 } - \frac{1}{{c^2 }}\frac{{\partial ^2 P}}{{\partial t^2 }} = 0$$
+	where $P$ is pressure deviation and $c$ is speed of sound in medium.
+	\linebreak
+	\begin{itemize}
+		\item Very familiar to those who have studied physics
+		\item It, and its application to acoustics, are derivable from first principles.
+		\item Solving for $P$ gives us acoustic properties of a system (boundary conditions are very important!).
+		\item Solving this analytically for complex systems is not possible.
+	\end{itemize}    
 \end{frame}
 
 \begin{frame}
-\frametitle{FTDT}
-\framesubtitle{Finite-difference time-domain method}
-Finite difference methods are a way of approximating and discretising differential equations so that they can be solved numerically.
-\linebreak
-
-Start off by replacing derivative with finite difference:
-
-%Effectively turns solving differential equation into a large stencilling operation.
-
-
-\begin{equation}
-\label{equation:difference}
-\frac{df(u)}{du} \approx \frac{f(u+h) - f(u-h)}{2h}
-\end{equation}
-
-\begin{equation}
-\label{equation:difference-second}
-\frac{d^{2}f(u)}{du^{2}} \approx \frac{f(u+h) - 2f(u) + f(u-h)}{h^{2}}
-\end{equation}
-\end{frame}
-
-
-\begin{frame}
-Let $h$ be the distance between samples ($H$) and $P$ be a 3D grid
-\begin{equation}
-\label{equation:part1}
-\delta_{t}^{2} P_{l,m,p}^{n} \equiv \frac{1}{T^{2}} \Big(P_{l,m,p}^{n+1} - 2 P_{l,m,p}^{n} + P_{l,m,p}^{n-1}\Big) \approx \frac{{\partial ^2 P}}{{\partial t^2 }}
-\end{equation}
-
-\begin{equation}
-\label{equation:part2}
-\delta_{x}^{2} P_{l,m,p}^{n} \equiv \frac{1}{H^{2}} \Big(P_{l+1,m,p}^{n} - 2 P_{l,m,p}^{n} + P_{l-1,m,p}^{n}\Big) \approx \frac{{\partial ^2 P}}{{\partial x^2 }}
-\end{equation}
-
-\begin{equation}
-\label{equation:part3}
-\delta_{y}^{2} P_{l,m,p}^{n} \equiv \frac{1}{H^{2}} \Big(P_{l,m+1,p}^{n} - 2 P_{l,m,p}^{n} + P_{l,m-1,p}^{n}\Big) \approx \frac{{\partial ^2 P}}{{\partial y^2 }}
-\end{equation}
-
-\begin{equation}
-\label{equation:part4}
-\delta_{z}^{2} P_{l,m,p}^{n} \equiv \frac{1}{H^{2}} \Big(P_{l,m,p+1}^{n} - 2 P_{l,m,p}^{n} + P_{l,m,p-1}^{n}\Big) \approx \frac{{\partial ^2 P}}{{\partial z^2 }}
-\end{equation}
+	\frametitle{FTDT}
+	\framesubtitle{Finite-difference time-domain method}
+	Finite difference methods are a way of approximating and discretising differential equations so that they can be solved numerically.
+	\linebreak
+	
+	Start off by replacing derivative with finite difference:
+	
+	%Effectively turns solving differential equation into a large stencilling operation.
+	
+	
+	\begin{equation}
+		\label{equation:difference}
+		\frac{df(u)}{du} \approx \frac{f(u+h) - f(u-h)}{2h}
+	\end{equation}
+	
+	\begin{equation}
+		\label{equation:difference-second}
+		\frac{d^{2}f(u)}{du^{2}} \approx \frac{f(u+h) - 2f(u) + f(u-h)}{h^{2}}
+	\end{equation}
 \end{frame}
 
 
 \begin{frame}
-\begin{equation}
-\label{equation:wave-expanded}
-\frac{{\partial ^2 P}}{{\partial t^2 }} = c^2 \Bigg( \frac{\partial ^2 P}{\partial x^2 } + \frac{\partial ^2 P}{\partial y^2 }  + \frac{\partial ^2 P}{\partial z^2 } \Bigg)
-\end{equation}
-
-\small
-\begin{multline}
-\label{equation:stencil-big}
-P_{l,m,p}^{n+1} - 2 P_{l,m,p}^{n} + P_{l,m,p}^{n-1} = \frac{c^2 T^2}{H^2} \big(P_{l+1,m,p}^{n} + P_{l-1,m,p}^{n} + P_{l,m+1,p}^{n} + P_{l,m-1,p}^{n} \\ 
-+ P_{l,m,p+1}^{n} + P_{l,m,p-1}^{n} - 6 P_{l,m,p}^{n} \big)
-\end{multline}
-\end{frame}
-
-\begin{frame}
-Letting the Courant number be defined as 
-
-\begin{equation}
-\lambda \equiv \frac{c T}{H}
-\end{equation}
-
-and our stencil 
-
-\begin{equation}
-\label{equation:s-define}
-S \equiv P_{l+1,m,p}^{n} + P_{l-1,m,p}^{n} + P_{l,m+1,p}^{n} + P_{l,m-1,p}^{n} + P_{l,m,p+1}^{n} + P_{l,m,p-1}^{n}
-\end{equation}
-
-gives a somewhat neater version of equation \ref{equation:stencil-big}
-
-\begin{equation}
-\label{equation:stencil-small}
-P_{l,m,p}^{n+1} = (2 - 6 \lambda^2)P_{l,m,p}^{n} + \lambda^2 S - P_{l,m,p}^{n-1}
-\end{equation}
-\end{frame}
-
-\begin{frame}
-\frametitle{Stencil}
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth]{../diagrams/stencil}
-\label{stencil}
-\end{figure}
+	Let $h$ be the distance between samples ($H$) and $P$ be a 3D grid
+	\begin{equation}
+		\label{equation:part1}
+		\delta_{t}^{2} P_{l,m,p}^{n} \equiv \frac{1}{T^{2}} \Big(P_{l,m,p}^{n+1} - 2 P_{l,m,p}^{n} + P_{l,m,p}^{n-1}\Big) \approx \frac{{\partial ^2 P}}{{\partial t^2 }}
+	\end{equation}
+	
+	\begin{equation}
+		\label{equation:part2}
+		\delta_{x}^{2} P_{l,m,p}^{n} \equiv \frac{1}{H^{2}} \Big(P_{l+1,m,p}^{n} - 2 P_{l,m,p}^{n} + P_{l-1,m,p}^{n}\Big) \approx \frac{{\partial ^2 P}}{{\partial x^2 }}
+	\end{equation}
+	
+	\begin{equation}
+		\label{equation:part3}
+		\delta_{y}^{2} P_{l,m,p}^{n} \equiv \frac{1}{H^{2}} \Big(P_{l,m+1,p}^{n} - 2 P_{l,m,p}^{n} + P_{l,m-1,p}^{n}\Big) \approx \frac{{\partial ^2 P}}{{\partial y^2 }}
+	\end{equation}
+	
+	\begin{equation}
+		\label{equation:part4}
+		\delta_{z}^{2} P_{l,m,p}^{n} \equiv \frac{1}{H^{2}} \Big(P_{l,m,p+1}^{n} - 2 P_{l,m,p}^{n} + P_{l,m,p-1}^{n}\Big) \approx \frac{{\partial ^2 P}}{{\partial z^2 }}
+	\end{equation}
 \end{frame}
 
 
 \begin{frame}
-\frametitle{Memory considerations}
-For stencilling operations, memory access is the bottleneck.
-\begin{itemize}
-\item Accurate models need a lot of points to model a room.
-\item Wavelength of sound at 20kHz is 17mm.
-\item High memory bandwidth means GPUs are used - limited memory.
-\item Standard 3d arrays are cuboid.
-\item Due to memory layout, neighbouring points in space will always be far apart in memory.
-\end{itemize}
+	\begin{equation}
+		\label{equation:wave-expanded}
+		\frac{{\partial ^2 P}}{{\partial t^2 }} = c^2 \Bigg( \frac{\partial ^2 P}{\partial x^2 } + \frac{\partial ^2 P}{\partial y^2 }  + \frac{\partial ^2 P}{\partial z^2 } \Bigg)
+	\end{equation}
+	
+	\small
+	\begin{multline}
+		\label{equation:stencil-big}
+		P_{l,m,p}^{n+1} - 2 P_{l,m,p}^{n} + P_{l,m,p}^{n-1} = \frac{c^2 T^2}{H^2} \big(P_{l+1,m,p}^{n} + P_{l-1,m,p}^{n} + P_{l,m+1,p}^{n} + P_{l,m-1,p}^{n} \\ 
+		+ P_{l,m,p+1}^{n} + P_{l,m,p-1}^{n} - 6 P_{l,m,p}^{n} \big)
+	\end{multline}
+\end{frame}
+
+\begin{frame}
+	Letting the Courant number be defined as 
+	
+	\begin{equation}
+		\lambda \equiv \frac{c T}{H}
+	\end{equation}
+	
+	and our stencil 
+	
+	\begin{equation}
+		\label{equation:s-define}
+		S \equiv P_{l+1,m,p}^{n} + P_{l-1,m,p}^{n} + P_{l,m+1,p}^{n} + P_{l,m-1,p}^{n} + P_{l,m,p+1}^{n} + P_{l,m,p-1}^{n}
+	\end{equation}
+	
+	gives a somewhat neater version of equation \ref{equation:stencil-big}
+	
+	\begin{equation}
+		\label{equation:stencil-small}
+		P_{l,m,p}^{n+1} = (2 - 6 \lambda^2)P_{l,m,p}^{n} + \lambda^2 S - P_{l,m,p}^{n-1}
+	\end{equation}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Stencil}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.5\textwidth]{../diagrams/stencil}
+		\label{stencil}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Memory considerations}
+	For stencilling operations, memory access is the bottleneck.
+	\begin{itemize}
+		\item Accurate models need a lot of points to model a room.
+		\item Wavelength of sound at 20kHz is 17mm.
+		\item High memory bandwidth means GPUs are used - limited memory.
+		\item Standard 3d arrays are cuboid.
+		\item Due to memory layout, neighbouring points in space will always be far apart in memory.
+	\end{itemize}
 \end{frame}
  
 \begin{frame}
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{../diagrams/church}
-\label{church}
-\end{figure}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth]{../diagrams/church}
+		\label{church}
+	\end{figure}
 \end{frame}
 
 
 \begin{frame}
-\frametitle{The Proposal}
-Use an array of structs instead!
-\begin{itemize}
-\item Store enough points for CUDA kernel to operate on.
-\item Only store structs with at least one point inside the room.
-\item Experiment with different sized arrays within the struct to see if caching benefits can be yielded.
-\end{itemize}
+	\frametitle{The Proposal}
+	Use an array of structs instead!
+	\begin{itemize}
+		\item Store enough points for CUDA kernel to operate on.
+		\item Only store structs with at least one point inside the room.
+		\item Experiment with different sized arrays within the struct to see if caching benefits can be yielded.
+	\end{itemize}
 \end{frame}  
   
 \begin{frame}[fragile]
-\frametitle{The Struct}
-
-\begin{lstlisting}[caption=The block struct]
+	\frametitle{The Struct}
+	
+	\begin{lstlisting}[caption=The block struct]
 typedef real bl_array[Bz][By][Bx];
 struct block {
     int up;
@@ -212,47 +213,67 @@ struct block {
     bl_array u1;
     char k[Bz][By][Bx];
 };
-\end{lstlisting}
+	\end{lstlisting}
 \end{frame}
 
 \begin{frame}
-\frametitle{Converting between representations}
-\framesubtitle{Going from bounding box to array of structs}
-\begin{itemize}
-\item Implement struct in 2d, then 3d
-\item Implement algorithm to convert from bounded array to array of structs.
-\item See if this uses less memory (it does!)
-\item See if this method is intolerably slow in CUDA.
-\item See if results are \textbf{correct}.
-\item Experiment with different sub-array sizes to optimise for
+	\frametitle{Converting between representations}
+	\framesubtitle{Going from bounding box to array of structs}
 	\begin{itemize}
-	\item memory usage
-	\item caching efficiency
+		\item Implement struct in 2d, then 3d
+		\item Implement algorithm to convert from bounded array to array of structs.
+		\item See if this uses less memory (it does!)
+		\item See if this method is intolerably slow in CUDA.
+		\item See if results are \textbf{correct}.
+		\item Experiment with different sub-array sizes to optimise for
+		      \begin{itemize}
+		      	\item memory usage
+		      	\item caching efficiency
+		      \end{itemize}
 	\end{itemize}
-\end{itemize}
 \end{frame}
 
 \begin{frame}
-\begin{figure}
+
+\begin{figure}[H]
 \centering
-\includegraphics[height=0.75\textheight]{../diagrams/diagram}
-\caption{Diagram showing unit square rotated by $\theta$ within bounding square, where $x$ is the side of the bounding square.}
-\label{spr}
+
+\resizebox{0.5\linewidth}{0.3\linewidth}{\begin{pspicture}[shift=*](-4.2,-4.2)(4.2,4.2)
+
+\psset{lightsrc=10 20 30,viewpoint=30 10 30 rtp2xyz,Decran=40}
+
+ %\axesIIID(3,3,3)(6,4,4)
+%\psgrid
+\psSolid[
+object=sphere,
+r=2,
+ngrid=18 18, axesboxed]%
+
+\psSolid[
+action=draw,
+object=cube,
+RotZ=30,
+%show=all,
+]%
+
+\end{pspicture}}
+\caption{Computer graphic showing a sphere of unit diameter within a cube of unit side.}
+\label{figure:sphere-cube}
 \end{figure}
+
 \end{frame}
 
-
-  \begin{frame}
-     \frametitle{The End}
-     This talk aimed to answer the following questions:
-     \begin{itemize}
-     \item What is sound?
-     \item How do the spaces we hear them in affect this sound?
-     \item What methods currently exist to simulate this?
-     \item Why would we want to simulate this?
-     \item How will I try to improve these?
-     \end{itemize}
-  \end{frame}
+\begin{frame}
+	\frametitle{The End}
+	This talk aimed to answer the following questions:
+	\begin{itemize}
+		\item Modelling acoustics: what and why?
+		\item What is the current state-of-the-art?
+		\item What is the new method proposed here?
+		\item What were the results when this method was used?
+		\item How could these be improved?
+	\end{itemize}
+\end{frame}
 
 % etc
 \end{document}
