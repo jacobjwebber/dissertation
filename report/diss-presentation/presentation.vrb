@@ -1,16 +1,56 @@
-\frametitle{The Struct}
+\frametitle{Memory Capacity Results}
+\framesubtitle{cross}
+\begin{figure}[H]
+\centering
+\resizebox{0.5\linewidth}{0.25\linewidth}{\begin{pspicture}[shift=*](-4.2,-4.2)(4.2,4.2)
+%
+\psset{lightsrc=10 20 30,viewpoint=30 10 30 rtp2xyz,Decran=40,unit=1}
 
-^^I\begin{lstlisting}[caption=The block struct]
-typedef real bl_array[Bz][By][Bx];
-struct block {
-    int up;
-    int down;
-    int left;
-    int right;
-    int fore;
-    int aft;
-    bl_array u;
-    bl_array u1;
-    char k[Bz][By][Bx];
-};
-^^I\end{lstlisting}
+ %\axesIIID(3,3,3)(6,4,4)
+%\psgrid
+%\psgrid
+\psSolid[
+action=draw**,
+object=cube,
+a=2,
+RotZ=00,
+%show=all,
+](0,-2,0)
+\psSolid[
+action=draw**,
+object=cube,
+a=2,
+RotZ=00,
+%show=all,
+](-2,0,0)
+\psSolid[
+action=draw**,
+object=cube,
+a=2,
+RotZ=00,
+%show=all,
+](0,0,0)
+\psSolid[
+action=draw**,
+object=cube,
+a=2,
+RotZ=00,
+%show=all,
+](2,0,0)
+
+
+
+\psSolid[
+action=draw**,
+object=cube,
+a=2,
+RotZ=00,
+%show=all,
+](0,2,0)
+%show=all,
+%
+
+\end{pspicture}}
+\caption{A cross made up of 5 equal cubes.}
+\label{figure:cross}
+\end{figure}

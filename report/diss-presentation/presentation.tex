@@ -2,6 +2,32 @@
 %\usefonttheme{serif}
 \usepackage{listings}
 \usepackage{pst-solides3d}
+\usepackage[lined,boxed]{algorithm2e}
+\usepackage{gnuplottex}
+\usepackage{texdraw}
+\usepackage{graphicx}
+
+
+
+%\usepackage{epcc}
+\usepackage{graphics}
+\usepackage{epigraph}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{listings}
+\usepackage[binary-units=true]{siunitx}
+\usepackage[justification=centering, labelfont=bf, font={small}]{caption}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{graphicx}
+%\usepackage[margin=3cm]{geometry}
+%\usepackage{pst-solides3d}
+%\usepackage{texdraw}
+%\usepackage{gnuplottex}
+%\usepackage{csvsimple}
+%\usepackage[lined,boxed]{algorithm2e}
+%\usepackage[nottoc]{tocbibind}
+
 
 \setbeamertemplate{bibliography item}{}
 
@@ -121,11 +147,13 @@
 
 
 \begin{frame}
+
+Taking the expanded 3D wave equation
 	\begin{equation}
 		\label{equation:wave-expanded}
 		\frac{{\partial ^2 P}}{{\partial t^2 }} = c^2 \Bigg( \frac{\partial ^2 P}{\partial x^2 } + \frac{\partial ^2 P}{\partial y^2 }  + \frac{\partial ^2 P}{\partial z^2 } \Bigg)
 	\end{equation}
-	
+	This can be replaced with finite differences:
 	\small
 	\begin{multline}
 		\label{equation:stencil-big}
@@ -186,6 +214,45 @@
 	\end{figure}
 \end{frame}
 
+\begin{frame}
+\frametitle{The \emph{Bounding Box}}
+\framesubtitle{The current method with irregularly shaped rooms}
+	\begin{itemize}
+		\item An array of $K$ values encodes the shape of the room.
+		\item These are required to perform stencil with boundary conditions.
+		\item Requires another array to be stored - can be chars.
+		\item Store and operate on points that are outside the room - waste!
+	\end{itemize}
+	Stencil operation with these values becomes:
+	\begin{equation}
+\label{equation:stencil-boundary}
+P_{l,m,p}^{n+1} = (2 - \lambda^2 K_{l,m,p} )P_{l,m,p}^{n} + \lambda^2 S - P_{l,m,p}^{n-1}
+\end{equation}
+(Actual stencil is a bit more complicated and includes a wall permittivity term)
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{The \emph{Bounding Box}}
+\framesubtitle{The current method with irregularly shaped rooms}
+Each CUDA kernel is allocated a block of the room the same size as its block of threads.
+Many of these blocks will be completely outside the room!
+\IncMargin{1em}
+\begin{algorithm}[H]
+\footnotesize
+ \KwData{Three dimensional arrays of $P_{l,m,p}^{n}$, $P_{l,m,p}^{n-1}$ and $K_{l,m,p}$}
+ \KwResult{Updated array of $P_{l,m,p}^{n+1}$}
+ Get the 3D indices of the current thread from the block and thread IDs\;
+ \If{$K_{l,m,p}$ is not zero}{
+ 	Compute the linear address from the 3D indices\;
+ 	Overwrite node $P_{l,m,p}^{n-1}$ with $P_{l,m,p}^{n+1}$\;
+ }
+ Swap pointers.
+ \caption{CUDA kernel for update on an irregularly shaped room.}
+\end{algorithm}
+\end{frame}
+
 
 \begin{frame}
 	\frametitle{The Proposal}
@@ -213,32 +280,72 @@ struct block {
     bl_array u1;
     char k[Bz][By][Bx];
 };
-	\end{lstlisting}
+\end{lstlisting}
 \end{frame}
 
 \begin{frame}
 	\frametitle{Converting between representations}
 	\framesubtitle{Going from bounding box to array of structs}
-	\begin{itemize}
-		\item Implement struct in 2d, then 3d
-		\item Implement algorithm to convert from bounded array to array of structs.
-		\item See if this uses less memory (it does!)
-		\item See if this method is intolerably slow in CUDA.
-		\item See if results are \textbf{correct}.
-		\item Experiment with different sub-array sizes to optimise for
-		      \begin{itemize}
-		      	\item memory usage
-		      	\item caching efficiency
-		      \end{itemize}
-	\end{itemize}
+	\IncMargin{1em}
+
+\begin{algorithm}[H]
+%\fontsize{6pt}{\linewidth}
+  \scriptsize
+\label{alg:bound-ss}
+ \KwData{Three dimensional array of $K_{l,m,p}$ for a given room}
+ \KwResult{Array of blocks (AOB), block locations, number of internal blocks ($T_{i}$)}
+ Divide $K_{l,m,p}$ into Bx by By by Bz sized blocks\;
+ \While{not at end of blocks}{
+  do nothing\;
+  \eIf{block contains non-zero $K_{l,m,p}$ value}{
+   increment $T_{i}$\;
+   store block's location\;
+   }{
+   	store zero as block location
+   }
+   go to next block\;
+ }
+ allocate memory for $T_{i}$ block structs\;
+ \While{not at end of block locations}{
+ 	\If{block location has non-zero value}{
+ 		copy $K_{l,m,p}$ values to correct block in AOB\;
+ 	}
+ 	go to next block location\;
+ }
+ \caption{Convert bounding box to array of blocks}
+\end{algorithm}
 \end{frame}
 
 \begin{frame}
+\frametitle{Results}
+Two things are important:
+\begin{itemize}
+\item Memory capacity performance.
+\item Stencil performance.
+\end{itemize}
+
+Tests were run on three different shaped rooms.
+\end{frame}
+
+\begin{frame}
+\frametitle{But first: Correctness}
+For conversion algorithm: wrote a function that converts from bounding box coordinates to block index and array indices within block. Then loop through whole room to check $K$ values. All good!
+\linebreak
+
+For stencil: Compare with Matlab script from AAG that implements bounding box method. All good!
+\linebreak
+
+To do: compare with real room or analytical solution to simple room.
+\end{frame}
+
+\begin{frame}
+\frametitle{Memory Capacity Results}
+\framesubtitle{Sphere}
 
 \begin{figure}[H]
 \centering
 
-\resizebox{0.5\linewidth}{0.3\linewidth}{\begin{pspicture}[shift=*](-4.2,-4.2)(4.2,4.2)
+\resizebox{0.5\linewidth}{0.25\linewidth}{\begin{pspicture}[shift=*](-4.2,-4.2)(4.2,4.2)
 
 \psset{lightsrc=10 20 30,viewpoint=30 10 30 rtp2xyz,Decran=40}
 
@@ -262,6 +369,216 @@ RotZ=30,
 \end{figure}
 
 \end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+\begin{figure}[H]
+%\centering%
+\begin{gnuplot}[terminal=epslatex, terminaloptions=color dashed]
+set xlabel "Diameter (Grid Points)"
+set autoscale
+set ylabel "$\\frac{S_{ss}}{S_{s}}$"
+#set style data linespoints
+set size 0.8,0.8
+
+plot "../../semi-structured/results/data/memory-cap_graph" \
+with lines lt 1 lc rgb "blue" notitle, \
+"../../semi-structured/results/data/memory-cap_graph" \
+lc rgb "blue" notitle, \
+pi/6 lt 2 lc rgb "red" notitle
+\end{gnuplot}
+\caption{The fraction of memory used by the semi-structured approach with respect to the structured approach (double precision). The ideal fraction of $\frac{\pi}{6}$ is shown as a dashed line}%
+
+\label{figure:cap-sphere}%
+\end{figure}%
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Memory Capacity Results}
+\framesubtitle{Cube}
+\begin{itemize}
+\item Forms the worst case scenario for AOS method.
+\item Integer indices of neighbouring blocks are extra overhead.
+\item This overhead is
+\end{itemize}
+
+Single Precision:
+\begin{equation}
+\frac{S_{ss}}{S_{s}} = 1 + \frac{24}{9\cdot\lstinline|Bx|\cdot\lstinline|By|\cdot\lstinline|Bz|}
+\label{equation:single-neghbours}
+\end{equation}
+
+Double Precision:
+\begin{equation}
+\frac{S_{ss}}{S_{s}} = 1 + \frac{24}{17\cdot\lstinline|Bx|\cdot\lstinline|By|\cdot\lstinline|Bz|}
+\label{equation:double-neghbours}
+\end{equation}
+\end{frame}
+
+\begin{frame}
+\frametitle{Memory Capacity Results}
+\framesubtitle{Cube}
+\begin{itemize}
+\item Sub-arrays of size 8 x 8 x 8
+\item Yields $\frac{S_{ss}}{S_{s}} = 1.002757$
+\item This matches experimental results for cube for all sizes of room tested.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Memory Capacity Results}
+\framesubtitle{cross}
+\begin{figure}[H]
+\centering
+\resizebox{0.5\linewidth}{0.25\linewidth}{\begin{pspicture}[shift=*](-4.2,-4.2)(4.2,4.2)
+%
+\psset{lightsrc=10 20 30,viewpoint=30 10 30 rtp2xyz,Decran=40,unit=1}
+
+ %\axesIIID(3,3,3)(6,4,4)
+%\psgrid
+%\psgrid
+\psSolid[
+action=draw**,
+object=cube,
+a=2,
+RotZ=00,
+%show=all,
+](0,-2,0)
+\psSolid[
+action=draw**,
+object=cube,
+a=2,
+RotZ=00,
+%show=all,
+](-2,0,0)
+\psSolid[
+action=draw**,
+object=cube,
+a=2,
+RotZ=00,
+%show=all,
+](0,0,0)
+\psSolid[
+action=draw**,
+object=cube,
+a=2,
+RotZ=00,
+%show=all,
+](2,0,0)
+
+
+
+\psSolid[
+action=draw**,
+object=cube,
+a=2,
+RotZ=00,
+%show=all,
+](0,2,0)
+%show=all,
+%
+
+\end{pspicture}}
+\caption{A cross made up of 5 equal cubes.}
+\label{figure:cross}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Memory Capacity Results}
+\framesubtitle{cross}
+\begin{itemize}
+\item Bounding box would take 9 cubes.
+\item Cross takes 5 cubes.
+\item Ideal bounding box performance would take $\frac{5}{9}\cdot1.002757$
+\item This was achieved performance in all cases tested.
+\item $\frac{S_{ss}}{S_{s}} = 0.557087$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Memory Capacity Results}
+\framesubtitle{Quantifying}
+\emph{Ideal} is taken to be where two floating point numbers and one char is stored per grid point.
+\begin{table}[h!]
+\centering
+\scriptsize
+ \begin{tabular}{|c|c|c|c|c|c|} \hline
+ Room Shape & Diam & Ideal (\SI{}{\mebi\byte}) & \multicolumn{2}{c|}{Achieved minus Ideal (\SI{}{\mebi\byte})} & Improvement \\ \cline{4-5}
+  &  &  & Structured & Semi-structured & \\ \hline
+
+Cube & 768 & 7344 & 0 &  20.25 & N/A \\
+Sphere & 768 & 3845 & 3499 & 168.7 & 20.7X \\  
+Cross & 488 & 9221 & 7736 & 226.4 & 34.2X \\  \hline
+\end{tabular}
+\caption{Quantifying the memory capacity improvements by comparing unecessary data stored between both methods.}
+\label{table:cap-quant}
+\end{table}
+\end{frame}
+
+\begin{frame}
+\frametitle{Stencil Performance}
+
+No point in optimising for less memory if the result is slower than CPU code!
+\begin{table}[h!]
+\centering
+\tiny
+ \begin{tabular}{|c|c|c|c|c|c|c|} \hline
+ Room Shape & Diam & \multicolumn{2}{c|}{Memory Use (MiB)} & \multicolumn{2}{c|}{Time (s)} & Speed-up \\ \cline{3-6}
+  &  & Structured & Semi-structured & Structured & Semi-structured & \\ \hline
+   
+Cube & 608 & 3643.84 & 3653.90 & 79.49 & 81.25 & 0.98X \\  
+Sphere & 608 & 3643.84 & 2012.92 &  79.50 & 44.78 & 1.78X \\
+Cross & 256 & 2448.00 & 1363.76 & 53.27 & 30.34 & 1.76X \\  \hline
+\end{tabular}
+\caption{Performance results for the stencilling operation. }
+\label{table:perf}
+\end{table}
+(It's not slower than CPU code)
+\end{frame}
+
+\begin{frame}
+\frametitle{Stencil Performance}
+It's a bit easier to see what's going on when you look at the data processing rates.
+
+\begin{table}[H]
+\centering
+\small
+ \begin{tabular}{|c|c|c|} \hline
+ Room Shape & \multicolumn{2}{c|}{Data Rate (\SI{}{\gibi\byte\per\second})} \\ \cline{2-3}
+  & Structured & Semi-structured \\ \hline
+Cube & 44.77 & 43.92 \\ 
+Sphere & 44.76 & 43.90 \\ 
+Cross & 44.88 & 43.90 \\  \hline
+Mean & 44.80 & 43.91 \\ \hline
+\end{tabular}
+\caption{Data processing rates.}
+\label{table:data}
+\end{table}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{To Do}
+3 months and 1500 lines of CUDA code later there is still plenty to do
+\begin{itemize}
+\item Check stencil with analytical solution with simple case
+\item Compare results with real room
+\item Optimize to take advantage of HBM2
+\item Port to OpenCL?
+\end{itemize}
+\end{frame}
+
 
 \begin{frame}
 	\frametitle{The End}

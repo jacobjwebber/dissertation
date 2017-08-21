@@ -9,4 +9,13 @@
 \beamer@slide {equation:stencil-small}{9}
 \beamer@slide {stencil}{10}
 \beamer@slide {church}{12}
-\beamer@slide {figure:sphere-cube}{16}
+\beamer@slide {equation:stencil-boundary}{13}
+\beamer@slide {alg:bound-ss}{17}
+\beamer@slide {figure:sphere-cube}{20}
+\beamer@slide {figure:cap-sphere}{21}
+\beamer@slide {equation:single-neghbours}{22}
+\beamer@slide {equation:double-neghbours}{22}
+\beamer@slide {figure:cross}{24}
+\beamer@slide {table:cap-quant}{26}
+\beamer@slide {table:perf}{27}
+\beamer@slide {table:data}{28}
