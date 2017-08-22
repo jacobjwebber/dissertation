@@ -71,35 +71,43 @@
       \expandafter\def\csname LT8\endcsname{\color{black}}%
     \fi
   \fi
-  \setlength{\unitlength}{0.0500bp}%
-  \begin{picture}(5760.00,4032.00)%
+    \setlength{\unitlength}{0.0500bp}%
+    \ifx\gptboxheight\undefined%
+      \newlength{\gptboxheight}%
+      \newlength{\gptboxwidth}%
+      \newsavebox{\gptboxtext}%
+    \fi%
+    \setlength{\fboxrule}{0.5pt}%
+    \setlength{\fboxsep}{1pt}%
+\begin{picture}(5760.00,4032.00)%
     \gplgaddtomacro\gplbacktext{%
       \csname LTb\endcsname%
-      \put(1078,704){\makebox(0,0)[r]{\strut{} 0.5}}%
-      \put(1078,982){\makebox(0,0)[r]{\strut{} 0.55}}%
-      \put(1078,1261){\makebox(0,0)[r]{\strut{} 0.6}}%
-      \put(1078,1539){\makebox(0,0)[r]{\strut{} 0.65}}%
-      \put(1078,1818){\makebox(0,0)[r]{\strut{} 0.7}}%
-      \put(1078,2096){\makebox(0,0)[r]{\strut{} 0.75}}%
-      \put(1078,2375){\makebox(0,0)[r]{\strut{} 0.8}}%
-      \put(1078,2653){\makebox(0,0)[r]{\strut{} 0.85}}%
-      \put(1078,2932){\makebox(0,0)[r]{\strut{} 0.9}}%
-      \put(1078,3210){\makebox(0,0)[r]{\strut{} 0.95}}%
-      \put(1078,3489){\makebox(0,0)[r]{\strut{} 1}}%
-      \put(1078,3767){\makebox(0,0)[r]{\strut{} 1.05}}%
-      \put(1210,484){\makebox(0,0){\strut{} 0}}%
-      \put(1729,484){\makebox(0,0){\strut{} 100}}%
-      \put(2248,484){\makebox(0,0){\strut{} 200}}%
-      \put(2767,484){\makebox(0,0){\strut{} 300}}%
-      \put(3287,484){\makebox(0,0){\strut{} 400}}%
-      \put(3806,484){\makebox(0,0){\strut{} 500}}%
-      \put(4325,484){\makebox(0,0){\strut{} 600}}%
-      \put(4844,484){\makebox(0,0){\strut{} 700}}%
-      \put(5363,484){\makebox(0,0){\strut{} 800}}%
-      \put(176,2235){\rotatebox{-270}{\makebox(0,0){\strut{}$\frac{S_{ss}}{S_{s}}$}}}%
-      \put(3286,154){\makebox(0,0){\strut{}Diameter (Grid Points)}}%
+      \put(946,704){\makebox(0,0)[r]{\strut{}$0.5$}}%
+      \put(946,982){\makebox(0,0)[r]{\strut{}$0.55$}}%
+      \put(946,1261){\makebox(0,0)[r]{\strut{}$0.6$}}%
+      \put(946,1539){\makebox(0,0)[r]{\strut{}$0.65$}}%
+      \put(946,1818){\makebox(0,0)[r]{\strut{}$0.7$}}%
+      \put(946,2096){\makebox(0,0)[r]{\strut{}$0.75$}}%
+      \put(946,2375){\makebox(0,0)[r]{\strut{}$0.8$}}%
+      \put(946,2653){\makebox(0,0)[r]{\strut{}$0.85$}}%
+      \put(946,2932){\makebox(0,0)[r]{\strut{}$0.9$}}%
+      \put(946,3210){\makebox(0,0)[r]{\strut{}$0.95$}}%
+      \put(946,3489){\makebox(0,0)[r]{\strut{}$1$}}%
+      \put(946,3767){\makebox(0,0)[r]{\strut{}$1.05$}}%
+      \put(1078,484){\makebox(0,0){\strut{}$0$}}%
+      \put(1614,484){\makebox(0,0){\strut{}$100$}}%
+      \put(2149,484){\makebox(0,0){\strut{}$200$}}%
+      \put(2685,484){\makebox(0,0){\strut{}$300$}}%
+      \put(3221,484){\makebox(0,0){\strut{}$400$}}%
+      \put(3756,484){\makebox(0,0){\strut{}$500$}}%
+      \put(4292,484){\makebox(0,0){\strut{}$600$}}%
+      \put(4827,484){\makebox(0,0){\strut{}$700$}}%
+      \put(5363,484){\makebox(0,0){\strut{}$800$}}%
     }%
     \gplgaddtomacro\gplfronttext{%
+      \csname LTb\endcsname%
+      \put(176,2235){\rotatebox{-270}{\makebox(0,0){\strut{}$\frac{S_{ss}}{S_{s}}$}}}%
+      \put(3220,154){\makebox(0,0){\strut{}Diameter (Grid Points)}}%
     }%
     \gplbacktext
     \put(0,0){\includegraphics{presentation-gnuplottex-fig1}}%
