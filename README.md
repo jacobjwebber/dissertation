@@ -1,4 +1,5 @@
 # README
+8 years after i did it i have decided to open source my research on 3d room acoustics computer models using GPU.
 
 This contains the following directories.
 
