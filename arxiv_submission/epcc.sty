@@ -1092,7 +1092,7 @@
           \begin{small}
             \vskip -92pt
             \hbox to \textwidth{\hfil \resizebox{88pt}{!}{
-                \includegraphics{/usr/local/share/logos/crest_bw}}
+                \includegraphics{logos/crest_bw}}
               \hskip -68pt}
             \vskip 18pt
             \rightline
@@ -1149,7 +1149,7 @@
           \hskip -26pt
           \hbox to \textwidth{\hfil
             \resizebox{72pt}{!}{
-              \includegraphics{/usr/local/share/logos/logo_black}}
+              \includegraphics{logos/logo_black}}
             \hskip -50pt}
           \vss
         }
@@ -1291,7 +1291,7 @@
 
 \def\epccfax
 {
-        \usepackage{futura}
+%        \usepackage{futura}
         \parindent=0pt
         \parskip=.8\baselineskip
         \setleftmargin{20mm}{0in}
@@ -1337,7 +1337,7 @@
                         {
                                 \resizebox{!}{15mm}
                                 {       
-                                        \includegraphics{/usr/local/share/logos/logo_black}
+                                        \includegraphics{logos/logo_black}
                                 }
                         }
                 }
@@ -1860,7 +1860,7 @@
                                                 \hskip .4in
 %                                                \epsfxsize=1.35in
                                                  \resizebox{26mm}{!}{
-                                                 \includegraphics{/usr/local/share/logos/crest_bw}
+                                                 \includegraphics{logos/crest_bw}
                                                  }
                                         }
                                         \brk
@@ -1868,7 +1868,7 @@
                                         \hbox
                                         {
                                                 \hskip .8in
-                                                \includegraphics{/usr/local/share/logos/epccvert}
+                                                \includegraphics{logos/logo_black}
                                         }
                                         \brk
                                         \vskip 1.0in
@@ -1877,7 +1877,7 @@
                                                 \hskip 0.45in
 %                                                \epsfxsize=1.1in
                                                  \resizebox{72pt}{!}{
-                                                 \includegraphics{/usr/local/share/logos/logo_black}
+                                                 \includegraphics{logos/logo_black}
                                                  }
                                         }
                                         \vss
@@ -2101,13 +2101,13 @@
   \gdef\endthebibliography{\clearpage\endlist}
   \newdimen\hackwidth\hackwidth=\textwidth\advance\hackwidth by -5pt
   \def\@biblabel##1{\makebox[\hackwidth][l]{[{##1}]}\relax}
-  \bibliographystyle{labels}
+%  \bibliographystyle{labels}
   \nocite{*}
   \bibliography{#1}
 }
 %
 \newcommand{\epccbibliographydumpunit}[2]{
-  \@ifundefined{bibunit}{\makeatletter\input{bibunits.sty}}{}
+%  \@ifundefined{bibunit}{\makeatletter\input{bibunits.sty}}{}
   \def\bibtitle{#2}
   \def\thebibliography##1{\clearpage
       \pagestyle{fancyplain}\thispagestyle{plain}%
@@ -2126,10 +2126,10 @@
   \gdef\endthebibliography{\clearpage\endlist}
   \newdimen\hackwidth\hackwidth=\textwidth\advance\hackwidth by -5pt
   \def\@biblabel##1{\makebox[\hackwidth][l]{[{##1}]}\relax}
-  \begin{bibunit}[labels]
-    \nocite{*}
-    \putbib[#1]
-  \end{bibunit}
+%  \begin{bibunit}[labels]
+%    \nocite{*}
+%    \putbib[#1]
+%  \end{bibunit}
 }
 %
 
